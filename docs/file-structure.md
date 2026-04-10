@@ -4,10 +4,20 @@
 rocket-claude/
 ├── index.html                        # Entry point — load all scripts here
 ├── settings.json                     # App config — categories, budgets, accounts, notifications
+├── README.md                         # Setup + usage instructions
 ├── data/
 │   └── transactions.csv              # Output from Claude Code skill (source of truth)
 ├── statements/                       # Input folder — user drops bank PDFs/CSVs here
 │   └── .gitkeep
+├── .claude/
+│   └── skills/
+│       └── rocket/                   # Claude Code import skill (/rocket)
+│           ├── SKILL.md              # Skill steps and error handling
+│           ├── RULES.md              # CSV schema, column order, categories
+│           └── scripts/
+│               ├── pdf_to_text.py    # PDF → .txt extraction (pdfplumber / pypdf)
+│               ├── import_statements.py  # Main pipeline: parse → categorize → merge → write
+│               └── categorize.py    # Rule-based + AI fallback categorization
 ├── docs/
 │   ├── overview.md
 │   ├── data-flow.md

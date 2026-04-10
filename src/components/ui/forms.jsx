@@ -172,7 +172,7 @@ window.Checkbox = ({ checked = false, onChange, label, className = '', disabled 
       className={`w-4 h-4 rounded border shrink-0 flex items-center justify-center transition-colors
         ${checked ? 'bg-[#10b981] border-[#10b981]' : 'border-[#2a2a3d] bg-[#1a1a26]'}`}
     >
-      {checked && React.createElement(LucideReact.Check, { size: 10, color: 'white', strokeWidth: 3 })}
+      {checked && <Icon name="Check" size={10} color="white" strokeWidth={3} />}
     </div>
     {label && <Text className="text-sm text-[#9090b0] select-none">{label}</Text>}
   </HStack>

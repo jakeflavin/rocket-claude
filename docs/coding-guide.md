@@ -117,20 +117,17 @@ Full reference with props and usage examples: [docs/ui-library.md](ui-library.md
 
 ## Lucide Icons
 
-Lucide React is loaded via CDN and exposes the global `LucideReact`. Always use
-the `Icon` primitive — it wraps `LucideReact[name]` and logs a clear warning for
-unknown icon names.
+The CDN loads the vanilla `lucide` package (not `lucide-react`), which exposes
+`window.lucide`. **Never reference `window.lucide` or `LucideReact` directly in
+components** — always use the `Icon` primitive, which wraps the API and warns on
+unknown names.
 
 ```jsx
-// Correct
+// Correct — always use the Icon primitive
 <Icon name="TrendingUp" size={16} className="text-emerald-400" />
 
-// Dynamic hex color — use style (see Inline Style Exceptions below)
+// Dynamic hex color from settings.json — use style prop (legitimate exception)
 <Icon name={cat.icon} size={14} style={{ color: cat.color }} />
-
-// Only use React.createElement directly inside overlay.jsx itself
-// (where Icon isn't yet defined in the load order)
-{React.createElement(LucideReact.X, { size: 18 })}
 ```
 
 Icon names come from `settings.json` categories — never hardcode them.
@@ -176,7 +173,22 @@ Always handle `loading` and `error` states in components that call this hook.
 
 ---
 
+## Opening the App
+
+The app must be served over HTTP. Open `index.html` via `file://` (double-clicking
+it) will fail — the browser blocks XHR to local files, which breaks Babel's JSX
+loading, PapaParse's CSV download, and the settings.json fetch.
+
+```bash
+# From the project root
+npx serve .
+# Open http://localhost:3000
+```
+
 ## Chart.js Lifecycle Pattern
+
+The CDN loads `chart.umd.min.js` which auto-registers all controllers, elements,
+and scales — `Chart.register()` is not needed and should not be called.
 
 Chart instances must be created and destroyed via `useRef` + `useEffect`.
 Failing to destroy before re-creating causes a "canvas already in use" error.

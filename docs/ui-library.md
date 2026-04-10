@@ -112,14 +112,20 @@ De-emphasised helper or metadata text (`text-xs text-[#555575]`).
 ## media.jsx
 
 ### `Icon`
-Lucide React wrapper. Pass the icon name as a string; logs a warning for unknown names.
+Wrapper around the vanilla `lucide` CDN package (`window.lucide`). Pass the icon
+name as a string; logs a warning for unknown names and renders nothing.
+
 ```jsx
 <Icon name="TrendingUp" size={16} className="text-emerald-400" />
 ```
-**Always use this** instead of `React.createElement(LucideReact.X, ...)` directly —
-except inside overlay.jsx internals that can't depend on themselves.
 
-For dynamic hex colors that can't be Tailwind classes, use `style={{ color: hex }}`.
+**Always use this primitive** — never reference `window.lucide` or `LucideReact`
+directly in components.
+
+For dynamic hex colors that can't be Tailwind classes, use `style={{ color: hex }}`:
+```jsx
+<Icon name={cat.icon} size={14} style={{ color: cat.color }} />
+```
 
 ### `Img`
 `<img>` with an automatic grey placeholder on error.

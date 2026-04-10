@@ -109,13 +109,14 @@ Full reference with props and when-to-use notes: **[docs/ui-library.md](docs/ui-
 - **Script load order in `index.html` is the dependency graph** — see [docs/file-structure.md](docs/file-structure.md) for the full annotated tree.
 - **JSX works via Babel standalone** — use `<script type="text/babel" src="...">` for all `.jsx` files.
 - **Tailwind via CDN** — full utility set available. `bg-[#hex]` for custom colors.
+- **Serve over HTTP, never `file://`** — run `npx serve .` from the project root and open `http://localhost:3000`. Opening `index.html` directly triggers CORS errors on every local file fetch (JSX, CSV, JSON).
+- **Lucide icons via `window.lucide`** — the CDN loads the vanilla `lucide` package (not `lucide-react`). Always use the `Icon` primitive; never reference `window.lucide` or `LucideReact` directly in components.
+- **Chart.js UMD build auto-registers** — `Chart.register()` is not needed. The UMD bundle (`chart.umd.min.js`) registers all controllers, elements, and scales automatically.
 - **Chart.js lifecycle** — always create/destroy via `useRef` + `useEffect`; destroy before re-creating to avoid "canvas already in use". See [docs/coding-guide.md](docs/coding-guide.md#chartjs-lifecycle-pattern).
 - **`settings.json` is the source for all categories, colors, budget limits, and user preferences** — never hardcode these in components.
 - **The `id` field is the stable React key** — always use `key={transaction.id}` in transaction lists.
 - **`needs_review` normalization** — PapaParse with `dynamicTyping: true` parses it as boolean `true`; the hook normalizes this. Filter with `t.needs_review === true`.
 - **Inline styles** — only two legitimate exceptions exist (Progress bar width, dynamic hex color on Icon). Everything else must be Tailwind.
-- **PapaParse `download: true`** requires HTTP — a local server (`python -m http.server 8080`) is needed; `file://` triggers CORS on the CSV fetch.
-- **Chart.js must be registered** — done once in `index.html` via `Chart.register(...Chart.registerables)`.
 
 ---
 

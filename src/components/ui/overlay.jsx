@@ -79,7 +79,7 @@ window.Modal = ({ isOpen, onClose, title, size = 'md', children }) => {
                 onClick={onClose}
                 className="text-[#555575] hover:text-[#f0f0fa] transition-colors p-0.5 rounded"
               >
-                {React.createElement(LucideReact.X, { size: 18 })}
+                <Icon name="X" size={18} />
               </button>
             </HStack>
           )}

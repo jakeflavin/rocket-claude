@@ -93,7 +93,7 @@ window.Alert = ({ variant = 'info', title, children, onClose, className = '' }) 
           onClick={onClose}
           className="text-[#555575] hover:text-[#9090b0] transition-colors shrink-0"
         >
-          {React.createElement(LucideReact.X, { size: 14 })}
+          <Icon name="X" size={14} />
         </button>
       )}
     </HStack>
