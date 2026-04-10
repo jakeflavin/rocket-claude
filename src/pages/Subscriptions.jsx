@@ -27,7 +27,7 @@ function SubscriptionsSkeleton() {
 const SUBCATEGORY_TABS = ['All', 'Streaming', 'Software', 'Memberships'];
 
 function Subscriptions() {
-  const { subscriptionGroups, loading, error } = useTransactions();
+  const { subscriptionGroups, loading, error, reload } = useTransactions();
 
   const [tab, setTab] = React.useState('All');
 
@@ -40,7 +40,7 @@ function Subscriptions() {
     : subscriptionGroups.filter(s => s.subcategory === tab);
 
   if (loading) return <SubscriptionsSkeleton />;
-  if (error)   return <Center className="h-full"><Alert variant="error" title="Failed to load transactions" /></Center>;
+  if (error)   return <DataErrorState error={error} onRetry={reload} />;
 
   return (
     <Box className="p-6">

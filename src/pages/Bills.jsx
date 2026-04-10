@@ -20,14 +20,14 @@ function BillsSkeleton() {
  */
 
 function Bills() {
-  const { billGroups, loading, error } = useTransactions();
+  const { billGroups, loading, error, reload } = useTransactions();
 
   const monthlyEstimate = billGroups.reduce(
     (sum, b) => sum + Math.abs(b.averageAmount), 0
   );
 
   if (loading) return <BillsSkeleton />;
-  if (error)   return <Center className="h-full"><Alert variant="error" title="Failed to load transactions" /></Center>;
+  if (error)   return <DataErrorState error={error} onRetry={reload} />;
 
   return (
     <Box className="p-6">

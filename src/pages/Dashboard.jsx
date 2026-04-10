@@ -41,7 +41,7 @@ const BILL_STATUS_CONFIG = {
 
 function Dashboard({ onNavigate }) {
   const { settings } = useSettings();
-  const { transactions, expenses, income, needsReview, billGroups, loading, error } = useTransactions();
+  const { transactions, expenses, income, needsReview, billGroups, loading, error, reload } = useTransactions();
 
   const currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -66,11 +66,7 @@ function Dashboard({ onNavigate }) {
   if (loading) return <DashboardSkeleton />;
 
   if (error) {
-    return (
-      <Center className="h-full">
-        <Alert variant="error" title="Failed to load transactions" />
-      </Center>
-    );
+    return <DataErrorState error={error} onRetry={reload} />;
   }
 
   return (

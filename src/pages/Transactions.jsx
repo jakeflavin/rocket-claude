@@ -35,7 +35,7 @@ const SORT_COLS = [
 
 function Transactions() {
   const { settings } = useSettings();
-  const { transactions, loading, error } = useTransactions();
+  const { transactions, loading, error, reload } = useTransactions();
 
   // ─── Filter state ──────────────────────────────────────────────────────────
   const [search,          setSearch]          = React.useState('');
@@ -128,7 +128,7 @@ function Transactions() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   if (loading) return <TransactionsSkeleton />;
-  if (error)   return <Center className="h-full"><Alert variant="error" title="Failed to load transactions" /></Center>;
+  if (error)   return <DataErrorState error={error} onRetry={reload} />;
 
   return (
     <Box className="p-6">
