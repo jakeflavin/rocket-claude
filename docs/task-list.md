@@ -26,13 +26,13 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T14** Create `src/components/CategoryDonut.jsx` — Chart.js doughnut chart, spend by category. Colors from `settings.json`. Dark theme applied.
 - [x] **T15** Create `src/components/BudgetProgress.jsx` — progress bars per category. Pulls limits from `settings.json`. Color shifts at 75% and 90%.
 - [x] **T16** Create `src/components/RecentTransactions.jsx` — last N transactions, merchant + category badge + amount + date. Amount in `font-mono`.
-- [ ] **T17** Create `src/components/SubscriptionCard.jsx` — merchant name, subcategory, last charged, monthly cost.
-- [ ] **T18** Create `src/components/BillItem.jsx` — merchant, category, last paid date, estimated next due, status badge (Paid / Due Soon / Overdue).
+- [x] **T17** Create `src/components/SubscriptionCard.jsx` — merchant name, subcategory, last charged, monthly cost.
+- [x] **T18** Create `src/components/BillItem.jsx` — merchant, category, last paid date, estimated next due, status badge (Paid / Due Soon / Overdue).
 
 ## Phase 4 — Pages
 
-- [ ] **T19** Build `src/pages/Dashboard.jsx` — assemble all dashboard widgets. 4 KPI cards across top, 2-column grid below (SpendingChart + CategoryDonut), BudgetProgress, RecentTransactions + upcoming bills side by side. NeedsReviewBanner at top if applicable.
-- [ ] **T20** Build `src/pages/Transactions.jsx` — full list with search input, category filter dropdown, account filter dropdown, date range pickers, needs_review toggle filter. Paginated 50/page. Sortable columns. Inline notes editor.
+- [x] **T19** Build `src/pages/Dashboard.jsx` — assemble all dashboard widgets. 4 KPI cards across top, 2-column grid below (SpendingChart + CategoryDonut), BudgetProgress, RecentTransactions + upcoming bills side by side. NeedsReviewBanner at top if applicable.
+- [x] **T20** Build `src/pages/Transactions.jsx` — full list with search input, category filter dropdown, account filter dropdown, date range pickers, needs_review toggle filter. Paginated 50/page. Sortable columns. Inline notes editor.
 - [ ] **T21** Build `src/pages/Subscriptions.jsx` — group by merchant, show monthly cost, subcategory filter tabs (All / Streaming / Software / Memberships), monthly total header.
 - [ ] **T22** Build `src/pages/Bills.jsx` — recurring Utilities + Housing transactions. Group by merchant. Show last paid, estimated next due, status. Sort by next due date ascending.
 - [ ] **T23** Build `src/pages/Settings.jsx` — 5 sections: Profile editor, Accounts list (derived from CSV), Budget limits editor (saves to settings.json), Notifications toggles, Imported Files table (unique source_file values + transaction counts).
