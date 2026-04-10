@@ -256,6 +256,17 @@ def parse_txt(txt_path: Path) -> list[dict]:
     )
     amount_re = re.compile(r"(-?\$?[\d,]+\.\d{2})")
 
+    # Daily balance detail rows start with another MM/DD amount pattern in the description
+    balance_row_re = re.compile(r"^\d{1,2}/\d{2}\s+[\d,]+\.\d{2}")
+    # Keywords that indicate a summary/total line, not a real transaction
+    skip_keywords_re = re.compile(
+        r"\b(daily balance|total withdrawals|total deposits|total charges|"
+        r"opening balance|closing balance|beginning balance|ending balance|"
+        r"service charge|new balance|previous balance|account balance|"
+        r"total debits|total credits|total additions)\b",
+        re.IGNORECASE,
+    )
+
     # Section tracking: True = additions (positive), False = deductions (negative)
     is_addition = True
     ADDITION_HEADERS = re.compile(r"deposits and other additions", re.IGNORECASE)
@@ -281,11 +292,19 @@ def parse_txt(txt_path: Path) -> list[dict]:
         elif DEDUCTION_HEADERS.search(stripped):
             is_addition = False
 
+        # Skip known summary/total lines before any match attempt
+        if skip_keywords_re.search(stripped):
+            continue
+
         # Try MM/DD amount description (PNC-style)
         m = short_date_re.match(stripped)
         if m:
-            flush(pending)
             raw_date, raw_amount, description = m.group(1), m.group(2), m.group(3)
+            # Skip daily balance detail rows — description starts with another MM/DD amount
+            if balance_row_re.match(description):
+                pending = None
+                continue
+            flush(pending)
             month, day = map(int, raw_date.split("/"))
             year = _infer_year(month, day, period_start, period_end)
             try:

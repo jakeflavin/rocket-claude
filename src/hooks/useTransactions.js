@@ -45,12 +45,12 @@ const useTransactions = () => {
   // ─── Derived views (memoised to avoid recomputing on every render) ──────────
 
   const expenses = React.useMemo(
-    () => transactions.filter(t => t.amount < 0),
+    () => transactions.filter(t => t.amount < 0 && t.category !== 'Transfers' && t.category !== 'Payments'),
     [transactions]
   );
 
   const income = React.useMemo(
-    () => transactions.filter(t => t.amount > 0 && t.account_type !== 'credit_card'),
+    () => transactions.filter(t => t.amount > 0 && t.account_type !== 'credit_card' && t.category !== 'Transfers' && t.category !== 'Payments'),
     [transactions]
   );
 

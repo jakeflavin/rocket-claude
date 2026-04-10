@@ -22,8 +22,24 @@ const SettingsProvider = ({ children }) => {
         if (!res.ok) throw new Error(`HTTP ${res.status} — could not load settings.json`);
         return res.json();
       })
-      .then(setSettings)
+      .then(data => {
+        const savedTheme = localStorage.getItem('rocket-theme');
+        if (savedTheme) {
+          data = { ...data, user: { ...data.user, theme: savedTheme } };
+        }
+        setSettings(data);
+      })
       .catch(err => setError(err.message));
+  }, []);
+
+  const handleSetSettings = React.useCallback((updater) => {
+    setSettings(prev => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      if (next?.user?.theme && next.user.theme !== prev?.user?.theme) {
+        localStorage.setItem('rocket-theme', next.user.theme);
+      }
+      return next;
+    });
   }, []);
 
   if (error) {
@@ -50,7 +66,7 @@ const SettingsProvider = ({ children }) => {
   }
 
   return (
-    <SettingsContext.Provider value={{ settings, setSettings }}>
+    <SettingsContext.Provider value={{ settings, setSettings: handleSetSettings }}>
       {children}
     </SettingsContext.Provider>
   );

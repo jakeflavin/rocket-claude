@@ -198,6 +198,21 @@
 - Games
 - Events
 
+### Child Care
+- Daycare
+- After School
+- Babysitting
+
+### Transfers
+- Inbound
+- Outbound
+
+### Payments
+- Credit Card
+- Mortgage
+- Loan
+- Insurance
+
 ### Misc
 - Uncategorized
 

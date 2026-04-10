@@ -4,7 +4,7 @@
     "currency": "USD",
     "currencySymbol": "$",
     "locale": "en-US",
-    "theme": "system"
+    "theme": "dark"
   },
 
   "dashboard": {
@@ -23,6 +23,7 @@
     "Health": 200,
     "Travel": 500,
     "Entertainment": 150,
+    "Child Care": 500,
     "Misc": 100
   },
 
@@ -38,6 +39,9 @@
     { "name": "Health",        "color": "#ef4444", "icon": "Heart"           },
     { "name": "Travel",        "color": "#6366f1", "icon": "Plane"           },
     { "name": "Entertainment", "color": "#a855f7", "icon": "Tv"              },
+    { "name": "Child Care",    "color": "#0ea5e9", "icon": "Baby"            },
+    { "name": "Transfers",     "color": "#71717a", "icon": "ArrowLeftRight"  },
+    { "name": "Payments",      "color": "#78716c", "icon": "CreditCard"      },
     { "name": "Misc",          "color": "#6b7280", "icon": "MoreHorizontal"  }
   ],
 

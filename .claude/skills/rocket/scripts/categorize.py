@@ -22,8 +22,27 @@ import sys
 # Pattern is matched case-insensitively against normalized_description + merchant
 # ---------------------------------------------------------------------------
 RULES: list[tuple[str, str, str]] = [
-    # Transfers & ATM (match early so they don't fall through to AI)
-    (r"\b(online transfer|web pmt|online pmt|zelle|venmo|paypal|cash app|atm withdrawal|atm deposit|autopay|mobile payment)\b", "Misc", "Transfer"),
+    # Transfers — inbound (match "from" before generic "transfer" rules)
+    (r"\b(onlinetransfer from|online transfer from)\b", "Transfers", "Inbound"),
+    (r"\b(atm deposit)\b", "Transfers", "Inbound"),
+    # Transfers — outbound
+    (r"\b(online transfer to|onlinetransfer to)\b", "Transfers", "Outbound"),
+    (r"\b(zelle|venmo|paypal|cash app|atm withdrawal)\b", "Transfers", "Outbound"),
+
+    # Payments — specific first (order matters)
+    (r"\b(mtg pmt|mortgage pmt)\b", "Payments", "Mortgage"),
+    (r"\b(amex epayment|ach pmt amex)\b", "Payments", "Credit Card"),
+    (r"\b(autopay payment|mobile payment)\b", "Payments", "Credit Card"),
+    (r"\b(cclc|achpayment)\b", "Payments", "Loan"),
+    (r"\b(student ln|dept education)\b", "Payments", "Loan"),
+    (r"\b(il payment)\b", "Payments", "Loan"),
+    (r"\b(ins prem|insurance premium)\b", "Payments", "Insurance"),
+    # Payments — generic catch-all (web pmt, direct payment, autopay)
+    (r"\b(web pmt|online pmt)\b", "Payments", "Credit Card"),
+    (r"\b(autopay|direct payment)\b", "Payments", "Credit Card"),
+
+    # Child Care
+    (r"\b(daycare|day care|childcare|child care|babysit|preschool|kindercare|kindergarten|nursery|schoolcafe|school cafe|after.?school|after care|learning center)\b", "Child Care", "Daycare"),
 
     # Income
     (r"\b(payroll|salary|direct deposit|paycheque|paycheck)\b", "Income", "Salary"),
@@ -127,6 +146,9 @@ Shopping: General Merchandise, Clothing, Electronics, Home Goods
 Health: Medical, Pharmacy, Fitness
 Travel: Flights, Hotels, Rental Car, Activities
 Entertainment: Movies, Games, Events
+Child Care: Daycare, After School, Babysitting
+Transfers: Inbound, Outbound
+Payments: Credit Card, Mortgage, Loan, Insurance
 Misc: Uncategorized
 """
 
