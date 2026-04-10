@@ -72,7 +72,7 @@
   <script type="text/babel" src="src/hooks/useTransactions.js"></script>
 
   <!-- ─── Components ───────────────────────────────────────────────────── -->
-  <!-- <script type="text/babel" src="src/components/Sidebar.jsx"></script>              T09 -->
+  <script type="text/babel" src="src/components/Sidebar.jsx"></script>
   <!-- <script type="text/babel" src="src/components/StatCard.jsx"></script>             T11 -->
   <!-- <script type="text/babel" src="src/components/NeedsReviewBanner.jsx"></script>    T12 -->
   <!-- <script type="text/babel" src="src/components/SpendingChart.jsx"></script>        T13 -->
@@ -90,20 +90,6 @@
   <!-- <script type="text/babel" src="src/pages/Settings.jsx"></script>        T23 -->
 
   <!-- ─── App entry point ───────────────────────────────────────────────── -->
-  <!-- <script type="text/babel" src="src/App.jsx"></script>   T10 -->
-
-  <!-- ─── Temporary bootstrap (replaced by App.jsx at T10) ─────────────── -->
-  <script type="text/babel">
-    const LoadingApp = () => (
-      <Center className="h-screen">
-        <VStack gap="gap-2" className="items-center">
-          <Text className="font-mono text-lg text-[#f0f0fa]">rocket-claude loading…</Text>
-          <Text className="text-xs text-[#555575]">open data/transactions.csv to get started</Text>
-        </VStack>
-      </Center>
-    );
-
-    ReactDOM.createRoot(document.getElementById('root')).render(<LoadingApp />);
-  </script>
+  <script type="text/babel" src="src/App.jsx"></script>
 </body>
 </html>

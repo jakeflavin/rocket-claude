@@ -15,8 +15,8 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 
 ## Phase 2 — Layout & Navigation
 
-- [ ] **T09** Create `src/components/Sidebar.jsx` — app logo ("🚀 rocket-claude"), nav links for all 5 pages with icons, active state styling, current month/year display at bottom.
-- [ ] **T10** Create `src/App.jsx` — tab-based navigation, wrap with `SettingsProvider`, render `Sidebar` + active page. Full dark layout shell.
+- [x] **T09** Create `src/components/Sidebar.jsx` — app logo ("🚀 rocket-claude"), nav links for all 5 pages with icons, active state styling, current month/year display at bottom.
+- [x] **T10** Create `src/App.jsx` — tab-based navigation, wrap with `SettingsProvider`, render `Sidebar` + active page. Full dark layout shell.
 
 ## Phase 3 — Shared Components
 
