@@ -148,6 +148,118 @@ function SubscriptionsDonut({ groups }) {
   );
 }
 
+// ─── Calendar view ───────────────────────────────────────────────────────────
+
+const SUB_CAL_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function SubscriptionsCalendar({ groups }) {
+  const { settings } = useSettings();
+  const [calDate, setCalDate] = React.useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  });
+
+  const prevMonth = () => setCalDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1));
+  const nextMonth = () => setCalDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1));
+
+  const year  = calDate.getFullYear();
+  const month = calDate.getMonth();
+  const daysInMonth  = new Date(year, month + 1, 0).getDate();
+  const firstWeekday = new Date(year, month, 1).getDay();
+
+  // Derive base subscription color for pill tinting
+  const baseColor = React.useMemo(
+    () => settings.categories.find(c => c.name === 'Subscriptions')?.color || '#6366f1',
+    [settings.categories]
+  );
+
+  // Build lookup: day-of-month → subscriptions due that day
+  const subsByDay = React.useMemo(() => {
+    const map = {};
+    groups.forEach(sub => {
+      if (!sub.lastChargedDate) return;
+      const nextDue = Categorizer._nextDueDate(sub.lastChargedDate);
+      if (!nextDue) return;
+      const due = new Date(nextDue + 'T12:00:00');
+      if (due.getFullYear() === year && due.getMonth() === month) {
+        const day = due.getDate();
+        if (!map[day]) map[day] = [];
+        map[day].push({ ...sub, estimatedNextDue: nextDue });
+      }
+    });
+    return map;
+  }, [groups, year, month]);
+
+  const totalCells = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
+  const cells = [];
+  for (let i = 0; i < totalCells; i++) {
+    const day = i - firstWeekday + 1;
+    cells.push(day >= 1 && day <= daysInMonth ? day : null);
+  }
+
+  const today = new Date();
+  const isToday = (day) =>
+    day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+
+  const monthLabel = calDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  return (
+    <Card>
+      <CardHeader>
+        <HStack className="justify-between items-center">
+          <button onClick={prevMonth} className="text-[#9090b0] hover:text-[#f0f0fa] transition-colors p-1">
+            <Icon name="ChevronLeft" size={16} />
+          </button>
+          <Heading level={3} className="text-sm font-semibold">{monthLabel}</Heading>
+          <button onClick={nextMonth} className="text-[#9090b0] hover:text-[#f0f0fa] transition-colors p-1">
+            <Icon name="ChevronRight" size={16} />
+          </button>
+        </HStack>
+      </CardHeader>
+      <CardBody className="p-3">
+        <div className="grid grid-cols-7 mb-1">
+          {SUB_CAL_DAYS.map(d => (
+            <div key={d} className="text-center text-xs text-[#555575] font-medium py-1">{d}</div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-px">
+          {cells.map((day, i) => {
+            const subs = day ? (subsByDay[day] || []) : [];
+            return (
+              <div
+                key={i}
+                className={`min-h-[72px] rounded p-1 ${
+                  day ? 'bg-[#0f0f1a]' : 'bg-transparent'
+                } ${isToday(day) ? 'ring-1 ring-emerald-500' : ''}`}
+              >
+                {day && (
+                  <VStack gap="gap-1">
+                    <Text className={`text-xs font-medium text-right pr-0.5 ${
+                      isToday(day) ? 'text-emerald-400' : 'text-[#9090b0]'
+                    }`}>
+                      {day}
+                    </Text>
+                    {subs.map(s => (
+                      <Tooltip key={s.merchant} label={`${s.merchant} — ${Formatters.currency(Math.abs(s.monthlyAmount))}/mo`}>
+                        <div
+                          className="text-[10px] leading-tight rounded px-1 py-0.5 truncate cursor-default"
+                          style={{ backgroundColor: `${baseColor}33`, color: baseColor }}
+                        >
+                          {s.merchant}
+                        </div>
+                      </Tooltip>
+                    ))}
+                  </VStack>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </CardBody>
+    </Card>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 function Subscriptions() {
@@ -195,6 +307,16 @@ function Subscriptions() {
               >
                 Chart
               </button>
+              <button
+                onClick={() => setView('calendar')}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                  view === 'calendar'
+                    ? 'bg-[#2a2a3d] text-[#f0f0fa]'
+                    : 'text-[#9090b0] hover:text-[#f0f0fa]'
+                }`}
+              >
+                Calendar
+              </button>
             </HStack>
             <Stat label="Monthly Total" value={`${Formatters.currency(monthlyTotal)}/mo`} />
           </HStack>
@@ -214,6 +336,8 @@ function Subscriptions() {
               />
             ) : view === 'chart' ? (
               <SubscriptionsDonut groups={visible} />
+            ) : view === 'calendar' ? (
+              <SubscriptionsCalendar groups={visible} />
             ) : (
               <Grid cols={3} gap="gap-4">
                 {visible.map(s => (
