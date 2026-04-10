@@ -93,7 +93,7 @@ window.BudgetProgress = ({ transactions = [], month }) => {
                         {Formatters.currency(row.spent)}
                       </Text>
                       <Caption>/</Caption>
-                      <Caption>{Formatters.currency(row.limit)}</Caption>
+                      <Caption className="font-mono">{Formatters.currency(row.limit)}</Caption>
                     </HStack>
                   </HStack>
 
@@ -102,7 +102,7 @@ window.BudgetProgress = ({ transactions = [], month }) => {
 
                   {/* Over-budget warning */}
                   {over && (
-                    <Text className="text-xs text-rose-400">
+                    <Text className="text-xs font-mono text-rose-400">
                       {Formatters.currency(Math.abs(remaining))} over budget
                     </Text>
                   )}
