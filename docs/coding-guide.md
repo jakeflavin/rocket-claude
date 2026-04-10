@@ -7,7 +7,9 @@
 3. **Component files via `<script type="text/babel" src="...">` tags** — each component is its own `.jsx` file, loaded in dependency order.
 4. **No `import`/`export`** — use global variables and `window.*` assignment pattern since there is no module bundler.
 5. **CSV is the database** — no localStorage, no IndexedDB, no fetch to a server. PapaParse reads the file.
-6. **settings.json is loaded via `fetch('./settings.json')`** at app startup.
+6. **`settings.json` is loaded via `fetch('./settings.json')`** at app startup via `SettingsContext`.
+
+---
 
 ## File Loading Pattern
 
@@ -19,217 +21,289 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js"></script>
 
-<!-- App scripts — order matters, no module system -->
-<script type="text/babel" src="src/components/ui/primitives.jsx"></script>
-<script type="text/babel" src="src/utils/formatters.js"></script>
-<script type="text/babel" src="src/utils/csvParser.js"></script>
-<script type="text/babel" src="src/utils/categorizer.js"></script>
-<script type="text/babel" src="src/context/SettingsContext.jsx"></script>
-<script type="text/babel" src="src/hooks/useTransactions.js"></script>
-<script type="text/babel" src="src/components/Sidebar.jsx"></script>
-<script type="text/babel" src="src/components/StatCard.jsx"></script>
-<!-- ... remaining components ... -->
-<script type="text/babel" src="src/pages/Dashboard.jsx"></script>
-<!-- ... remaining pages ... -->
-<script type="text/babel" src="src/App.jsx"></script>
+<!-- UI library — layout and typography first, everything else depends on them -->
+<script type="text/babel" src="src/components/ui/layout.jsx"></script>
+<script type="text/babel" src="src/components/ui/typography.jsx"></script>
+<script type="text/babel" src="src/components/ui/media.jsx"></script>
+<script type="text/babel" src="src/components/ui/forms.jsx"></script>
+<script type="text/babel" src="src/components/ui/feedback.jsx"></script>
+<script type="text/babel" src="src/components/ui/data-display.jsx"></script>
+<script type="text/babel" src="src/components/ui/overlay.jsx"></script>
+<script type="text/babel" src="src/components/ui/disclosure.jsx"></script>
+<script type="text/babel" src="src/components/ui/other.jsx"></script>
+
+<!-- Utils, context, hooks, components, pages, App — in dependency order -->
 ```
+
+Full load order with per-file dependency notes: [docs/file-structure.md](file-structure.md)
+
+---
 
 ## Global Variable Pattern (no import/export)
 
 ```javascript
 // utils/formatters.js
 window.Formatters = {
-  currency: (amount, symbol = '$') => { ... },
-  date: (dateStr) => { ... },
-  percent: (value) => { ... }
+  currency: (amount, symbol = '$') => { … },
+  date: (dateStr) => { … },
+  percent: (value) => { … }
 };
 
 // components/StatCard.jsx
-const StatCard = ({ label, value, delta, deltaPositive }) => {
+window.StatCard = ({ label, value, delta, deltaPositive, icon }) => {
   return (
-    <div className="bg-[#12121a] border border-[#2a2a3d] rounded-xl p-5">
-      ...
-    </div>
+    <Card className="p-5">…</Card>
   );
 };
-// No export needed — StatCard is used globally by other components
+// No export — StatCard is used as a global by everything loaded after it
 ```
 
-## Lucide Icons
-
-Lucide React is loaded via CDN and exposes the global `LucideReact`. Icon names are stored as strings in `settings.json` under each category's `icon` field (e.g. `"TrendingUp"`, `"Home"`, `"Zap"`).
-
-Render a Lucide icon from a settings category:
-
-```jsx
-const { settings } = useSettings();
-
-// Look up the icon component by name from the global
-const renderIcon = (iconName, props = {}) => {
-  const Icon = LucideReact[iconName];
-  if (!Icon) return null;
-  return React.createElement(Icon, { size: 16, ...props });
-};
-
-// Usage inside JSX
-{settings.categories.map(cat => (
-  <HStack key={cat.name} gap="gap-2">
-    {renderIcon(cat.icon, { color: cat.color })}
-    <Text>{cat.name}</Text>
-  </HStack>
-))}
-```
-
-Never hardcode icon names in components — always read from `settings.json`.
+---
 
 ## UI Primitives
 
-Gluestack UI has no CDN/UMD build and is incompatible with the Babel standalone setup. Instead, `src/components/ui/primitives.jsx` provides equivalent layout and text components as thin Tailwind wrappers.
+`src/components/ui/` provides a full component library as globals. **Always use
+these instead of raw HTML elements** for consistency.
 
-Available globals: `Box`, `VStack`, `HStack`, `Center`, `Text`, `Heading`, `Divider`
+Full reference with props and usage examples: [docs/ui-library.md](ui-library.md)
+
+### Quick reference
+
+| Need | Use |
+|------|-----|
+| Generic div | `Box` |
+| Vertical stack | `VStack gap="gap-2"` |
+| Horizontal row | `HStack gap="gap-3"` |
+| Both-axes centre | `Center` |
+| 2–4 column grid | `Grid cols={2}` |
+| Push siblings apart | `Spacer` |
+| Max-width page wrapper | `Container` |
+| Horizontal/vertical rule | `Divider` |
+| Body text | `Text` |
+| Section title | `Heading level={2}` |
+| Form field label | `Label` |
+| Muted metadata | `Caption` |
+| Lucide icon | `Icon name="TrendingUp" size={16}` |
+| Image with fallback | `Img` |
+| User avatar | `Avatar name="…"` |
+| Action button | `Button variant="primary"` |
+| Text input | `Input label="…"` |
+| Dropdown | `Select label="…"` |
+| Multi-line input | `Textarea label="…"` |
+| Boolean toggle | `Switch checked={…} onChange={…}` |
+| Multi-select option | `Checkbox checked={…} onChange={…}` |
+| Loading spinner | `Spinner size="md"` |
+| Loading placeholder | `Skeleton className="h-4 w-32"` |
+| Budget/progress bar | `Progress value={spent} max={budget}` |
+| Status banner | `Alert variant="warning"` |
+| Surface container | `Card` + `CardHeader/Body/Footer` |
+| Category pill | `Badge color={cat.color}` |
+| Data table | `Table` + `Thead/Tbody/Tr/Th/Td` |
+| Hover tooltip | `Tooltip label="…"` |
+| Click popover | `Popover trigger={…}` |
+| Dropdown menu | `Menu trigger={…}` + `MenuItem` |
+| Confirm dialog | `AlertDialog isOpen onClose onConfirm` |
+| Full modal | `Modal isOpen onClose title` |
+| Collapse/expand | `AccordionItem title="…"` |
+| External state collapse | `Collapsible isOpen={…}` |
+| Tab navigation | `Tabs` + `Tab` + `TabPanel` |
+| Zero-result placeholder | `EmptyState icon title description` |
+| Page title row | `PageHeader title subtitle` |
+| KPI metric block | `Stat label value delta` |
+
+---
+
+## Lucide Icons
+
+Lucide React is loaded via CDN and exposes the global `LucideReact`. Always use
+the `Icon` primitive — it wraps `LucideReact[name]` and logs a clear warning for
+unknown icon names.
 
 ```jsx
-// Layout
-<Box className="p-4 bg-[#12121a]">…</Box>
-<VStack gap="gap-3">…</VStack>          // gap prop overrides default gap-4
-<HStack gap="gap-2">…</HStack>
-<Center className="h-screen">…</Center>
+// Correct
+<Icon name="TrendingUp" size={16} className="text-emerald-400" />
 
-// Text
-<Text className="text-sm text-[#9090b0]">label</Text>
-<Text as="p" className="text-sm">paragraph</Text>
-<Heading level={2} className="mb-4">Section</Heading>  // level → h1–h4
+// Dynamic hex color — use style (see Inline Style Exceptions below)
+<Icon name={cat.icon} size={14} style={{ color: cat.color }} />
 
-// Divider
-<Divider />
+// Only use React.createElement directly inside overlay.jsx itself
+// (where Icon isn't yet defined in the load order)
+{React.createElement(LucideReact.X, { size: 18 })}
 ```
 
-All primitives accept a `className` prop for Tailwind overrides and spread any remaining props onto the underlying element.
+Icon names come from `settings.json` categories — never hardcode them.
+
+---
 
 ## React Context (SettingsContext)
 
 ```javascript
-// context/SettingsContext.jsx
-const SettingsContext = React.createContext(null);
+// Access anywhere inside SettingsProvider
+const { settings } = useSettings();
 
-const SettingsProvider = ({ children }) => {
-  const [settings, setSettings] = React.useState(null);
-
-  React.useEffect(() => {
-    fetch('./settings.json')
-      .then(r => r.json())
-      .then(setSettings);
-  }, []);
-
-  if (!settings) return <div>Loading...</div>;
-
-  return (
-    <SettingsContext.Provider value={{ settings, setSettings }}>
-      {children}
-    </SettingsContext.Provider>
-  );
-};
-
-const useSettings = () => React.useContext(SettingsContext);
+// settings shape:
+// settings.user            { name, currency, currencySymbol, locale }
+// settings.categories      [{ name, color, icon }, …]
+// settings.budgets         { CategoryName: limitAmount, … }
+// settings.accounts        [{ name, type }, …]
+// settings.dashboard       { recentTransactionsCount, upcomingBillsCount }
+// settings.notifications   { needsReview, overBudget, … }
 ```
+
+---
 
 ## useTransactions Hook
 
 ```javascript
-// hooks/useTransactions.js
-const useTransactions = () => {
-  const [transactions, setTransactions] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-
-  React.useEffect(() => {
-    Papa.parse('./data/transactions.csv', {
-      download: true,
-      header: true,
-      dynamicTyping: true,
-      complete: ({ data }) => {
-        setTransactions(data.filter(row => row.id)); // drop empty rows
-        setLoading(false);
-      },
-      error: (err) => {
-        setError(err.message);
-        setLoading(false);
-      }
-    });
-  }, []);
-
-  // Derived views
-  const expenses      = transactions.filter(t => t.amount < 0);
-  const income        = transactions.filter(t => t.amount > 0);
-  const needsReview   = transactions.filter(t => t.needs_review === true || t.needs_review === 'true');
-  const subscriptions = transactions.filter(t => t.category === 'Subscriptions');
-  const bills         = transactions.filter(t =>
-    t.category === 'Utilities' || t.category === 'Housing'
-  );
-
-  return { transactions, expenses, income, needsReview, subscriptions, bills, loading, error };
-};
+const {
+  transactions,       // All valid rows, sorted date desc
+  expenses,           // amount < 0
+  income,             // amount > 0
+  needsReview,        // needs_review === true
+  subscriptions,      // category === 'Subscriptions'
+  bills,              // category is Utilities or Housing
+  billGroups,         // Categorizer.getBills() output
+  subscriptionGroups, // Categorizer.getSubscriptions() output
+  loading,
+  error,
+  reload,             // re-fetches CSV from disk
+} = useTransactions();
 ```
+
+Always handle `loading` and `error` states in components that call this hook.
+
+---
+
+## Chart.js Lifecycle Pattern
+
+Chart instances must be created and destroyed via `useRef` + `useEffect`.
+Failing to destroy before re-creating causes a "canvas already in use" error.
+
+```javascript
+const canvasRef = React.useRef(null);
+const chartRef  = React.useRef(null);
+
+React.useEffect(() => {
+  if (!canvasRef.current || !data.length) return;
+
+  // Destroy previous instance before creating a new one
+  if (chartRef.current) {
+    chartRef.current.destroy();
+    chartRef.current = null;
+  }
+
+  chartRef.current = new Chart(canvasRef.current, {
+    type: 'line', // or 'doughnut', 'bar', etc.
+    data: { … },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,  // container div controls height
+      plugins: {
+        legend: { display: false }, // use custom legend
+        tooltip: {
+          backgroundColor: '#1a1a26',
+          borderColor: '#2a2a3d',
+          borderWidth: 1,
+          titleColor: '#f0f0fa',
+          bodyColor: '#9090b0',
+          padding: 12,
+        },
+      },
+      scales: {
+        x: { grid: { color: '#2a2a3d' }, ticks: { color: '#9090b0' } },
+        y: { grid: { color: '#2a2a3d' }, ticks: { color: '#9090b0' } },
+      },
+    },
+  });
+
+  // Cleanup on unmount or dependency change
+  return () => {
+    if (chartRef.current) {
+      chartRef.current.destroy();
+      chartRef.current = null;
+    }
+  };
+}, [data]); // re-run only when data changes
+```
+
+Always wrap the canvas in a container div with a fixed height and `relative`:
+```jsx
+<div className="relative h-56">
+  <canvas ref={canvasRef} />
+</div>
+```
+
+---
 
 ## Tab-Based Navigation (no router)
 
 ```javascript
 // App.jsx
-const PAGES = ['dashboard', 'transactions', 'subscriptions', 'bills', 'settings'];
-
 const App = () => {
   const [activePage, setActivePage] = React.useState('dashboard');
-
-  const renderPage = () => {
-    switch (activePage) {
-      case 'dashboard':      return <Dashboard />;
-      case 'transactions':   return <Transactions />;
-      case 'subscriptions':  return <Subscriptions />;
-      case 'bills':          return <Bills />;
-      case 'settings':       return <Settings />;
-      default:               return <Dashboard />;
-    }
-  };
-
   return (
     <SettingsProvider>
       <div className="flex h-screen bg-[#0a0a0f] text-[#f0f0fa] overflow-hidden">
         <Sidebar activePage={activePage} onNavigate={setActivePage} />
-        <main className="flex-1 overflow-y-auto p-6">
-          {renderPage()}
+        <main className="flex-1 overflow-y-auto">
+          {_renderPage(activePage)}
         </main>
       </div>
     </SettingsProvider>
   );
 };
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 ```
+
+Pages that need to trigger navigation (e.g. NeedsReviewBanner → Transactions)
+receive `onNavigate` as a prop passed down from App.
+
+---
 
 ## Currency Formatting
 
-Always use the locale and symbol from `settings.json`:
+Always use `Formatters.currency()` — never format amounts inline.
 
 ```javascript
 // Correct
-Formatters.currency(Math.abs(transaction.amount), settings.user.currencySymbol)
+Formatters.currency(Math.abs(transaction.amount))   // "$1,234.56"
+Formatters.currency(0)                               // "$0.00"
 
 // Amount color rule
-const amountClass = transaction.amount < 0 ? 'text-rose-400' : 'text-emerald-400';
-const amountDisplay = transaction.amount < 0
-  ? `-${Formatters.currency(Math.abs(transaction.amount))}`
-  : `+${Formatters.currency(transaction.amount)}`;
+const amountClass = t.amount < 0 ? 'text-rose-400' : 'text-emerald-400';
+const display = t.amount < 0
+  ? `-${Formatters.currency(Math.abs(t.amount))}`
+  : `+${Formatters.currency(t.amount)}`;
 ```
+
+All currency values must be wrapped in `font-mono` (JetBrains Mono).
+
+---
+
+## Inline Style Exceptions
+
+`style={{}}` is otherwise banned — use Tailwind. Two legitimate exceptions exist:
+
+| Location | Style used | Why |
+|----------|-----------|-----|
+| `Progress` bar fill div | `style={{ width: '${pct}%' }}` | Dynamic % — no static Tailwind class exists |
+| `Icon` / legend dot with dynamic hex | `style={{ color: hex }}` | Dynamic hex from `settings.json` — can't be a Tailwind class |
+
+When adding a new component, if you find yourself reaching for `style={{}}`,
+reconsider — it's almost always avoidable.
+
+---
 
 ## Coding Standards
 
-- Use `React.useState`, `React.useEffect`, etc. (no destructured imports — no module system)
+- Use `React.useState`, `React.useEffect`, `React.useMemo`, `React.useRef`, etc. — no destructured imports
 - Functional components only. No class components.
-- Props must be explicitly typed via JSDoc comments (no TypeScript, but document shapes)
-- One component per file
-- No inline styles — Tailwind classes only. Use `className` not `style` unless absolutely necessary
-- All monetary amounts rendered in `font-mono` (JetBrains Mono)
-- Handle `loading` and `error` states in every component that fetches data
-- Empty states: every list must render a meaningful empty state message
-- Never hardcode category names or colors — always derive from `settings.json`
+- One component per file. One `window.ComponentName =` assignment per file.
+- Props documented via JSDoc `@prop` comments at the top of the file
+- No inline styles except the two documented exceptions above
+- All monetary amounts rendered in `font-mono`
+- Handle `loading` and `error` states in every component that calls `useTransactions`
+- Every list must render `EmptyState` when empty
+- Never hardcode category names, colors, or icon names — always derive from `settings.json`
+- Use `key={transaction.id}` (the stable SHA-256 id field) in all transaction lists
