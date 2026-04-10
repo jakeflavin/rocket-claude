@@ -5,6 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>rocket-claude</title>
 
+  <!-- file:// guard — must run before any other script -->
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.innerHTML = [
+          '<div style="display:flex;align-items:center;justify-content:center;height:100vh;',
+          'background:#0a0a0f;font-family:monospace;text-align:center;padding:2rem;">',
+          '<div>',
+          '<p style="color:#ef4444;font-size:1rem;font-weight:600;margin:0 0 .75rem">',
+          '🚫 Cannot open via file://</p>',
+          '<p style="color:#9090b0;font-size:.85rem;margin:0 0 .5rem">',
+          'Browsers block local file access (CORS) for XHR and fetch requests.</p>',
+          '<p style="color:#555575;font-size:.8rem;margin:0">',
+          'Serve the app over HTTP instead:</p>',
+          '<pre style="color:#10b981;font-size:.85rem;margin:.75rem 0 0;',
+          'background:#12121a;padding:.75rem 1.25rem;border-radius:.5rem;',
+          'border:1px solid #2a2a3d;display:inline-block">npx serve .</pre>',
+          '<p style="color:#555575;font-size:.75rem;margin:.5rem 0 0">',
+          'Then open <span style="color:#9090b0">http://localhost:3000</span></p>',
+          '</div></div>',
+        ].join('');
+      });
+    }
+  </script>
+
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
