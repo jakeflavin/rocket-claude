@@ -21,6 +21,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 
 <!-- App scripts — order matters, no module system -->
+<script type="text/babel" src="src/components/ui/primitives.jsx"></script>
 <script type="text/babel" src="src/utils/formatters.js"></script>
 <script type="text/babel" src="src/utils/csvParser.js"></script>
 <script type="text/babel" src="src/utils/categorizer.js"></script>
@@ -54,6 +55,30 @@ const StatCard = ({ label, value, delta, deltaPositive }) => {
 };
 // No export needed — StatCard is used globally by other components
 ```
+
+## UI Primitives
+
+Gluestack UI has no CDN/UMD build and is incompatible with the Babel standalone setup. Instead, `src/components/ui/primitives.jsx` provides equivalent layout and text components as thin Tailwind wrappers.
+
+Available globals: `Box`, `VStack`, `HStack`, `Center`, `Text`, `Heading`, `Divider`
+
+```jsx
+// Layout
+<Box className="p-4 bg-[#12121a]">…</Box>
+<VStack gap="gap-3">…</VStack>          // gap prop overrides default gap-4
+<HStack gap="gap-2">…</HStack>
+<Center className="h-screen">…</Center>
+
+// Text
+<Text className="text-sm text-[#9090b0]">label</Text>
+<Text as="p" className="text-sm">paragraph</Text>
+<Heading level={2} className="mb-4">Section</Heading>  // level → h1–h4
+
+// Divider
+<Divider />
+```
+
+All primitives accept a `className` prop for Tailwind overrides and spread any remaining props onto the underlying element.
 
 ## React Context (SettingsContext)
 

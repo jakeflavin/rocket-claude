@@ -18,6 +18,8 @@ rocket-claude/
 │   ├── hooks/
 │   │   └── useTransactions.js        # CSV reader + derived data views
 │   ├── components/
+│   │   ├── ui/
+│   │   │   └── primitives.jsx        # Box, VStack, HStack, Center, Text, Heading, Divider
 │   │   ├── Sidebar.jsx               # Left nav, app title, page links
 │   │   ├── StatCard.jsx              # KPI card (label, value, delta)
 │   │   ├── SpendingChart.jsx         # Line chart — daily spend over month
@@ -42,6 +44,7 @@ Script load order **is** the dependency graph — there is no module bundler.
 
 ```
 CDN deps (React, Babel, Tailwind, PapaParse, Chart.js)
+  └─ src/components/ui/primitives.jsx
   └─ src/utils/formatters.js
   └─ src/utils/csvParser.js
   └─ src/utils/categorizer.js
