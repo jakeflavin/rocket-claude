@@ -48,8 +48,17 @@
 <body class="bg-[#0a0a0f]">
   <div id="root"></div>
 
-  <!-- ─── UI Primitives (load first — all components depend on these) ─── -->
-  <script type="text/babel" src="src/components/ui/primitives.jsx"></script>
+  <!-- ─── UI Library (load order = dependency graph) ──────────────────── -->
+  <!-- layout and typography first — everything else depends on them     -->
+  <script type="text/babel" src="src/components/ui/layout.jsx"></script>
+  <script type="text/babel" src="src/components/ui/typography.jsx"></script>
+  <script type="text/babel" src="src/components/ui/media.jsx"></script>
+  <script type="text/babel" src="src/components/ui/forms.jsx"></script>
+  <script type="text/babel" src="src/components/ui/feedback.jsx"></script>
+  <script type="text/babel" src="src/components/ui/data-display.jsx"></script>
+  <script type="text/babel" src="src/components/ui/overlay.jsx"></script>
+  <script type="text/babel" src="src/components/ui/disclosure.jsx"></script>
+  <script type="text/babel" src="src/components/ui/other.jsx"></script>
 
   <!-- ─── Utils ──────────────────────────────────────────────────────── -->
   <script type="text/babel" src="src/utils/formatters.js"></script>
