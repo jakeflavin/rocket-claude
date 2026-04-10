@@ -48,7 +48,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 
 ## Phase 6 — UI Improvements
 
-- [ ] **T30** Remove Profile section from `Settings.jsx` — delete the Profile card and its associated state/handlers.
+- [x] **T30** Remove Profile section from `Settings.jsx` — delete the Profile card and its associated state/handlers.
 - [ ] **T31** Make NeedsReviewBanner dismissible — add local dismissed state, pass `onClose` to `Alert` (already supported). Session-only dismiss.
 - [ ] **T32** Responsive Dashboard layout — update `Grid` primitive to support responsive breakpoints; KPI cards stack to 2-col on mobile, 4-col on lg. Charts and bottom grids stack on mobile.
 - [ ] **T33** Dashboard date range selector — add range dropdown (This Month, This Week, Last 7 Days, Last 30 Days, Last 90 Days, Last 12 Months) next to PageHeader. Filter all dashboard stats and charts through selected range.

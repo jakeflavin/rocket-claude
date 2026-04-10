@@ -1,10 +1,9 @@
 /**
- * Settings — 5 sections:
- *   1. Profile editor
- *   2. Accounts list (derived from CSV)
- *   3. Budget limits editor (updates runtime settings via setSettings)
- *   4. Notifications toggles
- *   5. Imported Files table (unique source_file + transaction counts)
+ * Settings — 4 sections:
+ *   1. Accounts list (derived from CSV)
+ *   2. Budget limits editor (updates runtime settings via setSettings)
+ *   3. Notifications toggles
+ *   4. Imported Files table (unique source_file + transaction counts)
  */
 
 const ACCOUNT_TYPE_LABELS = {
@@ -23,16 +22,6 @@ const NOTIFICATION_LABELS = {
 function Settings() {
   const { settings, setSettings } = useSettings();
   const { transactions } = useTransactions();
-
-  // ─── Profile ──────────────────────────────────────────────────────────────
-  const [profileName,  setProfileName]  = React.useState(settings.user.name);
-  const [profileSaved, setProfileSaved] = React.useState(false);
-
-  const saveProfile = () => {
-    setSettings(s => ({ ...s, user: { ...s.user, name: profileName } }));
-    setProfileSaved(true);
-    setTimeout(() => setProfileSaved(false), 2000);
-  };
 
   // ─── Budgets ──────────────────────────────────────────────────────────────
   const [budgets,      setBudgets]      = React.useState(
@@ -74,31 +63,7 @@ function Settings() {
 
         <PageHeader title="Settings" />
 
-        {/* ── 1. Profile ── */}
-        <Card>
-          <CardHeader>
-            <Heading level={3} className="text-sm font-semibold">Profile</Heading>
-          </CardHeader>
-          <CardBody>
-            <VStack gap="gap-4">
-              <Box className="max-w-sm">
-                <Input
-                  label="Name"
-                  value={profileName}
-                  onChange={e => setProfileName(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && saveProfile()}
-                />
-              </Box>
-              <HStack gap="gap-3">
-                <Button variant="primary" size="sm" onClick={saveProfile}>
-                  {profileSaved ? 'Saved!' : 'Save'}
-                </Button>
-              </HStack>
-            </VStack>
-          </CardBody>
-        </Card>
-
-        {/* ── 2. Accounts ── */}
+        {/* ── 1. Accounts ── */}
         <Card>
           <CardHeader>
             <Heading level={3} className="text-sm font-semibold">Accounts</Heading>
@@ -126,7 +91,7 @@ function Settings() {
           </CardBody>
         </Card>
 
-        {/* ── 3. Budget Limits ── */}
+        {/* ── 2. Budget Limits ── */}
         <Card>
           <CardHeader>
             <Heading level={3} className="text-sm font-semibold">Budget Limits</Heading>
@@ -155,7 +120,7 @@ function Settings() {
           </CardBody>
         </Card>
 
-        {/* ── 4. Notifications ── */}
+        {/* ── 3. Notifications ── */}
         <Card>
           <CardHeader>
             <Heading level={3} className="text-sm font-semibold">Notifications</Heading>
@@ -174,7 +139,7 @@ function Settings() {
           </CardBody>
         </Card>
 
-        {/* ── 5. Imported Files ── */}
+        {/* ── 4. Imported Files ── */}
         <Card>
           <CardHeader>
             <Heading level={3} className="text-sm font-semibold">Imported Files</Heading>
