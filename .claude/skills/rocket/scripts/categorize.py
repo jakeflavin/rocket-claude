@@ -37,6 +37,9 @@ RULES: list[tuple[str, str, str]] = [
     (r"\b(student ln|dept education)\b", "Payments", "Loan"),
     (r"\b(il payment)\b", "Payments", "Loan"),
     (r"\b(ins prem|insurance premium)\b", "Payments", "Insurance"),
+    # Utilities overrides — must come before generic direct payment catch-all
+    (r"\b(gas bill)\b", "Utilities", "Gas"),
+
     # Payments — generic catch-all (web pmt, direct payment, autopay)
     (r"\b(web pmt|online pmt)\b", "Payments", "Credit Card"),
     (r"\b(autopay|direct payment)\b", "Payments", "Credit Card"),
