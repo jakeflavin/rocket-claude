@@ -14,7 +14,9 @@
  */
 
 window.NeedsReviewBanner = ({ count, onNavigate }) => {
-  if (!count || count < 1) return null;
+  const [dismissed, setDismissed] = React.useState(false);
+
+  if (!count || count < 1 || dismissed) return null;
 
   const label = count === 1
     ? '1 transaction needs your review.'
@@ -24,6 +26,7 @@ window.NeedsReviewBanner = ({ count, onNavigate }) => {
     <Alert
       variant="warning"
       title={label}
+      onClose={() => setDismissed(true)}
     >
       <button
         onClick={() => onNavigate && onNavigate('transactions')}
