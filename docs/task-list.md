@@ -23,7 +23,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T11** Create `src/components/StatCard.jsx` — label, mono value, optional delta with up/down arrow and color.
 - [x] **T12** Create `src/components/NeedsReviewBanner.jsx` — amber banner showing count of flagged transactions, links to Transactions page filtered to needs_review.
 - [x] **T13** Create `src/components/SpendingChart.jsx` — Chart.js line chart, daily cumulative spend for selected month. Dark theme applied.
-- [ ] **T14** Create `src/components/CategoryDonut.jsx` — Chart.js doughnut chart, spend by category. Colors from `settings.json`. Dark theme applied.
+- [x] **T14** Create `src/components/CategoryDonut.jsx` — Chart.js doughnut chart, spend by category. Colors from `settings.json`. Dark theme applied.
 - [ ] **T15** Create `src/components/BudgetProgress.jsx` — progress bars per category. Pulls limits from `settings.json`. Color shifts at 75% and 90%.
 - [ ] **T16** Create `src/components/RecentTransactions.jsx` — last N transactions, merchant + category badge + amount + date. Amount in `font-mono`.
 - [ ] **T17** Create `src/components/SubscriptionCard.jsx` — merchant name, subcategory, last charged, monthly cost.
