@@ -87,7 +87,8 @@ window.Categorizer = {
    * @property {Array}  transactions  - All charges, date desc
    */
   getSubscriptions(transactions) {
-    const byMerchant = transactions.reduce((acc, t) => {
+    const charges = transactions.filter(t => t.amount < 0);
+    const byMerchant = charges.reduce((acc, t) => {
       if (!acc[t.merchant]) acc[t.merchant] = [];
       acc[t.merchant].push(t);
       return acc;

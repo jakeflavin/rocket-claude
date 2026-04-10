@@ -25,7 +25,7 @@ window.Sidebar = ({ activePage, onNavigate }) => (
     <Box className="p-5">
       <HStack gap="gap-2" className="items-center">
         <Text className="text-xl leading-none">🚀</Text>
-        <Text className="font-semibold text-[#f0f0fa] text-sm tracking-wide">rocket-claude</Text>
+        <Text className="font-semibold text-[#f0f0fa] text-sm tracking-wide">Rocket Claude</Text>
       </HStack>
     </Box>
 

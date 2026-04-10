@@ -11,15 +11,10 @@ Strategy:
 
 Usage:
   python scripts/pdf_to_text.py <path_to_pdf>
-  python scripts/pdf_to_text.py input/td_march_2025.pdf
 """
 
 import sys
 import os
-import logging
-
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
-log = logging.getLogger(__name__)
 
 MIN_CHARS_THRESHOLD = 100  # If extracted text is shorter than this, treat as failed
 
@@ -31,8 +26,7 @@ def extract_with_pdfplumber(pdf_path: str) -> str:
 
         pages_text = []
         with pdfplumber.open(pdf_path) as pdf:
-            for i, page in enumerate(pdf.pages):
-                # First try table extraction — better for structured statements
+            for page in pdf.pages:
                 tables = page.extract_tables()
                 if tables:
                     for table in tables:
@@ -41,7 +35,6 @@ def extract_with_pdfplumber(pdf_path: str) -> str:
                                 cleaned = [cell.strip() if cell else "" for cell in row]
                                 pages_text.append("\t".join(cleaned))
                 else:
-                    # Fall back to raw text for this page
                     text = page.extract_text()
                     if text:
                         pages_text.append(text)
@@ -49,10 +42,8 @@ def extract_with_pdfplumber(pdf_path: str) -> str:
         return "\n".join(pages_text)
 
     except ImportError:
-        log.warning("pdfplumber not installed. Skipping.")
         return ""
-    except Exception as e:
-        log.warning(f"pdfplumber failed: {e}")
+    except Exception:
         return ""
 
 
@@ -71,10 +62,10 @@ def extract_with_pypdf(pdf_path: str) -> str:
         return "\n".join(pages_text)
 
     except ImportError:
-        log.error("pypdf not installed. Run: pip install pypdf")
+        print("ERROR: pypdf not installed. Run: pip install pypdf", file=sys.stderr)
         return ""
     except Exception as e:
-        log.error(f"pypdf failed: {e}")
+        print(f"ERROR: pypdf failed: {e}", file=sys.stderr)
         return ""
 
 
@@ -89,20 +80,14 @@ def pdf_to_text(pdf_path: str) -> str:
     if not pdf_path.lower().endswith(".pdf"):
         raise ValueError(f"Expected a .pdf file, got: {pdf_path}")
 
-    log.info(f"Extracting text from: {pdf_path}")
-
     # Strategy 1: pdfplumber
     text = extract_with_pdfplumber(pdf_path)
     if len(text.strip()) >= MIN_CHARS_THRESHOLD:
-        log.info("Extraction succeeded via pdfplumber.")
         return text
-
-    log.info("pdfplumber output too thin — falling back to pypdf.")
 
     # Strategy 2: pypdf
     text = extract_with_pypdf(pdf_path)
     if len(text.strip()) >= MIN_CHARS_THRESHOLD:
-        log.info("Extraction succeeded via pypdf.")
         return text
 
     raise RuntimeError(
@@ -121,16 +106,14 @@ def main():
     try:
         text = pdf_to_text(pdf_path)
     except (FileNotFoundError, ValueError, RuntimeError) as e:
-        log.error(str(e))
+        print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Write output alongside input file
     output_path = os.path.splitext(pdf_path)[0] + ".txt"
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(text)
 
-    log.info(f"Text written to: {output_path}")
-    print(output_path)  # Print output path for piping/scripting
+    print(output_path)
 
 
 if __name__ == "__main__":

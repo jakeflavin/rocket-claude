@@ -45,3 +45,18 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T27** Verify all currency values use `font-mono` (JetBrains Mono).
 - [x] **T28** Verify all category colors are derived from `settings.json` — no hardcoded hex values in components.
 - [x] **T29** Write `README.md` — setup instructions, how to drop statements into `/statements`, how to run the Claude Code skill, how to open the dashboard.
+
+## Phase 6 — UI Improvements
+
+- [ ] **T30** Remove Profile section from `Settings.jsx` — delete the Profile card and its associated state/handlers.
+- [ ] **T31** Make NeedsReviewBanner dismissible — add local dismissed state, pass `onClose` to `Alert` (already supported). Session-only dismiss.
+- [ ] **T32** Responsive Dashboard layout — update `Grid` primitive to support responsive breakpoints; KPI cards stack to 2-col on mobile, 4-col on lg. Charts and bottom grids stack on mobile.
+- [ ] **T33** Dashboard date range selector — add range dropdown (This Month, This Week, Last 7 Days, Last 30 Days, Last 90 Days, Last 12 Months) next to PageHeader. Filter all dashboard stats and charts through selected range.
+- [ ] **T34** Account name/type editing in Settings — replace read-only accounts table with editable rows (Input for name, Select for type). Persist overrides to `settings.accountAliases` in settings context. Apply aliases in Transactions display.
+- [ ] **T35** Inline category editing in Transactions — click category badge to open a Select dropdown; save updates a local `categoryEdits` map (session-only). Show a subtle indicator on edited rows.
+- [ ] **T36** Expandable transaction rows — chevron button expands a detail panel showing all fields (description, account_type, source_file, timestamps) and an editable subcategory Select.
+- [ ] **T37** Pie chart view for Bills — view toggle (List / Chart); Chart.js doughnut by merchant sized by average monthly amount.
+- [ ] **T38** Pie chart view for Subscriptions — same view toggle pattern; doughnut by merchant sized by monthly cost.
+- [ ] **T39** Calendar view for Bills — third view tab; monthly calendar grid with bills plotted on their estimated due dates. Prev/next month navigation.
+- [ ] **T40** Calendar view for Subscriptions — same calendar pattern for subscription due dates.
+- [ ] **T41** Light / dark / system theme support — CSS custom properties in `index.html`, Tailwind semantic color aliases, `data-theme` toggle in `App.jsx`, theme selector in Settings. Replace all hardcoded hex colors across component/page files with semantic classes.

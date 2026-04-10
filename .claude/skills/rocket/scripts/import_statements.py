@@ -21,21 +21,22 @@ import re
 import csv
 import sys
 import hashlib
-import logging
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# Paths
+# Paths  (all derived from script location — works regardless of cwd)
 # ---------------------------------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parent.parent
-INPUT_DIR = BASE_DIR / "input"
-OUTPUT_DIR = BASE_DIR / "output"
-LOG_DIR = BASE_DIR / "logs"
-OUTPUT_CSV = OUTPUT_DIR / "transactions.csv"
-LOG_FILE = LOG_DIR / "import.log"
-PDF_SCRIPT = Path(__file__).resolve().parent / "pdf_to_text.py"
+SCRIPTS_DIR  = Path(__file__).resolve().parent          # .../skills/rocket/scripts/
+SKILL_DIR    = SCRIPTS_DIR.parent                       # .../skills/rocket/
+PROJECT_DIR  = SKILL_DIR.parents[2]                     # workspace/rocket-claude/
+INPUT_DIR    = PROJECT_DIR / "statements"
+OUTPUT_CSV   = PROJECT_DIR / "data" / "transactions.csv"
+PDF_SCRIPT   = SCRIPTS_DIR / "pdf_to_text.py"
+
+# Make categorize importable from the scripts directory
+sys.path.insert(0, str(SCRIPTS_DIR))
 
 # ---------------------------------------------------------------------------
 # CSV column order (must match csv_rules.md)
@@ -58,22 +59,7 @@ COLUMNS = [
     "updated_at",
 ]
 
-# ---------------------------------------------------------------------------
-# Logging
-# ---------------------------------------------------------------------------
-LOG_DIR.mkdir(parents=True, exist_ok=True)
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-INPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s: %(message)s",
-    handlers=[
-        logging.FileHandler(LOG_FILE),
-        logging.StreamHandler(sys.stdout),
-    ],
-)
-log = logging.getLogger(__name__)
+OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
 
 
 # ---------------------------------------------------------------------------
@@ -90,18 +76,60 @@ def make_id(date: str, amount: str, description: str) -> str:
 
 
 def normalize_description(raw: str) -> str:
-    """Strip transaction IDs, normalize whitespace, title-case."""
+    """Strip bank prefixes, transaction IDs, noise; title-case result."""
     text = raw
-    # Remove common trailing codes like #12345, REF*ABC, TXN:XYZ
+
+    # Amex CSV format: "MERCHANT      CITY        STATE" separated by 3+ spaces.
+    # Grab only the merchant portion (everything before the first wide gap).
+    if re.search(r"\s{3,}", text):
+        text = re.split(r"\s{3,}", text)[0]
+
+    # Strip leading card/terminal numbers (e.g. "4488 ", "2300 ")
+    text = re.sub(r"^\d{4}\s+", "", text)
+
+    # Strip PNC-style purchase prefixes
+    text = re.sub(
+        r"^(recurring debit card|debit card purchase|debit card credit|pos purchase|pos debit|ach pmt|ach)\s+",
+        "", text, flags=re.IGNORECASE,
+    )
+
+    # Strip trailing location noise: store numbers, zip codes, 2-letter state
+    text = re.sub(r"\s+\d{4,5}$", "", text)
+    text = re.sub(r"\s+[A-Z]{2}$", "", text)
+    text = re.sub(r"\s+\d+\s+[A-Z]{2}$", "", text)
+
+    # Strip phone numbers (e.g. "866-579-7172")
+    text = re.sub(r"\b\d{3}[\-\.]\d{3}[\-\.]\d{4}\b", "", text)
+
+    # Strip common trailing transaction IDs (require separator to avoid stripping words like "refund")
     text = re.sub(r"[#*]\w+", "", text)
-    text = re.sub(r"\b(ref|txn|tran|trans|id|no)[\s:]*[\w\-]+", "", text, flags=re.IGNORECASE)
-    # Normalize whitespace
+    text = re.sub(r"\b(ref|txn|tran|trans|no)\s*[:#*]\s*[\w\-]+", "", text, flags=re.IGNORECASE)
+
     text = re.sub(r"\s+", " ", text).strip()
     return text.title()
 
 
+MERCHANT_ALIASES = [
+    (r"^spotify",                    "Spotify"),
+    (r"^netflix",                    "Netflix"),
+    (r"^disneyplus|^disney\+",       "Disney+"),
+    (r"^google.*(?:youtube|tv)|^youtube", "YouTube TV"),
+    (r"^apple\.com",                 "Apple"),
+    (r"^claude\.ai",                 "Claude.Ai"),
+    (r"^figma",                      "Figma"),
+    (r"^chewy",                      "Chewy"),
+    (r"^amazon",                     "Amazon"),
+    (r"^wal.?mart|^wm supercenter",  "Walmart"),
+    (r"^costco",                     "Costco"),
+    (r"^verizon",                    "Verizon"),
+]
+
+
 def extract_merchant(normalized: str) -> str:
-    """Best-effort merchant extraction — first two words of normalized description."""
+    """Return a canonical merchant name if known, otherwise first two words."""
+    for pattern, canonical in MERCHANT_ALIASES:
+        if re.match(pattern, normalized, re.IGNORECASE):
+            return canonical
     words = normalized.split()
     return " ".join(words[:2]) if len(words) >= 2 else normalized
 
@@ -109,27 +137,23 @@ def extract_merchant(normalized: str) -> str:
 def infer_account_info(filename: str) -> tuple[str, str]:
     """
     Infer account name and type from filename.
-    Expects filenames like: td_chequing_march.pdf, amex_gold_march.csv
+    Checks the full stem for keywords, not just underscore-split parts.
 
-    Naming convention:
-      <institution>_<account>_<period>.<ext>
-      account_type keywords: chequing/checking → checking
-                             savings → savings
-                             visa/mc/amex/mastercard/credit → credit_card
+    account_type keywords: chequing/checking → checking
+                           savings → savings
+                           visa/mc/amex/mastercard/credit/express → credit_card
     """
     stem = Path(filename).stem.lower()
-    parts = stem.replace("-", "_").split("_")
 
     account_type = "checking"  # default
-    for part in parts:
-        if part in ("chequing", "checking"):
-            account_type = "checking"
-        elif part in ("savings", "saving"):
-            account_type = "savings"
-        elif part in ("visa", "mc", "amex", "mastercard", "credit", "card"):
-            account_type = "credit_card"
+    if re.search(r"\b(chequing|checking)\b", stem):
+        account_type = "checking"
+    elif re.search(r"\b(savings?)\b", stem):
+        account_type = "savings"
+    elif re.search(r"\b(visa|mc|amex|american express|mastercard|credit|express)\b", stem):
+        account_type = "credit_card"
 
-    # Human-readable account: first two parts title-cased
+    parts = re.split(r"[\s_\-]+", stem)
     account = " ".join(p.title() for p in parts[:2])
     return account, account_type
 
@@ -152,7 +176,7 @@ def convert_pdfs(pdfs: list[Path]) -> list[Path]:
     """Convert each PDF to .txt. Returns list of successfully converted .txt paths."""
     txt_files = []
     for pdf in pdfs:
-        log.info(f"Converting PDF: {pdf.name}")
+        print(f"Converting PDF: {pdf.name}")
         result = subprocess.run(
             [sys.executable, str(PDF_SCRIPT), str(pdf)],
             capture_output=True,
@@ -162,11 +186,11 @@ def convert_pdfs(pdfs: list[Path]) -> list[Path]:
             txt_path = pdf.with_suffix(".txt")
             if txt_path.exists():
                 txt_files.append(txt_path)
-                log.info(f"  → {txt_path.name}")
+                print(f"  → {txt_path.name}")
             else:
-                log.error(f"  PDF converted but .txt not found: {txt_path}")
+                print(f"  ERROR: PDF converted but .txt not found: {txt_path}", file=sys.stderr)
         else:
-            log.error(f"  PDF conversion failed: {pdf.name}\n{result.stderr}")
+            print(f"  ERROR: PDF conversion failed: {pdf.name}\n{result.stderr}", file=sys.stderr)
     return txt_files
 
 
@@ -174,67 +198,156 @@ def convert_pdfs(pdfs: list[Path]) -> list[Path]:
 # Step 3: Parse statements
 # ---------------------------------------------------------------------------
 
+def _detect_statement_period(lines: list[str]) -> tuple[datetime | None, datetime | None]:
+    """Scan for 'For the period MM/DD/YYYY to MM/DD/YYYY' and return (start, end)."""
+    period_re = re.compile(
+        r"[Ff]or the period\s+(\d{1,2}/\d{1,2}/\d{4})\s+to\s+(\d{1,2}/\d{1,2}/\d{4})"
+    )
+    for line in lines:
+        m = period_re.search(line)
+        if m:
+            try:
+                return (
+                    datetime.strptime(m.group(1), "%m/%d/%Y"),
+                    datetime.strptime(m.group(2), "%m/%d/%Y"),
+                )
+            except ValueError:
+                pass
+    return None, None
+
+
+def _infer_year(month: int, day: int, period_start: datetime | None, period_end: datetime | None) -> int:
+    """Pick the year that places MM/DD within the statement period, else use current year."""
+    if period_start and period_end:
+        for year in range(period_start.year, period_end.year + 1):
+            try:
+                d = datetime(year, month, day)
+                if period_start <= d <= period_end:
+                    return year
+            except ValueError:
+                pass
+        return period_end.year
+    return datetime.now().year
+
+
 def parse_txt(txt_path: Path) -> list[dict]:
     """
     Parse a raw text statement into transaction dicts.
 
-    Looks for lines matching common patterns:
-      YYYY-MM-DD  <description>  <amount>
-      MM/DD/YYYY  <description>  <amount>
+    Handles two date formats:
+      - Full:    YYYY-MM-DD or MM/DD/YYYY  <description>  <amount>
+      - Partial: MM/DD  <amount>  <description>  (PNC-style, year inferred from period header)
 
-    This is a best-effort heuristic parser. Real statements vary — adjust
-    the regex patterns here once you have real samples to test against.
+    Multi-line descriptions are joined when a continuation line contains no date.
     """
     transactions = []
     source = txt_path.name
 
-    date_pattern = re.compile(
+    with open(txt_path, encoding="utf-8") as f:
+        lines = [l.rstrip() for l in f]
+
+    period_start, period_end = _detect_statement_period(lines)
+
+    # MM/DD (no year)
+    short_date_re = re.compile(r"^(\d{1,2}/\d{1,2})\s+([\d,]+\.\d{2})\s+(.+)$")
+    # Full date formats
+    full_date_re = re.compile(
         r"(\d{4}-\d{2}-\d{2}|\d{2}/\d{2}/\d{4}|\d{2}-\d{2}-\d{4})"
     )
-    amount_pattern = re.compile(r"(-?\$?[\d,]+\.\d{2})")
+    amount_re = re.compile(r"(-?\$?[\d,]+\.\d{2})")
 
-    with open(txt_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
+    # Section tracking: True = additions (positive), False = deductions (negative)
+    is_addition = True
+    ADDITION_HEADERS = re.compile(r"deposits and other additions", re.IGNORECASE)
+    DEDUCTION_HEADERS = re.compile(
+        r"(withdrawals and purchases|banking/debit card|banking machine|deductions|online and electronic banking deductions)",
+        re.IGNORECASE,
+    )
+
+    pending: dict | None = None
+
+    def flush(txn):
+        if txn:
+            transactions.append(txn)
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        # Track which section we're in to determine sign
+        if ADDITION_HEADERS.search(stripped):
+            is_addition = True
+        elif DEDUCTION_HEADERS.search(stripped):
+            is_addition = False
+
+        # Try MM/DD amount description (PNC-style)
+        m = short_date_re.match(stripped)
+        if m:
+            flush(pending)
+            raw_date, raw_amount, description = m.group(1), m.group(2), m.group(3)
+            month, day = map(int, raw_date.split("/"))
+            year = _infer_year(month, day, period_start, period_end)
+            try:
+                date_str = datetime(year, month, day).strftime("%Y-%m-%d")
+            except ValueError:
+                pending = None
                 continue
+            amount = raw_amount.replace(",", "")
+            if not is_addition:
+                amount = "-" + amount
+            pending = {
+                "date": date_str,
+                "description": description.strip(),
+                "amount": amount,
+                "source_file": source,
+            }
+            continue
 
-            date_match = date_pattern.search(line)
-            amount_match = amount_pattern.search(line)
-
-            if not date_match or not amount_match:
-                continue
-
+        # Try full date formats
+        date_match = full_date_re.search(stripped)
+        amount_match = amount_re.search(stripped)
+        if date_match and amount_match:
+            flush(pending)
             raw_date = date_match.group(1)
             raw_amount = amount_match.group(1).replace("$", "").replace(",", "")
-
-            # Normalize date to YYYY-MM-DD
             try:
                 if "/" in raw_date:
                     parsed_date = datetime.strptime(raw_date, "%m/%d/%Y")
-                elif raw_date[2] == "-" and len(raw_date) == 10 and raw_date[5] == "-":
+                elif raw_date[2] == "-" and len(raw_date) == 10:
                     parsed_date = datetime.strptime(raw_date, "%d-%m-%Y")
                 else:
                     parsed_date = datetime.strptime(raw_date, "%Y-%m-%d")
                 date_str = parsed_date.strftime("%Y-%m-%d")
             except ValueError:
+                pending = None
                 continue
-
-            # Extract description: text between date and amount
             date_end = date_match.end()
             amount_start = amount_match.start()
-            description = line[date_end:amount_start].strip(" \t-|")
-            if not description:
-                description = line
-
-            transactions.append({
+            description = stripped[date_end:amount_start].strip(" \t-|") or stripped
+            if not is_addition and not raw_amount.startswith("-"):
+                raw_amount = "-" + raw_amount
+            pending = {
                 "date": date_str,
                 "description": description,
                 "amount": raw_amount,
                 "source_file": source,
-            })
+            }
+            continue
 
-    log.info(f"  Parsed {len(transactions)} transactions from {txt_path.name}")
+        # Continuation line — only short fragments that look like truncated merchant names
+        if (
+            pending
+            and stripped
+            and len(stripped) <= 20
+            and not re.match(r"^(Date|Page|For |Virtual|PNC|Account|There were|Banking|Deposits)", stripped, re.IGNORECASE)
+            and not amount_re.search(stripped)
+        ):
+            pending["description"] = (pending["description"] + " " + stripped).strip()
+
+    flush(pending)
+
+    print(f"  Parsed {len(transactions)} transactions from {txt_path.name}")
     return transactions
 
 
@@ -267,7 +380,7 @@ def parse_csv(csv_path: Path) -> list[dict]:
         amount_col = find_col(amount_keys)
 
         if not all([date_col, desc_col, amount_col]):
-            log.error(f"Could not detect required columns in {csv_path.name}. Found: {headers}")
+            print(f"ERROR: Could not detect required columns in {csv_path.name}. Found: {headers}", file=sys.stderr)
             return []
 
         for row in reader:
@@ -280,7 +393,6 @@ def parse_csv(csv_path: Path) -> list[dict]:
             if not raw_date or not description or not raw_amount:
                 continue
 
-            # Normalize date
             for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y", "%m-%d-%Y"):
                 try:
                     parsed_date = datetime.strptime(raw_date, fmt)
@@ -289,7 +401,7 @@ def parse_csv(csv_path: Path) -> list[dict]:
                 except ValueError:
                     continue
             else:
-                log.warning(f"Could not parse date: {raw_date} in {csv_path.name}")
+                print(f"WARNING: Could not parse date: {raw_date} in {csv_path.name}", file=sys.stderr)
                 continue
 
             transactions.append({
@@ -299,7 +411,7 @@ def parse_csv(csv_path: Path) -> list[dict]:
                 "source_file": source,
             })
 
-    log.info(f"  Parsed {len(transactions)} transactions from {csv_path.name}")
+    print(f"  Parsed {len(transactions)} transactions from {csv_path.name}")
     return transactions
 
 
@@ -319,6 +431,14 @@ def enrich(transactions: list[dict]) -> list[dict]:
         merchant = extract_merchant(norm_desc)
         account, account_type = infer_account_info(t["source_file"])
 
+        # Credit cards list charges as positive — negate so expenses are negative
+        amount = t["amount"]
+        if account_type == "credit_card":
+            try:
+                amount = str(-float(amount))
+            except ValueError:
+                pass
+
         category, subcategory, needs_review = categorize(norm_desc, merchant)
 
         txn_id = make_id(t["date"], t["amount"], t["description"])
@@ -328,7 +448,7 @@ def enrich(transactions: list[dict]) -> list[dict]:
             "date": t["date"],
             "description": t["description"],
             "normalized_description": norm_desc,
-            "amount": t["amount"],
+            "amount": amount,
             "merchant": merchant,
             "category": category,
             "subcategory": subcategory,
@@ -359,7 +479,7 @@ def load_existing() -> dict[str, dict]:
         for row in reader:
             existing[row["id"]] = row
 
-    log.info(f"Loaded {len(existing)} existing transactions from output CSV.")
+    print(f"Loaded {len(existing)} existing transactions.")
     return existing
 
 
@@ -372,7 +492,7 @@ def merge(existing: dict[str, dict], new_rows: list[dict]) -> dict[str, dict]:
     for row in new_rows:
         txn_id = row["id"]
         if txn_id in existing:
-            row["created_at"] = existing[txn_id]["created_at"]  # preserve original
+            row["created_at"] = existing[txn_id]["created_at"]
             row["updated_at"] = ts
             existing[txn_id] = row
             overwritten += 1
@@ -380,7 +500,7 @@ def merge(existing: dict[str, dict], new_rows: list[dict]) -> dict[str, dict]:
             existing[txn_id] = row
             added += 1
 
-    log.info(f"Merge complete: {added} added, {overwritten} overwritten.")
+    print(f"Merge: {added} added, {overwritten} overwritten.")
     return existing
 
 
@@ -397,7 +517,7 @@ def write_output(rows: dict[str, dict]):
         writer.writeheader()
         writer.writerows(sorted_rows)
 
-    log.info(f"Output written: {OUTPUT_CSV} ({len(sorted_rows)} rows)")
+    print(f"Written: {OUTPUT_CSV} ({len(sorted_rows)} rows)")
 
 
 # ---------------------------------------------------------------------------
@@ -408,13 +528,12 @@ def cleanup(files: list[Path], failed: set[str]):
     """Delete processed input files. Leave failed files in place."""
     for f in files:
         if f.name in failed:
-            log.warning(f"Leaving failed file in input/: {f.name}")
+            print(f"Leaving failed file: {f.name}")
             continue
         try:
             f.unlink()
-            log.info(f"Deleted: {f.name}")
         except Exception as e:
-            log.error(f"Could not delete {f.name}: {e}")
+            print(f"ERROR: Could not delete {f.name}: {e}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------------------
@@ -422,17 +541,13 @@ def cleanup(files: list[Path], failed: set[str]):
 # ---------------------------------------------------------------------------
 
 def main():
-    log.info("=" * 60)
-    log.info("Statement importer starting")
-    log.info("=" * 60)
-
     # Step 1: Validate input
     pdfs, csvs = get_input_files()
     if not pdfs and not csvs:
-        log.error("No statements found in input/. Please add PDF or CSV files and re-run.")
+        print("No statements found in statements/. Please add PDF or CSV files and re-run.")
         sys.exit(1)
 
-    log.info(f"Found {len(pdfs)} PDF(s) and {len(csvs)} CSV(s).")
+    print(f"Found {len(pdfs)} PDF(s) and {len(csvs)} CSV(s).")
 
     failed_files: set[str] = set()
     all_input_files: list[Path] = list(pdfs) + list(csvs)
@@ -444,7 +559,6 @@ def main():
         for pdf in pdfs:
             if pdf.with_suffix(".txt") not in txt_files:
                 failed_files.add(pdf.name)
-        # Track .txt files for cleanup too
         all_input_files += txt_files
 
     # Step 3: Parse all statements
@@ -454,8 +568,8 @@ def main():
         try:
             all_transactions += parse_txt(txt)
         except Exception as e:
-            log.error(f"Failed to parse {txt.name}: {e}")
-            failed_files.add(txt.stem + ".pdf")  # blame the source PDF
+            print(f"ERROR: Failed to parse {txt.name}: {e}", file=sys.stderr)
+            failed_files.add(txt.stem + ".pdf")
 
     for csv_path in csvs:
         try:
@@ -465,17 +579,17 @@ def main():
             else:
                 all_transactions += parsed
         except Exception as e:
-            log.error(f"Failed to parse {csv_path.name}: {e}")
+            print(f"ERROR: Failed to parse {csv_path.name}: {e}", file=sys.stderr)
             failed_files.add(csv_path.name)
 
     if not all_transactions:
-        log.error("No transactions could be parsed from any statement. Check logs.")
+        print("ERROR: No transactions could be parsed from any statement.", file=sys.stderr)
         sys.exit(1)
 
-    log.info(f"Total transactions parsed: {len(all_transactions)}")
+    print(f"Total transactions parsed: {len(all_transactions)}")
 
     # Step 4: Enrich
-    log.info("Enriching transactions (normalization + categorization)...")
+    print("Categorizing transactions...")
     enriched = enrich(all_transactions)
 
     # Step 5: Merge
@@ -486,18 +600,15 @@ def main():
     try:
         write_output(merged)
     except Exception as e:
-        log.error(f"Failed to write output CSV: {e}")
-        log.error("Input files will NOT be deleted.")
+        print(f"ERROR: Failed to write output CSV: {e}", file=sys.stderr)
+        print("Input files will NOT be deleted.")
         sys.exit(1)
 
     # Step 7: Cleanup
     cleanup(all_input_files, failed_files)
 
     needs_review_count = sum(1 for r in merged.values() if r.get("needs_review") == "true")
-    log.info("=" * 60)
-    log.info(f"Import complete. {needs_review_count} transaction(s) flagged for review.")
-    log.info(f"Output: {OUTPUT_CSV}")
-    log.info("=" * 60)
+    print(f"Done. {needs_review_count} transaction(s) flagged for review.")
 
 
 if __name__ == "__main__":

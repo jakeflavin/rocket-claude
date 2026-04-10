@@ -9,13 +9,18 @@ This skill imports bank and credit card statements (PDF or CSV) into a single un
 ## Folder Structure
 
 ```
-statement-importer/
+.claude/skills/rocket/
 ├── SKILL.md                  # This file
 ├── RULES.md                  # Schema and categorization rules
 └── scripts/
     ├── pdf_to_text.py        # Converts PDF statements to .txt
     ├── import_statements.py  # Main import pipeline
     └── categorize.py         # Rule-based + AI categorization
+
+<project root>/
+├── statements/               # Drop PDF/CSV statements here before running
+└── data/
+    └── transactions.csv      # Output — all imported transactions
 ```
 
 ---
@@ -54,7 +59,7 @@ statement-importer/
 - Load rules from `RULES.md` category list
 - For each transaction, attempt keyword/pattern matching on `normalized_description` and `merchant`:
   - If matched → assign `category` + `subcategory`, set `needs_review = false`
-  - If unmatched → send to Claude API for best-guess categorization, set `needs_review = true`
+  - If unmatched → send to `claude` CLI for best-guess categorization, set `needs_review = true`
 - AI prompt must constrain output to valid categories/subcategories from `RULES.md`
 - See `scripts/categorize.py` for implementation
 
@@ -87,14 +92,14 @@ statement-importer/
 
 ```bash
 # Install dependencies (first time only)
-pip install pdfplumber pypdf anthropic pandas
+pip install pdfplumber pypdf pandas
 
-# Drop statements into input/
-cp ~/Downloads/td_march_2025.pdf input/
-cp ~/Downloads/amex_march_2025.csv input/
+# Drop statements into the project's statements/ folder
+cp ~/Downloads/td_march_2025.pdf statements/
+cp ~/Downloads/amex_march_2025.csv statements/
 
-# Run the importer
-python scripts/import_statements.py
+# Run from anywhere — paths are derived from script location
+python .claude/skills/rocket/scripts/import_statements.py
 ```
 
 ---
