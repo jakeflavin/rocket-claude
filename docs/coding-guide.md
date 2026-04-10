@@ -56,6 +56,33 @@ const StatCard = ({ label, value, delta, deltaPositive }) => {
 // No export needed — StatCard is used globally by other components
 ```
 
+## Lucide Icons
+
+Lucide React is loaded via CDN and exposes the global `LucideReact`. Icon names are stored as strings in `settings.json` under each category's `icon` field (e.g. `"TrendingUp"`, `"Home"`, `"Zap"`).
+
+Render a Lucide icon from a settings category:
+
+```jsx
+const { settings } = useSettings();
+
+// Look up the icon component by name from the global
+const renderIcon = (iconName, props = {}) => {
+  const Icon = LucideReact[iconName];
+  if (!Icon) return null;
+  return React.createElement(Icon, { size: 16, ...props });
+};
+
+// Usage inside JSX
+{settings.categories.map(cat => (
+  <HStack key={cat.name} gap="gap-2">
+    {renderIcon(cat.icon, { color: cat.color })}
+    <Text>{cat.name}</Text>
+  </HStack>
+))}
+```
+
+Never hardcode icon names in components — always read from `settings.json`.
+
 ## UI Primitives
 
 Gluestack UI has no CDN/UMD build and is incompatible with the Babel standalone setup. Instead, `src/components/ui/primitives.jsx` provides equivalent layout and text components as thin Tailwind wrappers.
