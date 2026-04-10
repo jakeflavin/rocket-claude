@@ -25,7 +25,7 @@ function BillsDonut({ billGroups }) {
     const colorMap = {};
     settings.categories.forEach(c => { colorMap[c.name] = c.color; });
     return billGroups
-      .filter(b => b.averageAmount > 0)
+      .filter(b => b.averageAmount !== 0)
       .map(b => ({
         label:  b.merchant,
         amount: parseFloat(Math.abs(b.averageAmount).toFixed(2)),

@@ -61,7 +61,7 @@ function SubscriptionsDonut({ groups }) {
     };
 
     return groups
-      .filter(g => g.monthlyAmount > 0)
+      .filter(g => g.monthlyAmount !== 0)
       .map((g, i) => ({
         label:  g.merchant,
         amount: parseFloat(Math.abs(g.monthlyAmount).toFixed(2)),
