@@ -1,16 +1,16 @@
 /**
  * Settings — 4 sections:
- *   1. Accounts list (derived from CSV)
+ *   1. Accounts (editable name + type, aliases saved to settings.accountAliases)
  *   2. Budget limits editor (updates runtime settings via setSettings)
  *   3. Notifications toggles
  *   4. Imported Files table (unique source_file + transaction counts)
  */
 
-const ACCOUNT_TYPE_LABELS = {
-  checking:    'Checking',
-  savings:     'Savings',
-  credit_card: 'Credit Card',
-};
+const ACCOUNT_TYPE_OPTIONS = [
+  { value: 'checking',    label: 'Checking' },
+  { value: 'savings',     label: 'Savings' },
+  { value: 'credit_card', label: 'Credit Card' },
+];
 
 const NOTIFICATION_LABELS = {
   needsReview:   'Flag transactions that need review',
@@ -23,11 +23,41 @@ function Settings() {
   const { settings, setSettings } = useSettings();
   const { transactions } = useTransactions();
 
+  // ─── Accounts (from CSV, editable via aliases) ────────────────────────────
+  const csvAccounts = React.useMemo(() => {
+    const map = {};
+    transactions.forEach(t => { if (!map[t.account]) map[t.account] = t.account_type; });
+    return Object.entries(map).sort((a, b) => a[0].localeCompare(b[0]));
+  }, [transactions]);
+
+  const [accountEdits, setAccountEdits] = React.useState({});
+  const [accountSaved, setAccountSaved] = React.useState(false);
+
+  // Initialise edits from existing aliases (or original values) once accounts load
+  React.useEffect(() => {
+    if (csvAccounts.length === 0) return;
+    const aliases = settings.accountAliases || {};
+    const initial = {};
+    csvAccounts.forEach(([name, type]) => {
+      initial[name] = {
+        displayName: aliases[name]?.displayName ?? name,
+        type:        aliases[name]?.type        ?? type,
+      };
+    });
+    setAccountEdits(initial);
+  }, [csvAccounts.length]); // run once when accounts resolve
+
+  const saveAccounts = () => {
+    setSettings(s => ({ ...s, accountAliases: accountEdits }));
+    setAccountSaved(true);
+    setTimeout(() => setAccountSaved(false), 2000);
+  };
+
   // ─── Budgets ──────────────────────────────────────────────────────────────
-  const [budgets,      setBudgets]      = React.useState(
+  const [budgets,     setBudgets]     = React.useState(
     Object.fromEntries(Object.entries(settings.budgets).map(([k, v]) => [k, String(v)]))
   );
-  const [budgetSaved,  setBudgetSaved]  = React.useState(false);
+  const [budgetSaved, setBudgetSaved] = React.useState(false);
 
   const saveBudgets = () => {
     const parsed = Object.fromEntries(
@@ -41,13 +71,6 @@ function Settings() {
   // ─── Notifications ────────────────────────────────────────────────────────
   const setNotification = (key, val) =>
     setSettings(s => ({ ...s, notifications: { ...s.notifications, [key]: val } }));
-
-  // ─── Accounts (from CSV) ──────────────────────────────────────────────────
-  const accounts = React.useMemo(() => {
-    const map = {};
-    transactions.forEach(t => { if (!map[t.account]) map[t.account] = t.account_type; });
-    return Object.entries(map).sort((a, b) => a[0].localeCompare(b[0]));
-  }, [transactions]);
 
   // ─── Imported Files (from CSV) ────────────────────────────────────────────
   const sourceFiles = React.useMemo(() => {
@@ -68,25 +91,47 @@ function Settings() {
           <CardHeader>
             <Heading level={3} className="text-sm font-semibold">Accounts</Heading>
           </CardHeader>
-          <CardBody className="p-0">
-            {accounts.length === 0 ? (
+          <CardBody>
+            {csvAccounts.length === 0 ? (
               <EmptyState icon="CreditCard" title="No accounts found" className="py-8" />
             ) : (
-              <Table>
-                <Thead>
-                  <Tr><Th>Account</Th><Th>Type</Th></Tr>
-                </Thead>
-                <Tbody>
-                  {accounts.map(([name, type]) => (
-                    <Tr key={name}>
-                      <Td className="text-sm">{name}</Td>
-                      <Td className="text-sm text-[#9090b0]">
-                        {ACCOUNT_TYPE_LABELS[type] ?? type}
-                      </Td>
-                    </Tr>
+              <VStack gap="gap-4">
+                <VStack gap="gap-3">
+                  {csvAccounts.map(([original]) => (
+                    <HStack key={original} gap="gap-3" className="items-end">
+                      <Box className="flex-1">
+                        <Input
+                          label="Display Name"
+                          value={accountEdits[original]?.displayName ?? original}
+                          onChange={e => setAccountEdits(prev => ({
+                            ...prev,
+                            [original]: { ...prev[original], displayName: e.target.value },
+                          }))}
+                        />
+                      </Box>
+                      <Box className="w-40">
+                        <Select
+                          label="Type"
+                          value={accountEdits[original]?.type ?? ''}
+                          onChange={e => setAccountEdits(prev => ({
+                            ...prev,
+                            [original]: { ...prev[original], type: e.target.value },
+                          }))}
+                        >
+                          {ACCOUNT_TYPE_OPTIONS.map(o => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </Select>
+                      </Box>
+                    </HStack>
                   ))}
-                </Tbody>
-              </Table>
+                </VStack>
+                <HStack gap="gap-3">
+                  <Button variant="primary" size="sm" onClick={saveAccounts}>
+                    {accountSaved ? 'Saved!' : 'Save Accounts'}
+                  </Button>
+                </HStack>
+              </VStack>
             )}
           </CardBody>
         </Card>

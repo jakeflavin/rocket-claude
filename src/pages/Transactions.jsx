@@ -37,6 +37,12 @@ function Transactions() {
   const { settings } = useSettings();
   const { transactions, loading, error, reload } = useTransactions();
 
+  // ─── Account alias helper ──────────────────────────────────────────────────
+  const displayAccount = React.useCallback(
+    name => settings.accountAliases?.[name]?.displayName ?? name,
+    [settings.accountAliases]
+  );
+
   // ─── Filter state ──────────────────────────────────────────────────────────
   const [search,          setSearch]          = React.useState('');
   const [categoryFilter,  setCategoryFilter]  = React.useState('');
@@ -154,7 +160,7 @@ function Transactions() {
               </Select>
               <Select label="Account" value={accountFilter} onChange={e => setAccountFilter(e.target.value)}>
                 <option value="">All accounts</option>
-                {accounts.map(a => <option key={a} value={a}>{a}</option>)}
+                {accounts.map(a => <option key={a} value={a}>{displayAccount(a)}</option>)}
               </Select>
               <Input label="From" type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
               <Input label="To"   type="date" value={endDate}   onChange={e => setEndDate(e.target.value)}   />
@@ -222,7 +228,7 @@ function Transactions() {
                           <Badge color={catColor(t.category)}>{t.category}</Badge>
                         </Td>
 
-                        <Td className="text-sm text-[#9090b0] whitespace-nowrap">{t.account}</Td>
+                        <Td className="text-sm text-[#9090b0] whitespace-nowrap">{displayAccount(t.account)}</Td>
 
                         <Td className={`font-mono text-sm whitespace-nowrap ${amtColor}`}>
                           {amtPrefix}{Formatters.currency(Math.abs(t.amount))}
