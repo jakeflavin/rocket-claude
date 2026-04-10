@@ -35,7 +35,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T20** Build `src/pages/Transactions.jsx` — full list with search input, category filter dropdown, account filter dropdown, date range pickers, needs_review toggle filter. Paginated 50/page. Sortable columns. Inline notes editor.
 - [x] **T21** Build `src/pages/Subscriptions.jsx` — group by merchant, show monthly cost, subcategory filter tabs (All / Streaming / Software / Memberships), monthly total header.
 - [x] **T22** Build `src/pages/Bills.jsx` — recurring Utilities + Housing transactions. Group by merchant. Show last paid, estimated next due, status. Sort by next due date ascending.
-- [ ] **T23** Build `src/pages/Settings.jsx` — 5 sections: Profile editor, Accounts list (derived from CSV), Budget limits editor (saves to settings.json), Notifications toggles, Imported Files table (unique source_file values + transaction counts).
+- [x] **T23** Build `src/pages/Settings.jsx` — 5 sections: Profile editor, Accounts list (derived from CSV), Budget limits editor (saves to settings.json), Notifications toggles, Imported Files table (unique source_file values + transaction counts).
 
 ## Phase 5 — Polish
 
@@ -44,5 +44,4 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [ ] **T26** Add error state if `transactions.csv` is missing or unparseable.
 - [ ] **T27** Verify all currency values use `font-mono` (JetBrains Mono).
 - [ ] **T28** Verify all category colors are derived from `settings.json` — no hardcoded hex values in components.
-- [ ] **T29** Test with browser opened via `file://` protocol (double-click `index.html`). Fix any CORS issues with CSV loading (may need a local server note in README).
-- [ ] **T30** Write `README.md` — setup instructions, how to drop statements into `/statements`, how to run the Claude Code skill, how to open the dashboard.
+- [ ] **T29** Write `README.md` — setup instructions, how to drop statements into `/statements`, how to run the Claude Code skill, how to open the dashboard.
