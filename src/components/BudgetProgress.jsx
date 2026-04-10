@@ -1,5 +1,5 @@
 /**
- * BudgetProgress — per-category budget progress bars for a given month.
+ * BudgetProgress — per-category budget progress bars for a date range.
  *
  * Budget limits and category metadata (color, icon) come exclusively
  * from settings.json. Progress bar color shifts at 75 % and 90 % via
@@ -9,25 +9,29 @@
  *
  * Props:
  *   transactions {Array}  full transaction list from useTransactions
- *   month        {string} YYYY-MM — defaults to current month
+ *   start        {string} YYYY-MM-DD range start
+ *   end          {string} YYYY-MM-DD range end
+ *   rangeLabel   {string} display label for the range (caption)
  *
  * Load order: must come after Card/CardHeader/CardBody (data-display),
  *             Progress (feedback), Icon (media), Heading, Caption, Label
  *             (typography), EmptyState (other), Formatters, SettingsContext.
  */
 
-window.BudgetProgress = ({ transactions = [], month }) => {
-  const activeMonth = month || new Date().toISOString().slice(0, 7);
+window.BudgetProgress = ({ transactions = [], start, end, rangeLabel }) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const activeStart = start || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10);
+  const activeEnd   = end || today;
   const { settings } = useSettings();
 
-  // ─── Build per-category spend totals for the month ──────────────────────────
+  // ─── Build per-category spend totals for the range ──────────────────────────
   const rows = React.useMemo(() => {
     const { budgets, categories } = settings;
 
-    // Sum expenses per category for this month
+    // Sum expenses per category for this range
     const spent = {};
     transactions
-      .filter(t => t.amount < 0 && t.date && String(t.date).startsWith(activeMonth))
+      .filter(t => t.amount < 0 && t.date && t.date >= activeStart && t.date <= activeEnd)
       .forEach(t => {
         const cat = t.category || 'Misc';
         spent[cat] = (spent[cat] || 0) + Math.abs(t.amount);
@@ -47,7 +51,7 @@ window.BudgetProgress = ({ transactions = [], month }) => {
         icon:   meta[name]?.icon  || 'MoreHorizontal',
       }))
       .sort((a, b) => (b.spent / b.limit) - (a.spent / a.limit));
-  }, [transactions, activeMonth, settings]);
+  }, [transactions, activeStart, activeEnd, settings]);
 
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
@@ -57,7 +61,7 @@ window.BudgetProgress = ({ transactions = [], month }) => {
           <Heading level={3} className="text-sm font-semibold text-[#f0f0fa]">
             Budget Progress
           </Heading>
-          <Caption>{Formatters.monthYear(activeMonth)}</Caption>
+          <Caption>{rangeLabel || 'This Month'}</Caption>
         </HStack>
       </CardHeader>
       <CardBody>

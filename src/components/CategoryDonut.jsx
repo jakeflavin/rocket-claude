@@ -1,5 +1,5 @@
 /**
- * CategoryDonut — doughnut chart of expenses by category for a given month.
+ * CategoryDonut — doughnut chart of expenses by category for a date range.
  *
  * Colors come exclusively from settings.json — nothing is hardcoded.
  * Renders a custom legend below the chart (Chart.js built-in legend disabled).
@@ -8,15 +8,19 @@
  *
  * Props:
  *   transactions {Array}  full transaction list from useTransactions
- *   month        {string} YYYY-MM — defaults to current month
+ *   start        {string} YYYY-MM-DD range start
+ *   end          {string} YYYY-MM-DD range end
+ *   rangeLabel   {string} display label for the range (caption)
  *
  * Load order: must come after Card/CardHeader/CardBody (data-display),
  *             Heading, Caption (typography), EmptyState (other),
  *             Formatters (formatters.js), and SettingsContext.
  */
 
-window.CategoryDonut = ({ transactions = [], month }) => {
-  const activeMonth = month || new Date().toISOString().slice(0, 7);
+window.CategoryDonut = ({ transactions = [], start, end, rangeLabel }) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const activeStart = start || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10);
+  const activeEnd   = end || today;
   const { settings } = useSettings();
 
   const canvasRef = React.useRef(null);
@@ -30,7 +34,7 @@ window.CategoryDonut = ({ transactions = [], month }) => {
 
     const totals = {};
     transactions
-      .filter(t => t.amount < 0 && t.date && String(t.date).startsWith(activeMonth))
+      .filter(t => t.amount < 0 && t.date && t.date >= activeStart && t.date <= activeEnd)
       .forEach(t => {
         const cat = t.category || 'Misc';
         totals[cat] = (totals[cat] || 0) + Math.abs(t.amount);
@@ -43,7 +47,7 @@ window.CategoryDonut = ({ transactions = [], month }) => {
         color: colorMap[name] || '#6b7280',
       }))
       .sort((a, b) => b.amount - a.amount);
-  }, [transactions, activeMonth, settings.categories]);
+  }, [transactions, activeStart, activeEnd, settings.categories]);
 
   // ─── Chart lifecycle ────────────────────────────────────────────────────────
   React.useEffect(() => {
@@ -106,7 +110,7 @@ window.CategoryDonut = ({ transactions = [], month }) => {
           <Heading level={3} className="text-sm font-semibold text-[#f0f0fa]">
             Spending by Category
           </Heading>
-          <Caption>{Formatters.monthYear(activeMonth)}</Caption>
+          <Caption>{rangeLabel || 'This Month'}</Caption>
         </HStack>
       </CardHeader>
       <CardBody>
@@ -114,7 +118,7 @@ window.CategoryDonut = ({ transactions = [], month }) => {
           <EmptyState
             icon="PieChart"
             title="No spending data"
-            description="No expenses recorded for this month."
+            description="No expenses recorded for this period."
           />
         ) : (
           <VStack gap="gap-5">

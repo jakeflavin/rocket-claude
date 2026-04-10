@@ -1,3 +1,52 @@
+const RANGES = [
+  { value: 'this_month',     label: 'This Month' },
+  { value: 'this_week',      label: 'This Week' },
+  { value: 'last_7',         label: 'Last 7 Days' },
+  { value: 'last_30',        label: 'Last 30 Days' },
+  { value: 'last_90',        label: 'Last 90 Days' },
+  { value: 'last_12_months', label: 'Last 12 Months' },
+];
+
+function getRangeDates(range) {
+  const today = new Date();
+  const fmt = d => d.toISOString().slice(0, 10);
+  const end = fmt(today);
+
+  switch (range) {
+    case 'this_month': {
+      return { start: fmt(new Date(today.getFullYear(), today.getMonth(), 1)), end };
+    }
+    case 'this_week': {
+      const d = new Date(today);
+      d.setDate(d.getDate() - d.getDay());
+      return { start: fmt(d), end };
+    }
+    case 'last_7': {
+      const d = new Date(today);
+      d.setDate(d.getDate() - 6);
+      return { start: fmt(d), end };
+    }
+    case 'last_30': {
+      const d = new Date(today);
+      d.setDate(d.getDate() - 29);
+      return { start: fmt(d), end };
+    }
+    case 'last_90': {
+      const d = new Date(today);
+      d.setDate(d.getDate() - 89);
+      return { start: fmt(d), end };
+    }
+    case 'last_12_months': {
+      const d = new Date(today);
+      d.setFullYear(d.getFullYear() - 1);
+      d.setDate(1);
+      return { start: fmt(d), end };
+    }
+    default:
+      return { start: fmt(new Date(today.getFullYear(), today.getMonth(), 1)), end };
+  }
+}
+
 function DashboardSkeleton() {
   return (
     <Box className="p-6">
@@ -25,7 +74,7 @@ function DashboardSkeleton() {
  *
  * Layout:
  *   NeedsReviewBanner (if applicable)
- *   PageHeader
+ *   PageHeader + range selector
  *   4 KPI StatCards
  *   SpendingChart + CategoryDonut (2-col)
  *   BudgetProgress (full-width)
@@ -43,13 +92,15 @@ function Dashboard({ onNavigate }) {
   const { settings } = useSettings();
   const { transactions, expenses, income, needsReview, billGroups, loading, error, reload } = useTransactions();
 
-  const currentMonth = new Date().toISOString().slice(0, 7);
+  const [range, setRange] = React.useState('this_month');
+  const { start, end } = getRangeDates(range);
+  const rangeLabel = RANGES.find(r => r.value === range)?.label || 'This Month';
 
-  const monthExpenses = expenses.filter(t => t.date.startsWith(currentMonth));
-  const monthIncome   = income.filter(t => t.date.startsWith(currentMonth));
+  const rangeExpenses = expenses.filter(t => t.date >= start && t.date <= end);
+  const rangeIncome   = income.filter(t => t.date >= start && t.date <= end);
 
-  const totalSpent  = monthExpenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  const totalIncome = monthIncome.reduce((sum, t) => sum + t.amount, 0);
+  const totalSpent  = rangeExpenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  const totalIncome = rangeIncome.reduce((sum, t) => sum + t.amount, 0);
 
   const totalBudget = Object.values(settings.budgets || {}).reduce((sum, v) => sum + v, 0);
   const remaining   = totalBudget - totalSpent;
@@ -77,10 +128,19 @@ function Dashboard({ onNavigate }) {
           <NeedsReviewBanner count={needsReview.length} onNavigate={onNavigate} />
         )}
 
-        <PageHeader
-          title="Dashboard"
-          subtitle={Formatters.monthYear(currentMonth + '-01')}
-        />
+        <HStack className="justify-between items-start flex-wrap gap-3">
+          <PageHeader title="Dashboard" subtitle={rangeLabel} />
+          <Box className="w-44">
+            <Select
+              value={range}
+              onChange={e => setRange(e.target.value)}
+            >
+              {RANGES.map(r => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </Select>
+          </Box>
+        </HStack>
 
         {/* KPI Cards */}
         <Grid cols={4} gap="gap-4" responsive>
@@ -104,12 +164,12 @@ function Dashboard({ onNavigate }) {
 
         {/* Charts */}
         <Grid cols={2} gap="gap-4" responsive>
-          <SpendingChart  transactions={transactions} month={currentMonth} />
-          <CategoryDonut  transactions={transactions} month={currentMonth} />
+          <SpendingChart  transactions={transactions} start={start} end={end} rangeLabel={rangeLabel} />
+          <CategoryDonut  transactions={transactions} start={start} end={end} rangeLabel={rangeLabel} />
         </Grid>
 
         {/* Budget Progress */}
-        <BudgetProgress transactions={transactions} month={currentMonth} />
+        <BudgetProgress transactions={transactions} start={start} end={end} rangeLabel={rangeLabel} />
 
         {/* Recent Transactions + Upcoming Bills */}
         <Grid cols={2} gap="gap-4" responsive>
