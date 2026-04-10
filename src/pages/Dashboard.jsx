@@ -1,3 +1,25 @@
+function DashboardSkeleton() {
+  return (
+    <Box className="p-6">
+      <VStack gap="gap-6">
+        <Skeleton className="h-8 w-52" />
+        <Grid cols={4} gap="gap-4">
+          {[0,1,2,3].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+        </Grid>
+        <Grid cols={2} gap="gap-4">
+          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-64 rounded-xl" />
+        </Grid>
+        <Skeleton className="h-48 rounded-xl" />
+        <Grid cols={2} gap="gap-4">
+          <Skeleton className="h-56 rounded-xl" />
+          <Skeleton className="h-56 rounded-xl" />
+        </Grid>
+      </VStack>
+    </Box>
+  );
+}
+
 /**
  * Dashboard — main overview page.
  *
@@ -41,13 +63,7 @@ function Dashboard({ onNavigate }) {
     .filter(b => b.status !== 'paid')
     .slice(0, upcomingCount);
 
-  if (loading) {
-    return (
-      <Center className="h-full">
-        <Spinner />
-      </Center>
-    );
-  }
+  if (loading) return <DashboardSkeleton />;
 
   if (error) {
     return (

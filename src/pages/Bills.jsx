@@ -1,3 +1,19 @@
+function BillsSkeleton() {
+  return (
+    <Box className="p-6">
+      <VStack gap="gap-6">
+        <HStack className="justify-between items-start">
+          <Skeleton className="h-8 w-40" />
+          <Skeleton className="h-12 w-32 rounded-xl" />
+        </HStack>
+        <Grid cols={2} gap="gap-4">
+          {[0,1,2,3].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+        </Grid>
+      </VStack>
+    </Box>
+  );
+}
+
 /**
  * Bills — recurring Utilities + Housing transactions grouped by merchant,
  * sorted by estimated next due date ascending (most urgent first).
@@ -10,7 +26,7 @@ function Bills() {
     (sum, b) => sum + Math.abs(b.averageAmount), 0
   );
 
-  if (loading) return <Center className="h-full"><Spinner /></Center>;
+  if (loading) return <BillsSkeleton />;
   if (error)   return <Center className="h-full"><Alert variant="error" title="Failed to load transactions" /></Center>;
 
   return (

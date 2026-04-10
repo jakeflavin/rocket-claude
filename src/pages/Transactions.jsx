@@ -8,6 +8,21 @@
  * Notes: in-memory edits (no backend write)
  */
 
+function TransactionsSkeleton() {
+  return (
+    <Box className="p-6">
+      <VStack gap="gap-6">
+        <Skeleton className="h-8 w-52" />
+        <Skeleton className="h-28 rounded-xl" />
+        <VStack gap="gap-px">
+          <Skeleton className="h-10 rounded-t-xl" />
+          {[0,1,2,3,4,5,6,7].map(i => <Skeleton key={i} className="h-14" />)}
+        </VStack>
+      </VStack>
+    </Box>
+  );
+}
+
 const PAGE_SIZE = 50;
 
 const SORT_COLS = [
@@ -112,7 +127,7 @@ function Transactions() {
   const cancelEdit = () => setEditingId(null);
 
   // ─── Render ───────────────────────────────────────────────────────────────
-  if (loading) return <Center className="h-full"><Spinner /></Center>;
+  if (loading) return <TransactionsSkeleton />;
   if (error)   return <Center className="h-full"><Alert variant="error" title="Failed to load transactions" /></Center>;
 
   return (

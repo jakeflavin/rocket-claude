@@ -7,6 +7,23 @@
  *   Grid of SubscriptionCards
  */
 
+function SubscriptionsSkeleton() {
+  return (
+    <Box className="p-6">
+      <VStack gap="gap-6">
+        <HStack className="justify-between items-start">
+          <Skeleton className="h-8 w-52" />
+          <Skeleton className="h-12 w-32 rounded-xl" />
+        </HStack>
+        <Skeleton className="h-10 rounded" />
+        <Grid cols={3} gap="gap-4">
+          {[0,1,2,3,4,5].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+        </Grid>
+      </VStack>
+    </Box>
+  );
+}
+
 const SUBCATEGORY_TABS = ['All', 'Streaming', 'Software', 'Memberships'];
 
 function Subscriptions() {
@@ -22,7 +39,7 @@ function Subscriptions() {
     ? subscriptionGroups
     : subscriptionGroups.filter(s => s.subcategory === tab);
 
-  if (loading) return <Center className="h-full"><Spinner /></Center>;
+  if (loading) return <SubscriptionsSkeleton />;
   if (error)   return <Center className="h-full"><Alert variant="error" title="Failed to load transactions" /></Center>;
 
   return (
