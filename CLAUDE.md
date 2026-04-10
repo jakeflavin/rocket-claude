@@ -124,6 +124,8 @@ Full reference with props and when-to-use notes: **[docs/ui-library.md](docs/ui-
 
 **[docs/task-list.md](docs/task-list.md)** — 30 tasks across 5 phases
 
+**Workflow:** Commit all changes after each task is complete before moving to the next.
+
 ---
 
 ## Reference Docs
