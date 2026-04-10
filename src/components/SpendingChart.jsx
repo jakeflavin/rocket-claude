@@ -86,20 +86,36 @@ window.SpendingChart = ({ transactions = [], start, end, rangeLabel }) => {
       chartRef.current = null;
     }
 
+    // Read theme tokens at render time so charts respect the active theme
+    const cv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    const cRaised = cv('--c-raised');
+    const cRim    = cv('--c-rim');
+    const cFg     = cv('--c-fg');
+    const cMuted  = cv('--c-muted');
+
     const sharedScales = {
       x: {
-        grid: { color: '#2a2a3d' },
-        ticks: { color: '#9090b0', font: { family: 'DM Sans', size: 11 } },
+        grid: { color: cRim },
+        ticks: { color: cMuted, font: { family: 'DM Sans', size: 11 } },
       },
       y: {
-        grid: { color: '#2a2a3d' },
+        grid: { color: cRim },
         beginAtZero: true,
         ticks: {
-          color: '#9090b0',
+          color: cMuted,
           font: { family: 'DM Sans', size: 11 },
           callback: val => Formatters.currency(val),
         },
       },
+    };
+
+    const tooltipDefaults = {
+      backgroundColor: cRaised,
+      borderColor: cRim,
+      borderWidth: 1,
+      titleColor: cFg,
+      bodyColor: cMuted,
+      padding: 12,
     };
 
     if (isMultiMonth) {
@@ -122,15 +138,8 @@ window.SpendingChart = ({ transactions = [], start, end, rangeLabel }) => {
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#1a1a26',
-              borderColor: '#2a2a3d',
-              borderWidth: 1,
-              titleColor: '#f0f0fa',
-              bodyColor: '#9090b0',
-              padding: 12,
-              callbacks: {
-                label: ctx => `  ${Formatters.currency(ctx.parsed.y)}`,
-              },
+              ...tooltipDefaults,
+              callbacks: { label: ctx => `  ${Formatters.currency(ctx.parsed.y)}` },
             },
           },
           scales: sharedScales,
@@ -159,15 +168,8 @@ window.SpendingChart = ({ transactions = [], start, end, rangeLabel }) => {
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#1a1a26',
-              borderColor: '#2a2a3d',
-              borderWidth: 1,
-              titleColor: '#f0f0fa',
-              bodyColor: '#9090b0',
-              padding: 12,
-              callbacks: {
-                label: ctx => `  ${Formatters.currency(ctx.parsed.y)} total`,
-              },
+              ...tooltipDefaults,
+              callbacks: { label: ctx => `  ${Formatters.currency(ctx.parsed.y)} total` },
             },
           },
           scales: sharedScales,
@@ -190,7 +192,7 @@ window.SpendingChart = ({ transactions = [], start, end, rangeLabel }) => {
     <Card>
       <CardHeader>
         <HStack className="items-center justify-between">
-          <Heading level={3} className="text-sm font-semibold text-[#f0f0fa]">
+          <Heading level={3} className="text-sm font-semibold">
             Spending Trend
           </Heading>
           <Caption>{rangeLabel || 'This Month'}</Caption>

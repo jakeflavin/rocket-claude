@@ -72,13 +72,13 @@ function Bills() {
         <HStack className="justify-between items-start flex-wrap gap-3">
           <PageHeader title="Bills" subtitle={`${billGroups.length} recurring`} />
           <HStack gap="gap-3">
-            <HStack gap="gap-1" className="bg-[#1a1a26] rounded-lg p-1">
+            <HStack gap="gap-1" className="bg-raised rounded-lg p-1">
               <button
                 onClick={() => setView('list')}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   view === 'list'
-                    ? 'bg-[#2a2a3d] text-[#f0f0fa]'
-                    : 'text-[#9090b0] hover:text-[#f0f0fa]'
+                    ? 'bg-rim text-fg'
+                    : 'text-muted hover:text-fg'
                 }`}
               >
                 List
@@ -87,8 +87,8 @@ function Bills() {
                 onClick={() => setView('chart')}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   view === 'chart'
-                    ? 'bg-[#2a2a3d] text-[#f0f0fa]'
-                    : 'text-[#9090b0] hover:text-[#f0f0fa]'
+                    ? 'bg-rim text-fg'
+                    : 'text-muted hover:text-fg'
                 }`}
               >
                 Chart
@@ -97,8 +97,8 @@ function Bills() {
                 onClick={() => setView('calendar')}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   view === 'calendar'
-                    ? 'bg-[#2a2a3d] text-[#f0f0fa]'
-                    : 'text-[#9090b0] hover:text-[#f0f0fa]'
+                    ? 'bg-rim text-fg'
+                    : 'text-muted hover:text-fg'
                 }`}
               >
                 Calendar

@@ -227,7 +227,7 @@ function Transactions() {
                           {label}
                           {sortKey === key
                             ? <Icon name={sortDir === 'asc' ? 'ChevronUp' : 'ChevronDown'} size={12} className="text-emerald-400" />
-                            : <Icon name="ChevronsUpDown" size={12} className="text-[#6060a0]" />
+                            : <Icon name="ChevronsUpDown" size={12} className="text-muted" />
                           }
                         </HStack>
                       </Th>
@@ -248,11 +248,11 @@ function Transactions() {
 
                     return (
                       <React.Fragment key={t.id}>
-                      <Tr className={isExpanded ? 'bg-[#0f0f1a]' : ''}>
+                      <Tr className={isExpanded ? 'bg-surface' : ''}>
                         <Td className="w-8">
                           <button
                             onClick={() => toggleExpand(t.id)}
-                            className="text-[#555575] hover:text-[#9090b0] transition-colors"
+                            className="text-faint hover:text-muted transition-colors"
                           >
                             <Icon name={isExpanded ? 'ChevronDown' : 'ChevronRight'} size={14} />
                           </button>
@@ -278,7 +278,7 @@ function Transactions() {
                                 setEditingCatId(null);
                               }}
                               onBlur={() => setEditingCatId(null)}
-                              className="bg-[#1a1a26] border border-[#2a2a3d] text-[#f0f0fa] text-xs rounded px-2 py-1 outline-none focus:border-[#10b981]"
+                              className="bg-raised border border-rim text-fg text-xs rounded px-2 py-1 outline-none focus:border-[#10b981]"
                             >
                               {settings.categories.map(c => (
                                 <option key={c.name} value={c.name}>{c.name}</option>
@@ -303,7 +303,7 @@ function Transactions() {
                           )}
                         </Td>
 
-                        <Td className="text-sm text-[#9090b0] whitespace-nowrap">{displayAccount(t.account)}</Td>
+                        <Td className="text-sm text-muted whitespace-nowrap">{displayAccount(t.account)}</Td>
 
                         <Td className={`font-mono text-sm whitespace-nowrap ${amtColor}`}>
                           {amtPrefix}{Formatters.currency(Math.abs(t.amount))}
@@ -329,7 +329,7 @@ function Transactions() {
                             </HStack>
                           ) : (
                             <Text
-                              className="text-sm text-[#9090b0] cursor-pointer hover:text-[#f0f0fa] truncate max-w-[180px]"
+                              className="text-sm text-muted cursor-pointer hover:text-fg truncate max-w-[180px]"
                               onClick={() => startEdit(t)}
                             >
                               {noteVal || <span className="italic opacity-40">Add note…</span>}
@@ -349,27 +349,27 @@ function Transactions() {
                       {isExpanded && (
                         <Tr>
                           <Td colSpan={8} className="p-0">
-                            <Box className="bg-[#0a0a14] border-t border-[#1a1a2e] px-6 py-4">
+                            <Box className="bg-surface border-t border-rim px-6 py-4">
                               <Grid cols={3} gap="gap-x-8 gap-y-3">
                                 <VStack gap="gap-0.5">
                                   <Caption>Raw Description</Caption>
-                                  <Text className="text-xs text-[#f0f0fa] break-all">{t.description}</Text>
+                                  <Text className="text-xs text-fg break-all">{t.description}</Text>
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Normalized</Caption>
-                                  <Text className="text-xs text-[#f0f0fa]">{t.normalized_description}</Text>
+                                  <Text className="text-xs text-fg">{t.normalized_description}</Text>
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Account Type</Caption>
-                                  <Text className="text-xs text-[#f0f0fa] capitalize">{t.account_type?.replace('_', ' ')}</Text>
+                                  <Text className="text-xs text-fg capitalize">{t.account_type ? t.account_type.replace('_', ' ') : ''}</Text>
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Source File</Caption>
-                                  <Text className="text-xs font-mono text-[#f0f0fa]">{t.source_file}</Text>
+                                  <Text className="text-xs font-mono text-fg">{t.source_file}</Text>
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Imported</Caption>
-                                  <Text className="text-xs text-[#f0f0fa]">{t.created_at ? Formatters.date(new Date(t.created_at).toISOString().slice(0,10)) : '—'}</Text>
+                                  <Text className="text-xs text-fg">{t.created_at ? Formatters.date(new Date(t.created_at).toISOString().slice(0,10)) : '—'}</Text>
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Subcategory</Caption>
@@ -377,13 +377,13 @@ function Transactions() {
                                     <select
                                       value={subcategoryEdits[t.id] ?? t.subcategory ?? ''}
                                       onChange={e => setSubcategoryEdits(prev => ({ ...prev, [t.id]: e.target.value }))}
-                                      className="bg-[#1a1a26] border border-[#2a2a3d] text-[#f0f0fa] text-xs rounded px-2 py-1 outline-none focus:border-[#10b981] w-full"
+                                      className="bg-raised border border-rim text-fg text-xs rounded px-2 py-1 outline-none focus:border-[#10b981] w-full"
                                     >
                                       <option value="">None</option>
                                       {subcatOptions.map(s => <option key={s} value={s}>{s}</option>)}
                                     </select>
                                   ) : (
-                                    <Text className="text-xs text-[#9090b0]">—</Text>
+                                    <Text className="text-xs text-muted">—</Text>
                                   )}
                                 </VStack>
                               </Grid>

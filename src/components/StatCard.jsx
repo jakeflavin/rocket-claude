@@ -25,8 +25,8 @@ window.StatCard = ({ label, value, delta, deltaPositive, icon, className = '' })
         deltaPositive={deltaPositive}
       />
       {icon && (
-        <div className="shrink-0 w-9 h-9 rounded-lg bg-[#1a1a26] border border-[#2a2a3d] flex items-center justify-center">
-          <Icon name={icon} size={16} className="text-[#555575]" />
+        <div className="shrink-0 w-9 h-9 rounded-lg bg-raised border border-rim flex items-center justify-center">
+          <Icon name={icon} size={16} className="text-faint" />
         </div>
       )}
     </HStack>

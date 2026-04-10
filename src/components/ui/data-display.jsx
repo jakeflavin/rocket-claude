@@ -9,10 +9,10 @@
 
 // ─── Card ────────────────────────────────────────────────────────────────────
 
-/** Surface container with dark border and rounded corners. */
+/** Surface container with border and rounded corners. */
 window.Card = ({ className = '', children, ...props }) => (
   <div
-    className={`bg-[#12121a] border border-[#2a2a3d] rounded-xl ${className}`}
+    className={`bg-card border border-rim rounded-xl ${className}`}
     {...props}
   >
     {children}
@@ -21,7 +21,7 @@ window.Card = ({ className = '', children, ...props }) => (
 
 /** Card top section with bottom border. */
 window.CardHeader = ({ className = '', children, ...props }) => (
-  <div className={`px-5 pt-5 pb-4 border-b border-[#2a2a3d] ${className}`} {...props}>
+  <div className={`px-5 pt-5 pb-4 border-b border-rim ${className}`} {...props}>
     {children}
   </div>
 );
@@ -33,7 +33,7 @@ window.CardBody = ({ className = '', children, ...props }) => (
 
 /** Card bottom section with top border. */
 window.CardFooter = ({ className = '', children, ...props }) => (
-  <div className={`px-5 pb-5 pt-4 border-t border-[#2a2a3d] ${className}`} {...props}>
+  <div className={`px-5 pb-5 pt-4 border-t border-rim ${className}`} {...props}>
     {children}
   </div>
 );
@@ -75,18 +75,18 @@ window.Table = ({ className = '', children, ...props }) => (
 
 /** Table head section with bottom divider. */
 window.Thead = ({ className = '', children, ...props }) => (
-  <thead className={`border-b border-[#2a2a3d] ${className}`} {...props}>{children}</thead>
+  <thead className={`border-b border-rim ${className}`} {...props}>{children}</thead>
 );
 
 /** Table body with row dividers. */
 window.Tbody = ({ className = '', children, ...props }) => (
-  <tbody className={`divide-y divide-[#2a2a3d] ${className}`} {...props}>{children}</tbody>
+  <tbody className={`divide-y divide-rim ${className}`} {...props}>{children}</tbody>
 );
 
 /** Table row with subtle hover. */
 window.Tr = ({ className = '', children, ...props }) => (
   <tr
-    className={`transition-colors hover:bg-[#1a1a26]/60 ${className}`}
+    className={`transition-colors hover:bg-raised ${className}`}
     {...props}
   >
     {children}
@@ -96,7 +96,7 @@ window.Tr = ({ className = '', children, ...props }) => (
 /** Table header cell — uppercase, muted. */
 window.Th = ({ className = '', children, ...props }) => (
   <th
-    className={`px-4 py-3 text-left text-xs font-medium text-[#9090b0] uppercase tracking-wide whitespace-nowrap ${className}`}
+    className={`px-4 py-3 text-left text-xs font-medium text-muted uppercase tracking-wide whitespace-nowrap ${className}`}
     {...props}
   >
     {children}
@@ -105,5 +105,5 @@ window.Th = ({ className = '', children, ...props }) => (
 
 /** Table data cell. */
 window.Td = ({ className = '', children, ...props }) => (
-  <td className={`px-4 py-3 text-[#f0f0fa] ${className}`} {...props}>{children}</td>
+  <td className={`px-4 py-3 text-fg ${className}`} {...props}>{children}</td>
 );

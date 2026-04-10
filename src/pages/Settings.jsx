@@ -184,7 +184,25 @@ function Settings() {
           </CardBody>
         </Card>
 
-        {/* ── 4. Imported Files ── */}
+        {/* ── 4. Appearance ── */}
+        <Card>
+          <CardHeader>
+            <Heading level={3} className="text-sm font-semibold">Appearance</Heading>
+          </CardHeader>
+          <CardBody>
+            <Select
+              label="Theme"
+              value={settings.user.theme || 'system'}
+              onChange={e => setSettings(s => ({ ...s, user: { ...s.user, theme: e.target.value } }))}
+            >
+              <option value="system">System</option>
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </Select>
+          </CardBody>
+        </Card>
+
+        {/* ── 5. Imported Files ── */}
         <Card>
           <CardHeader>
             <Heading level={3} className="text-sm font-semibold">Imported Files</Heading>

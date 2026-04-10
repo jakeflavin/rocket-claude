@@ -183,13 +183,13 @@ function Dashboard({ onNavigate }) {
               {upcomingBills.length === 0 ? (
                 <EmptyState icon="CheckCircle" title="No upcoming bills" className="py-8" />
               ) : (
-                <VStack gap="gap-0" className="divide-y divide-[#1a1a2e]">
+                <VStack gap="gap-0" className="divide-y divide-rim">
                   {upcomingBills.map(bill => {
                     const cfg = BILL_STATUS_CONFIG[bill.status] ?? BILL_STATUS_CONFIG.upcoming;
                     return (
                       <HStack key={bill.merchant} gap="gap-3" className="px-4 py-3 justify-between">
                         <VStack gap="gap-0.5">
-                          <Text className="text-sm font-medium">{bill.merchant}</Text>
+                          <Text className="text-sm font-medium text-fg">{bill.merchant}</Text>
                           <Caption>{bill.subcategory || bill.category}</Caption>
                         </VStack>
                         <VStack gap="gap-0.5" className="items-end">

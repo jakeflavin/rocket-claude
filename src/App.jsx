@@ -11,15 +11,13 @@
 const _PageStub = ({ name }) => (
   <Center className="h-full">
     <VStack gap="gap-2" className="items-center">
-      <Text className="font-mono text-lg text-[#f0f0fa]">{name}</Text>
+      <Text className="font-mono text-lg text-fg">{name}</Text>
       <Caption>Coming soon</Caption>
     </VStack>
   </Center>
 );
 
 const _renderPage = (page, onNavigate) => {
-  // Real page components will be swapped in here as T19–T23 are completed.
-  // Check for the real component first, fall back to stub.
   if (page === 'dashboard'     && typeof Dashboard     !== 'undefined') return <Dashboard onNavigate={onNavigate} />;
   if (page === 'transactions'  && typeof Transactions  !== 'undefined') return <Transactions onNavigate={onNavigate} />;
   if (page === 'subscriptions' && typeof Subscriptions !== 'undefined') return <Subscriptions onNavigate={onNavigate} />;
@@ -36,6 +34,46 @@ const _renderPage = (page, onNavigate) => {
   return <_PageStub name={labels[page] || page} />;
 };
 
+// ─── AppShell — reads theme setting and applies data-theme ───────────────────
+
+const AppShell = ({ activePage, setActivePage }) => {
+  const { settings } = useSettings();
+
+  React.useEffect(() => {
+    const theme = settings.user.theme || 'system';
+    const el = document.documentElement;
+
+    if (theme === 'light') {
+      el.setAttribute('data-theme', 'light');
+      return;
+    }
+
+    if (theme === 'dark') {
+      el.removeAttribute('data-theme');
+      return;
+    }
+
+    // system — follow prefers-color-scheme
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    const apply = () => {
+      if (mq.matches) el.setAttribute('data-theme', 'light');
+      else el.removeAttribute('data-theme');
+    };
+    apply();
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, [settings.user.theme]);
+
+  return (
+    <div className="flex h-screen bg-surface text-fg overflow-hidden">
+      <Sidebar activePage={activePage} onNavigate={setActivePage} />
+      <main className="flex-1 overflow-y-auto">
+        {_renderPage(activePage, setActivePage)}
+      </main>
+    </div>
+  );
+};
+
 // ─── App ─────────────────────────────────────────────────────────────────────
 
 const App = () => {
@@ -43,12 +81,7 @@ const App = () => {
 
   return (
     <SettingsProvider>
-      <div className="flex h-screen bg-[#0a0a0f] text-[#f0f0fa] overflow-hidden">
-        <Sidebar activePage={activePage} onNavigate={setActivePage} />
-        <main className="flex-1 overflow-y-auto">
-          {_renderPage(activePage, setActivePage)}
-        </main>
-      </div>
+      <AppShell activePage={activePage} setActivePage={setActivePage} />
     </SettingsProvider>
   );
 };

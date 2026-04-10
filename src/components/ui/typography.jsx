@@ -21,7 +21,7 @@ window.Heading = ({ className = '', level = 2, children, ...props }) => {
   const sizes = { 1: 'text-3xl', 2: 'text-2xl', 3: 'text-xl', 4: 'text-lg' };
   return (
     <Tag
-      className={`font-semibold text-[#f0f0fa] ${sizes[level] || 'text-xl'} ${className}`}
+      className={`font-semibold text-fg ${sizes[level] || 'text-xl'} ${className}`}
       {...props}
     >
       {children}
@@ -32,7 +32,7 @@ window.Heading = ({ className = '', level = 2, children, ...props }) => {
 /** Form field label — uppercase, muted, small. */
 window.Label = ({ className = '', children, ...props }) => (
   <label
-    className={`text-xs font-medium text-[#9090b0] uppercase tracking-wide ${className}`}
+    className={`text-xs font-medium text-muted uppercase tracking-wide ${className}`}
     {...props}
   >
     {children}
@@ -41,5 +41,5 @@ window.Label = ({ className = '', children, ...props }) => (
 
 /** De-emphasised helper or metadata text. */
 window.Caption = ({ className = '', children, ...props }) => (
-  <span className={`text-xs text-[#555575] ${className}`} {...props}>{children}</span>
+  <span className={`text-xs text-faint ${className}`} {...props}>{children}</span>
 );

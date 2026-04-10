@@ -25,11 +25,11 @@ window.EmptyState = ({
 }) => (
   <Center className={`py-16 ${className}`}>
     <VStack gap="gap-4" className="items-center text-center">
-      <div className="w-12 h-12 rounded-xl bg-[#1a1a26] border border-[#2a2a3d] flex items-center justify-center">
-        <Icon name={icon} size={20} className="text-[#555575]" />
+      <div className="w-12 h-12 rounded-xl bg-raised border border-rim flex items-center justify-center">
+        <Icon name={icon} size={20} className="text-faint" />
       </div>
       <VStack gap="gap-1.5" className="items-center">
-        <Text className="text-sm font-medium text-[#9090b0]">{title}</Text>
+        <Text className="text-sm font-medium text-muted">{title}</Text>
         {description && (
           <Caption className="max-w-xs leading-relaxed">{description}</Caption>
         )}
@@ -52,7 +52,7 @@ window.PageHeader = ({ title, subtitle, children, className = '' }) => (
   <HStack className={`mb-6 items-start ${className}`}>
     <VStack gap="gap-0.5" className="flex-1">
       <Heading level={2} className="text-xl">{title}</Heading>
-      {subtitle && <Text className="text-sm text-[#9090b0]">{subtitle}</Text>}
+      {subtitle && <Text className="text-sm text-muted">{subtitle}</Text>}
     </VStack>
     {children && <div className="shrink-0">{children}</div>}
   </HStack>
@@ -72,7 +72,7 @@ window.PageHeader = ({ title, subtitle, children, className = '' }) => (
 window.Stat = ({ label, value, delta, deltaPositive, className = '' }) => (
   <VStack gap="gap-1" className={className}>
     <Label>{label}</Label>
-    <Text className="text-2xl font-bold font-mono text-[#f0f0fa]">{value}</Text>
+    <Text className="text-2xl font-bold font-mono text-fg">{value}</Text>
     {delta !== undefined && delta !== null && (
       <HStack gap="gap-1">
         <Icon

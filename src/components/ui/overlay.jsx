@@ -70,14 +70,14 @@ window.Modal = ({ isOpen, onClose, title, size = 'md', children }) => {
         />
         {/* Panel */}
         <div
-          className={`relative bg-[#12121a] border border-[#2a2a3d] rounded-xl shadow-2xl w-full ${_MODAL_SIZES[size] || _MODAL_SIZES.md}`}
+          className={`relative bg-card border border-rim rounded-xl shadow-2xl w-full ${_MODAL_SIZES[size] || _MODAL_SIZES.md}`}
         >
           {title && (
-            <HStack className="px-5 py-4 border-b border-[#2a2a3d] justify-between">
+            <HStack className="px-5 py-4 border-b border-rim justify-between">
               <Heading level={3} className="text-base">{title}</Heading>
               <button
                 onClick={onClose}
-                className="text-[#555575] hover:text-[#f0f0fa] transition-colors p-0.5 rounded"
+                className="text-faint hover:text-fg transition-colors p-0.5 rounded"
               >
                 <Icon name="X" size={18} />
               </button>
@@ -115,9 +115,9 @@ window.AlertDialog = ({
   <Modal isOpen={isOpen} onClose={onClose} size="sm">
     <VStack gap="gap-5">
       <VStack gap="gap-1.5">
-        <Text className="font-semibold text-[#f0f0fa]">{title}</Text>
+        <Text className="font-semibold text-fg">{title}</Text>
         {description && (
-          <Text as="p" className="text-sm text-[#9090b0]">{description}</Text>
+          <Text as="p" className="text-sm text-muted">{description}</Text>
         )}
       </VStack>
       <HStack gap="gap-2" className="justify-end">
@@ -160,8 +160,8 @@ window.Tooltip = ({ label, placement = 'top', children }) => {
       {children}
       {visible && label && (
         <div
-          className={`absolute z-50 px-2 py-1 bg-[#1a1a26] border border-[#2a2a3d] rounded
-            text-xs text-[#f0f0fa] whitespace-nowrap pointer-events-none shadow-lg
+          className={`absolute z-50 px-2 py-1 bg-raised border border-rim rounded
+            text-xs text-fg whitespace-nowrap pointer-events-none shadow-lg
             ${_TOOLTIP_PLACEMENTS[placement] || _TOOLTIP_PLACEMENTS.top}`}
         >
           {label}
@@ -196,7 +196,7 @@ window.Popover = ({ trigger, children, align = 'right', className = '' }) => {
       <div onClick={() => setOpen(o => !o)} className="cursor-pointer">{trigger}</div>
       {open && (
         <div
-          className={`absolute z-40 top-full mt-2 ${alignClass} bg-[#12121a] border border-[#2a2a3d] rounded-xl shadow-2xl p-4 min-w-56`}
+          className={`absolute z-40 top-full mt-2 ${alignClass} bg-card border border-rim rounded-xl shadow-2xl p-4 min-w-56`}
         >
           {children}
         </div>
@@ -230,7 +230,7 @@ window.Menu = ({ trigger, children, align = 'right', className = '' }) => {
       <div onClick={() => setOpen(o => !o)} className="cursor-pointer">{trigger}</div>
       {open && (
         <div
-          className={`absolute z-40 top-full mt-1 ${alignClass} min-w-40 bg-[#1a1a26] border border-[#2a2a3d] rounded-lg shadow-xl py-1`}
+          className={`absolute z-40 top-full mt-1 ${alignClass} min-w-40 bg-raised border border-rim rounded-lg shadow-xl py-1`}
         >
           {React.Children.map(children, child =>
             child
@@ -251,8 +251,8 @@ window.Menu = ({ trigger, children, align = 'right', className = '' }) => {
  */
 window.MenuItem = ({ icon, className = '', children, ...props }) => (
   <button
-    className={`w-full text-left px-3 py-2 text-sm text-[#9090b0]
-      hover:bg-[#2a2a3d] hover:text-[#f0f0fa] transition-colors
+    className={`w-full text-left px-3 py-2 text-sm text-muted
+      hover:bg-rim hover:text-fg transition-colors
       flex items-center gap-2 ${className}`}
     {...props}
   >

@@ -12,14 +12,14 @@ function DataErrorState({ error, onRetry }) {
           <Icon name="FileX" size={24} className="text-rose-400" />
         </div>
         <VStack gap="gap-2" className="items-center">
-          <Heading level={3} className="text-base font-semibold text-[#f0f0fa]">
+          <Heading level={3} className="text-base font-semibold">
             Could not load transactions
           </Heading>
           <Caption className="leading-relaxed">
             {error || 'An unknown error occurred while reading transactions.csv.'}
           </Caption>
-          <Caption className="leading-relaxed text-[#555575]">
-            Make sure the app is served via HTTP (<span className="font-mono text-[#9090b0]">npx serve .</span>) and that <span className="font-mono text-[#9090b0]">data/transactions.csv</span> exists.
+          <Caption className="leading-relaxed">
+            Make sure the app is served via HTTP (<span className="font-mono text-muted">npx serve .</span>) and that <span className="font-mono text-muted">data/transactions.csv</span> exists.
           </Caption>
         </VStack>
         {onRetry && (

@@ -52,11 +52,11 @@ function RecurringCalendar({ items }) {
     <Card>
       <CardHeader>
         <HStack className="justify-between items-center">
-          <button onClick={prevMonth} className="text-[#9090b0] hover:text-[#f0f0fa] transition-colors p-1">
+          <button onClick={prevMonth} className="text-muted hover:text-fg transition-colors p-1">
             <Icon name="ChevronLeft" size={16} />
           </button>
           <Heading level={3} className="text-sm font-semibold">{monthLabel}</Heading>
-          <button onClick={nextMonth} className="text-[#9090b0] hover:text-[#f0f0fa] transition-colors p-1">
+          <button onClick={nextMonth} className="text-muted hover:text-fg transition-colors p-1">
             <Icon name="ChevronRight" size={16} />
           </button>
         </HStack>
@@ -64,7 +64,7 @@ function RecurringCalendar({ items }) {
       <CardBody className="p-3">
         <div className="grid grid-cols-7 mb-1">
           {RECURRING_CAL_DAYS.map(d => (
-            <div key={d} className="text-center text-xs text-[#555575] font-medium py-1">{d}</div>
+            <div key={d} className="text-center text-xs text-faint font-medium py-1">{d}</div>
           ))}
         </div>
         <div className="grid grid-cols-7 gap-px">
@@ -74,13 +74,13 @@ function RecurringCalendar({ items }) {
               <div
                 key={i}
                 className={`min-h-[72px] rounded p-1 ${
-                  day ? 'bg-[#0f0f1a]' : 'bg-transparent'
+                  day ? 'bg-surface' : 'bg-transparent'
                 } ${isToday(day) ? 'ring-1 ring-emerald-500' : ''}`}
               >
                 {day && (
                   <VStack gap="gap-1">
                     <Text className={`text-xs font-medium text-right pr-0.5 ${
-                      isToday(day) ? 'text-emerald-400' : 'text-[#9090b0]'
+                      isToday(day) ? 'text-emerald-400' : 'text-muted'
                     }`}>
                       {day}
                     </Text>

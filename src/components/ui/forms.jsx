@@ -10,8 +10,8 @@
 
 const _BUTTON_VARIANTS = {
   primary:   'bg-[#10b981] text-white hover:bg-emerald-400 border border-transparent',
-  secondary: 'bg-[#1a1a26] text-[#f0f0fa] border border-[#2a2a3d] hover:bg-[#2a2a3d]',
-  ghost:     'bg-transparent text-[#9090b0] border border-transparent hover:bg-[#1a1a26] hover:text-[#f0f0fa]',
+  secondary: 'bg-raised text-fg border border-rim hover:bg-rim',
+  ghost:     'bg-transparent text-muted border border-transparent hover:bg-raised hover:text-fg',
   danger:    'bg-rose-500/15 text-rose-400 border border-rose-500/30 hover:bg-rose-500/25',
 };
 
@@ -60,9 +60,9 @@ window.Input = ({ className = '', label, error, id, ...props }) => {
       {label && <Label htmlFor={inputId}>{label}</Label>}
       <input
         id={inputId}
-        className={`bg-[#1a1a26] border rounded-lg px-3 py-2 text-sm text-[#f0f0fa]
-          placeholder-[#555575] focus:outline-none transition-colors
-          ${error ? 'border-rose-500 focus:border-rose-400' : 'border-[#2a2a3d] focus:border-[#10b981]'}
+        className={`bg-raised border rounded-lg px-3 py-2 text-sm text-fg
+          placeholder-faint focus:outline-none transition-colors
+          ${error ? 'border-rose-500 focus:border-rose-400' : 'border-rim focus:border-[#10b981]'}
           ${className}`}
         {...props}
       />
@@ -84,8 +84,8 @@ window.Select = ({ className = '', label, id, children, ...props }) => {
       {label && <Label htmlFor={selectId}>{label}</Label>}
       <select
         id={selectId}
-        className={`bg-[#1a1a26] border border-[#2a2a3d] rounded-lg px-3 py-2 text-sm
-          text-[#f0f0fa] focus:outline-none focus:border-[#10b981] transition-colors cursor-pointer
+        className={`bg-raised border border-rim rounded-lg px-3 py-2 text-sm
+          text-fg focus:outline-none focus:border-[#10b981] transition-colors cursor-pointer
           ${className}`}
         {...props}
       >
@@ -110,9 +110,9 @@ window.Textarea = ({ className = '', label, error, id, rows = 3, ...props }) => 
       <textarea
         id={textareaId}
         rows={rows}
-        className={`bg-[#1a1a26] border rounded-lg px-3 py-2 text-sm text-[#f0f0fa]
-          placeholder-[#555575] focus:outline-none transition-colors resize-none
-          ${error ? 'border-rose-500 focus:border-rose-400' : 'border-[#2a2a3d] focus:border-[#10b981]'}
+        className={`bg-raised border rounded-lg px-3 py-2 text-sm text-fg
+          placeholder-faint focus:outline-none transition-colors resize-none
+          ${error ? 'border-rose-500 focus:border-rose-400' : 'border-rim focus:border-[#10b981]'}
           ${className}`}
         {...props}
       />
@@ -138,7 +138,7 @@ window.Switch = ({ checked = false, onChange, label, className = '', disabled = 
       onClick={() => !disabled && onChange && onChange(!checked)}
       className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full
         transition-colors focus:outline-none
-        ${checked ? 'bg-[#10b981]' : 'bg-[#2a2a3d]'}
+        ${checked ? 'bg-[#10b981]' : 'bg-rim'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       <span
@@ -147,7 +147,7 @@ window.Switch = ({ checked = false, onChange, label, className = '', disabled = 
       />
     </button>
     {label && (
-      <Text className={`text-sm ${disabled ? 'text-[#555575]' : 'text-[#f0f0fa]'}`}>
+      <Text className={`text-sm ${disabled ? 'text-faint' : 'text-fg'}`}>
         {label}
       </Text>
     )}
@@ -170,10 +170,10 @@ window.Checkbox = ({ checked = false, onChange, label, className = '', disabled 
   >
     <div
       className={`w-4 h-4 rounded border shrink-0 flex items-center justify-center transition-colors
-        ${checked ? 'bg-[#10b981] border-[#10b981]' : 'border-[#2a2a3d] bg-[#1a1a26]'}`}
+        ${checked ? 'bg-[#10b981] border-[#10b981]' : 'border-rim bg-raised'}`}
     >
       {checked && <Icon name="Check" size={10} color="white" strokeWidth={3} />}
     </div>
-    {label && <Text className="text-sm text-[#9090b0] select-none">{label}</Text>}
+    {label && <Text className="text-sm text-muted select-none">{label}</Text>}
   </HStack>
 );

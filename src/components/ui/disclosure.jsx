@@ -10,7 +10,7 @@
 
 /** Wrapper that provides visual dividers between AccordionItems. */
 window.Accordion = ({ children, className = '' }) => (
-  <div className={`divide-y divide-[#2a2a3d] ${className}`}>{children}</div>
+  <div className={`divide-y divide-rim ${className}`}>{children}</div>
 );
 
 /**
@@ -24,11 +24,11 @@ window.AccordionItem = ({ title, children, defaultOpen = false, className = '' }
   return (
     <div className={className}>
       <HStack
-        className="py-3 cursor-pointer hover:text-[#f0f0fa] transition-colors"
+        className="py-3 cursor-pointer hover:text-fg transition-colors"
         onClick={() => setOpen(o => !o)}
       >
-        <Text className="flex-1 text-sm font-medium text-[#f0f0fa]">{title}</Text>
-        <Icon name={open ? 'ChevronUp' : 'ChevronDown'} size={16} className="text-[#555575] shrink-0" />
+        <Text className="flex-1 text-sm font-medium text-fg">{title}</Text>
+        <Icon name={open ? 'ChevronUp' : 'ChevronDown'} size={16} className="text-faint shrink-0" />
       </HStack>
       {open && <div className="pb-4">{children}</div>}
     </div>
@@ -64,7 +64,7 @@ window.Collapsible = ({ isOpen, children }) => {
 window.Tabs = ({ value, onChange, children, className = '' }) => (
   <HStack
     gap="gap-1"
-    className={`border-b border-[#2a2a3d] ${className}`}
+    className={`border-b border-rim ${className}`}
   >
     {React.Children.map(children, child =>
       child ? React.cloneElement(child, { _activeTab: value, _onChange: onChange }) : null
@@ -85,8 +85,8 @@ window.Tab = ({ value, children, _activeTab, _onChange, className = '' }) => {
       onClick={() => _onChange && _onChange(value)}
       className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px cursor-pointer
         ${isActive
-          ? 'border-[#10b981] text-[#f0f0fa]'
-          : 'border-transparent text-[#9090b0] hover:text-[#f0f0fa]'}
+          ? 'border-[#10b981] text-fg'
+          : 'border-transparent text-muted hover:text-fg'}
         ${className}`}
     >
       {children}

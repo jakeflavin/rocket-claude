@@ -68,5 +68,5 @@ window.Container = ({ className = '', children, ...props }) => (
  */
 window.Divider = ({ className = '', orientation = 'horizontal', ...props }) =>
   orientation === 'vertical'
-    ? <div className={`w-px bg-[#2a2a3d] self-stretch ${className}`} {...props} />
-    : <hr className={`border-[#2a2a3d] ${className}`} {...props} />;
+    ? <div className={`w-px bg-rim self-stretch ${className}`} {...props} />
+    : <hr className={`border-rim ${className}`} {...props} />;

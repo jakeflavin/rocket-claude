@@ -28,13 +28,13 @@ const SettingsProvider = ({ children }) => {
 
   if (error) {
     return (
-      <Center className="h-screen bg-[#0a0a0f]">
+      <Center className="h-screen bg-surface">
         <VStack gap="gap-3" className="items-center text-center px-6">
           <Text className="text-rose-400 font-semibold text-sm">Failed to load settings</Text>
-          <Text className="text-[#555575] text-xs max-w-xs">{error}</Text>
-          <Text className="text-[#555575] text-xs">
-            Make sure <span className="font-mono text-[#9090b0]">settings.json</span> exists
-            and the app is served via HTTP (not <span className="font-mono text-[#9090b0]">file://</span>).
+          <Text className="text-faint text-xs max-w-xs">{error}</Text>
+          <Text className="text-faint text-xs">
+            Make sure <span className="font-mono text-muted">settings.json</span> exists
+            and the app is served via HTTP (not <span className="font-mono text-muted">file://</span>).
           </Text>
         </VStack>
       </Center>
@@ -43,8 +43,8 @@ const SettingsProvider = ({ children }) => {
 
   if (!settings) {
     return (
-      <Center className="h-screen bg-[#0a0a0f]">
-        <Text className="text-[#555575] text-sm font-mono">loading settings…</Text>
+      <Center className="h-screen bg-surface">
+        <Text className="text-faint text-sm font-mono">loading settings…</Text>
       </Center>
     );
   }

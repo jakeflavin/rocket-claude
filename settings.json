@@ -3,7 +3,8 @@
     "name": "User",
     "currency": "USD",
     "currencySymbol": "$",
-    "locale": "en-US"
+    "locale": "en-US",
+    "theme": "system"
   },
 
   "dashboard": {

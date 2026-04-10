@@ -16,7 +16,7 @@ window.Spinner = ({ size = 'md', className = '' }) => {
   const sizeMap = { sm: 'w-4 h-4 border-2', md: 'w-6 h-6 border-2', lg: 'w-8 h-8 border-[3px]' };
   return (
     <div
-      className={`${sizeMap[size] || sizeMap.md} border-[#2a2a3d] border-t-[#10b981] rounded-full animate-spin ${className}`}
+      className={`${sizeMap[size] || sizeMap.md} border-rim border-t-[#10b981] rounded-full animate-spin ${className}`}
     />
   );
 };
@@ -28,7 +28,7 @@ window.Spinner = ({ size = 'md', className = '' }) => {
  * Size the element via className (e.g. "h-4 w-32").
  */
 window.Skeleton = ({ className = '', ...props }) => (
-  <div className={`bg-[#1a1a26] rounded animate-pulse ${className}`} {...props} />
+  <div className={`bg-raised rounded animate-pulse ${className}`} {...props} />
 );
 
 // ─── Progress ────────────────────────────────────────────────────────────────
@@ -46,7 +46,7 @@ window.Progress = ({ value = 0, max = 100, className = '', showLabel = false }) 
 
   return (
     <VStack gap="gap-1" className={className}>
-      <div className="h-2 w-full bg-[#2a2a3d] rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-rim rounded-full overflow-hidden">
         {/* Inline style is unavoidable here — dynamic width cannot be a static Tailwind class */}
         <div
           className={`h-full ${barColor} rounded-full transition-all duration-300`}
@@ -54,7 +54,7 @@ window.Progress = ({ value = 0, max = 100, className = '', showLabel = false }) 
         />
       </div>
       {showLabel && (
-        <Text className="text-xs text-[#9090b0]">{Math.round(pct)}%</Text>
+        <Text className="text-xs text-muted">{Math.round(pct)}%</Text>
       )}
     </VStack>
   );
@@ -86,12 +86,12 @@ window.Alert = ({ variant = 'info', title, children, onClose, className = '' }) 
       <Icon name={s.icon} size={16} className={`${s.text} mt-0.5 shrink-0`} />
       <VStack gap="gap-0.5" className="flex-1 min-w-0">
         {title && <Text className={`text-sm font-medium ${s.text}`}>{title}</Text>}
-        {children && <Text as="p" className="text-xs text-[#9090b0]">{children}</Text>}
+        {children && <Text as="p" className="text-xs text-muted">{children}</Text>}
       </VStack>
       {onClose && (
         <button
           onClick={onClose}
-          className="text-[#555575] hover:text-[#9090b0] transition-colors shrink-0"
+          className="text-faint hover:text-muted transition-colors shrink-0"
         >
           <Icon name="X" size={14} />
         </button>

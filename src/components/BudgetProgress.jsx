@@ -47,8 +47,8 @@ window.BudgetProgress = ({ transactions = [], start, end, rangeLabel }) => {
         name,
         limit,
         spent:  parseFloat((spent[name] || 0).toFixed(2)),
-        color:  meta[name]?.color || '#6b7280',
-        icon:   meta[name]?.icon  || 'MoreHorizontal',
+        color:  meta[name] ? meta[name].color : '#6b7280',
+        icon:   meta[name] ? meta[name].icon  : 'MoreHorizontal',
       }))
       .sort((a, b) => (b.spent / b.limit) - (a.spent / a.limit));
   }, [transactions, activeStart, activeEnd, settings]);
@@ -58,7 +58,7 @@ window.BudgetProgress = ({ transactions = [], start, end, rangeLabel }) => {
     <Card>
       <CardHeader>
         <HStack className="items-center justify-between">
-          <Heading level={3} className="text-sm font-semibold text-[#f0f0fa]">
+          <Heading level={3} className="text-sm font-semibold">
             Budget Progress
           </Heading>
           <Caption>{rangeLabel || 'This Month'}</Caption>
@@ -88,12 +88,12 @@ window.BudgetProgress = ({ transactions = [], start, end, rangeLabel }) => {
                         size={13}
                         style={{ color: row.color }}
                       />
-                      <Text className="text-sm font-medium text-[#f0f0fa] truncate">
+                      <Text className="text-sm font-medium text-fg truncate">
                         {row.name}
                       </Text>
                     </HStack>
                     <HStack gap="gap-1.5" className="items-baseline shrink-0">
-                      <Text className="text-xs font-mono text-[#f0f0fa]">
+                      <Text className="text-xs font-mono text-fg">
                         {Formatters.currency(row.spent)}
                       </Text>
                       <Caption>/</Caption>

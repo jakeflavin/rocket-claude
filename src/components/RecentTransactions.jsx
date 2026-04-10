@@ -34,13 +34,13 @@ window.RecentTransactions = ({ transactions = [], count, onNavigate }) => {
     <Card>
       <CardHeader>
         <HStack className="justify-between">
-          <Heading level={3} className="text-sm font-semibold text-[#f0f0fa]">
+          <Heading level={3} className="text-sm font-semibold">
             Recent Transactions
           </Heading>
           {onNavigate && (
             <button
               onClick={() => onNavigate('transactions')}
-              className="text-xs text-[#555575] hover:text-[#f0f0fa] transition-colors cursor-pointer"
+              className="text-xs text-faint hover:text-fg transition-colors cursor-pointer"
             >
               View all →
             </button>
@@ -59,7 +59,7 @@ window.RecentTransactions = ({ transactions = [], count, onNavigate }) => {
             />
           </Box>
         ) : (
-          <div className="divide-y divide-[#2a2a3d]">
+          <div className="divide-y divide-rim">
             {recent.map(t => {
               const isExpense = t.amount < 0;
               const amountDisplay = isExpense
@@ -73,7 +73,7 @@ window.RecentTransactions = ({ transactions = [], count, onNavigate }) => {
                 <HStack key={t.id} className="px-5 py-3 justify-between items-center">
                   {/* Left: merchant + date/account */}
                   <VStack gap="gap-0.5" className="min-w-0 flex-1">
-                    <Text className="text-sm font-medium text-[#f0f0fa] truncate">
+                    <Text className="text-sm font-medium text-fg truncate">
                       {merchant}
                     </Text>
                     <HStack gap="gap-1" className="items-center">

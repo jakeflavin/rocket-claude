@@ -19,13 +19,13 @@ const NAV_ITEMS = [
 ];
 
 window.Sidebar = ({ activePage, onNavigate }) => (
-  <Box className="w-60 h-full bg-[#12121a] border-r border-[#2a2a3d] flex flex-col shrink-0">
+  <Box className="w-60 h-full bg-card border-r border-rim flex flex-col shrink-0">
 
     {/* Logo */}
     <Box className="p-5">
       <HStack gap="gap-2" className="items-center">
         <Text className="text-xl leading-none">🚀</Text>
-        <Text className="font-semibold text-[#f0f0fa] text-sm tracking-wide">Rocket Claude</Text>
+        <Text className="font-semibold text-fg text-sm tracking-wide">Rocket Claude</Text>
       </HStack>
     </Box>
 
@@ -43,8 +43,8 @@ window.Sidebar = ({ activePage, onNavigate }) => (
               flex items-center gap-3 mx-2 px-3 py-2.5 rounded-lg text-sm font-medium
               transition-colors cursor-pointer border-l-2
               ${isActive
-                ? 'bg-[#1a1a26] text-[#f0f0fa] border-[#10b981]'
-                : 'text-[#9090b0] hover:bg-[#1a1a26] hover:text-[#f0f0fa] border-transparent'}
+                ? 'bg-raised text-fg border-[#10b981]'
+                : 'text-muted hover:bg-raised hover:text-fg border-transparent'}
             `}
           >
             <Icon name={item.icon} size={16} />

@@ -58,6 +58,9 @@ window.CategoryDonut = ({ transactions = [], start, end, rangeLabel }) => {
       chartRef.current = null;
     }
 
+    // Read theme tokens at render time
+    const cv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
     chartRef.current = new Chart(canvasRef.current, {
       type: 'doughnut',
       data: {
@@ -78,11 +81,11 @@ window.CategoryDonut = ({ transactions = [], start, end, rangeLabel }) => {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#1a1a26',
-            borderColor: '#2a2a3d',
+            backgroundColor: cv('--c-raised'),
+            borderColor:     cv('--c-rim'),
             borderWidth: 1,
-            titleColor: '#f0f0fa',
-            bodyColor: '#9090b0',
+            titleColor:  cv('--c-fg'),
+            bodyColor:   cv('--c-muted'),
             padding: 12,
             callbacks: {
               label: ctx => `  ${Formatters.currency(ctx.parsed)}`,
@@ -107,7 +110,7 @@ window.CategoryDonut = ({ transactions = [], start, end, rangeLabel }) => {
     <Card>
       <CardHeader>
         <HStack className="items-center justify-between">
-          <Heading level={3} className="text-sm font-semibold text-[#f0f0fa]">
+          <Heading level={3} className="text-sm font-semibold">
             Spending by Category
           </Heading>
           <Caption>{rangeLabel || 'This Month'}</Caption>
@@ -127,7 +130,7 @@ window.CategoryDonut = ({ transactions = [], start, end, rangeLabel }) => {
               <canvas ref={canvasRef} />
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <Caption>Total</Caption>
-                <Text className="text-base font-bold font-mono text-[#f0f0fa]">
+                <Text className="text-base font-bold font-mono text-fg">
                   {Formatters.currency(total)}
                 </Text>
               </div>
@@ -144,11 +147,11 @@ window.CategoryDonut = ({ transactions = [], start, end, rangeLabel }) => {
                         className="w-2.5 h-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: s.color }}
                       />
-                      <Text className="text-xs text-[#9090b0] truncate">{s.name}</Text>
+                      <Text className="text-xs text-muted truncate">{s.name}</Text>
                     </HStack>
                     <HStack gap="gap-3" className="items-center shrink-0">
                       <Caption>{pct}%</Caption>
-                      <Text className="text-xs font-mono text-[#f0f0fa] w-20 text-right">
+                      <Text className="text-xs font-mono text-fg w-20 text-right">
                         {Formatters.currency(s.amount)}
                       </Text>
                     </HStack>

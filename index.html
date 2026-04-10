@@ -52,7 +52,7 @@
     });
   </script>
 
-  <!-- Tailwind custom font config -->
+  <!-- Tailwind custom font + theme token config -->
   <script>
     tailwind.config = {
       theme: {
@@ -60,6 +60,15 @@
           fontFamily: {
             sans: ['DM Sans', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: 'var(--c-surface)',
+            card:    'var(--c-card)',
+            raised:  'var(--c-raised)',
+            rim:     'var(--c-rim)',
+            fg:      'var(--c-fg)',
+            muted:   'var(--c-muted)',
+            faint:   'var(--c-faint)',
           },
         },
       },
@@ -90,7 +99,7 @@
     }
   </style>
 </head>
-<body class="bg-[#0a0a0f]">
+<body class="bg-surface">
   <div id="root"></div>
 
   <!-- ─── UI Library (load order = dependency graph) ──────────────────── -->
