@@ -33,7 +33,7 @@ window.Center = ({ className = '', children, ...props }) => (
  *                            cols=2 → grid-cols-1 md:grid-cols-2
  *                            cols=3 → grid-cols-1 md:grid-cols-3
  */
-window.Grid = ({ className = '', cols = 2, gap = 'gap-4', responsive = false, children, ...props }) => {
+window.Grid = ({ className = '', cols = 2, gap = 'gap-4', responsive = false, children }) => {
   let colsClass;
   if (responsive) {
     const responsiveMap = {
@@ -48,7 +48,7 @@ window.Grid = ({ className = '', cols = 2, gap = 'gap-4', responsive = false, ch
     colsClass = colsMap[cols] || 'grid-cols-2';
   }
   return (
-    <div className={`grid ${colsClass} ${gap} ${className}`} {...props}>
+    <div className={`grid ${colsClass} ${gap} ${className}`}>
       {children}
     </div>
   );

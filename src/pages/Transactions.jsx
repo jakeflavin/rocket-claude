@@ -369,7 +369,7 @@ function Transactions() {
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Imported</Caption>
-                                  <Text className="text-xs text-[#f0f0fa]">{Formatters.date(t.created_at?.slice(0,10))}</Text>
+                                  <Text className="text-xs text-[#f0f0fa]">{t.created_at ? Formatters.date(new Date(t.created_at).toISOString().slice(0,10)) : '—'}</Text>
                                 </VStack>
                                 <VStack gap="gap-0.5">
                                   <Caption>Subcategory</Caption>
