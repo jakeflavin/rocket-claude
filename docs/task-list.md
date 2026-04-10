@@ -20,7 +20,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 
 ## Phase 3 — Shared Components
 
-- [ ] **T11** Create `src/components/StatCard.jsx` — label, mono value, optional delta with up/down arrow and color.
+- [x] **T11** Create `src/components/StatCard.jsx` — label, mono value, optional delta with up/down arrow and color.
 - [ ] **T12** Create `src/components/NeedsReviewBanner.jsx` — amber banner showing count of flagged transactions, links to Transactions page filtered to needs_review.
 - [ ] **T13** Create `src/components/SpendingChart.jsx` — Chart.js line chart, daily cumulative spend for selected month. Dark theme applied.
 - [ ] **T14** Create `src/components/CategoryDonut.jsx` — Chart.js doughnut chart, spend by category. Colors from `settings.json`. Dark theme applied.
