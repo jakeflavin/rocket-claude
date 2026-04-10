@@ -43,5 +43,5 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T25** Add loading skeleton screens for CSV parse delay.
 - [x] **T26** Add error state if `transactions.csv` is missing or unparseable.
 - [x] **T27** Verify all currency values use `font-mono` (JetBrains Mono).
-- [ ] **T28** Verify all category colors are derived from `settings.json` — no hardcoded hex values in components.
+- [x] **T28** Verify all category colors are derived from `settings.json` — no hardcoded hex values in components.
 - [ ] **T29** Write `README.md` — setup instructions, how to drop statements into `/statements`, how to run the Claude Code skill, how to open the dashboard.
