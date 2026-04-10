@@ -8,6 +8,21 @@
  * Notes: in-memory edits (no backend write)
  */
 
+const SUBCATEGORIES = {
+  'Income':         ['Salary','Bonus','Interest','Dividends','Refund','Other Income'],
+  'Housing':        ['Rent','Mortgage','Property Tax','HOA','Home Maintenance'],
+  'Utilities':      ['Electricity','Water','Gas','Internet','Phone'],
+  'Groceries':      ['Supermarket','Wholesale Club'],
+  'Food & Drink':   ['Coffee','Dining Out','Fast Food','Bars'],
+  'Transportation': ['Gas','Public Transit','Parking','Rideshare','Car Maintenance'],
+  'Subscriptions':  ['Streaming','Software','Memberships'],
+  'Shopping':       ['General Merchandise','Clothing','Electronics','Home Goods'],
+  'Health':         ['Medical','Pharmacy','Fitness'],
+  'Travel':         ['Flights','Hotels','Rental Car','Activities'],
+  'Entertainment':  ['Movies','Games','Events'],
+  'Misc':           ['Uncategorized'],
+};
+
 function TransactionsSkeleton() {
   return (
     <Box className="p-6">
@@ -66,6 +81,18 @@ function Transactions() {
   // ─── Inline category edits (in-memory) ────────────────────────────────────
   const [categoryEdits, setCategoryEdits] = React.useState({});
   const [editingCatId,  setEditingCatId]  = React.useState(null);
+
+  // ─── Expandable rows ───────────────────────────────────────────────────────
+  const [expandedRows,    setExpandedRows]    = React.useState(new Set());
+  const [subcategoryEdits, setSubcategoryEdits] = React.useState({});
+
+  const toggleExpand = (id) => {
+    setExpandedRows(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
   // ─── Derived: unique accounts ──────────────────────────────────────────────
   const accounts = React.useMemo(
@@ -189,6 +216,7 @@ function Transactions() {
               <Table>
                 <Thead>
                   <Tr>
+                    <Th className="w-8"></Th>
                     {SORT_COLS.map(({ key, label }) => (
                       <Th
                         key={key}
@@ -211,12 +239,24 @@ function Transactions() {
                 <Tbody>
                   {paginated.map(t => {
                     const isEditing  = editingId === t.id;
+                    const isExpanded = expandedRows.has(t.id);
                     const noteVal    = notes[t.id] ?? t.notes ?? '';
                     const amtColor   = t.amount < 0 ? 'text-rose-400' : 'text-emerald-400';
                     const amtPrefix  = t.amount < 0 ? '-' : '+';
+                    const effectiveCat = categoryEdits[t.id] ?? t.category;
+                    const subcatOptions = SUBCATEGORIES[effectiveCat] || [];
 
                     return (
-                      <Tr key={t.id}>
+                      <React.Fragment key={t.id}>
+                      <Tr className={isExpanded ? 'bg-[#0f0f1a]' : ''}>
+                        <Td className="w-8">
+                          <button
+                            onClick={() => toggleExpand(t.id)}
+                            className="text-[#555575] hover:text-[#9090b0] transition-colors"
+                          >
+                            <Icon name={isExpanded ? 'ChevronDown' : 'ChevronRight'} size={14} />
+                          </button>
+                        </Td>
                         <Td className="whitespace-nowrap text-sm">{Formatters.date(t.date)}</Td>
 
                         <Td className="text-sm">
@@ -305,6 +345,53 @@ function Transactions() {
                           )}
                         </Td>
                       </Tr>
+
+                      {isExpanded && (
+                        <Tr>
+                          <Td colSpan={8} className="p-0">
+                            <Box className="bg-[#0a0a14] border-t border-[#1a1a2e] px-6 py-4">
+                              <Grid cols={3} gap="gap-x-8 gap-y-3">
+                                <VStack gap="gap-0.5">
+                                  <Caption>Raw Description</Caption>
+                                  <Text className="text-xs text-[#f0f0fa] break-all">{t.description}</Text>
+                                </VStack>
+                                <VStack gap="gap-0.5">
+                                  <Caption>Normalized</Caption>
+                                  <Text className="text-xs text-[#f0f0fa]">{t.normalized_description}</Text>
+                                </VStack>
+                                <VStack gap="gap-0.5">
+                                  <Caption>Account Type</Caption>
+                                  <Text className="text-xs text-[#f0f0fa] capitalize">{t.account_type?.replace('_', ' ')}</Text>
+                                </VStack>
+                                <VStack gap="gap-0.5">
+                                  <Caption>Source File</Caption>
+                                  <Text className="text-xs font-mono text-[#f0f0fa]">{t.source_file}</Text>
+                                </VStack>
+                                <VStack gap="gap-0.5">
+                                  <Caption>Imported</Caption>
+                                  <Text className="text-xs text-[#f0f0fa]">{Formatters.date(t.created_at?.slice(0,10))}</Text>
+                                </VStack>
+                                <VStack gap="gap-0.5">
+                                  <Caption>Subcategory</Caption>
+                                  {subcatOptions.length > 0 ? (
+                                    <select
+                                      value={subcategoryEdits[t.id] ?? t.subcategory ?? ''}
+                                      onChange={e => setSubcategoryEdits(prev => ({ ...prev, [t.id]: e.target.value }))}
+                                      className="bg-[#1a1a26] border border-[#2a2a3d] text-[#f0f0fa] text-xs rounded px-2 py-1 outline-none focus:border-[#10b981] w-full"
+                                    >
+                                      <option value="">None</option>
+                                      {subcatOptions.map(s => <option key={s} value={s}>{s}</option>)}
+                                    </select>
+                                  ) : (
+                                    <Text className="text-xs text-[#9090b0]">—</Text>
+                                  )}
+                                </VStack>
+                              </Grid>
+                            </Box>
+                          </Td>
+                        </Tr>
+                      )}
+                      </React.Fragment>
                     );
                   })}
                 </Tbody>

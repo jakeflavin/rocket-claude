@@ -54,7 +54,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T33** Dashboard date range selector — add range dropdown (This Month, This Week, Last 7 Days, Last 30 Days, Last 90 Days, Last 12 Months) next to PageHeader. Filter all dashboard stats and charts through selected range.
 - [x] **T34** Account name/type editing in Settings — replace read-only accounts table with editable rows (Input for name, Select for type). Persist overrides to `settings.accountAliases` in settings context. Apply aliases in Transactions display.
 - [x] **T35** Inline category editing in Transactions — click category badge to open a Select dropdown; save updates a local `categoryEdits` map (session-only). Show a subtle indicator on edited rows.
-- [ ] **T36** Expandable transaction rows — chevron button expands a detail panel showing all fields (description, account_type, source_file, timestamps) and an editable subcategory Select.
+- [x] **T36** Expandable transaction rows — chevron button expands a detail panel showing all fields (description, account_type, source_file, timestamps) and an editable subcategory Select.
 - [ ] **T37** Pie chart view for Bills — view toggle (List / Chart); Chart.js doughnut by merchant sized by average monthly amount.
 - [ ] **T38** Pie chart view for Subscriptions — same view toggle pattern; doughnut by merchant sized by monthly cost.
 - [ ] **T39** Calendar view for Bills — third view tab; monthly calendar grid with bills plotted on their estimated due dates. Prev/next month navigation.
