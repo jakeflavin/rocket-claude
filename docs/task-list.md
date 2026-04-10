@@ -56,7 +56,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T35** Inline category editing in Transactions — click category badge to open a Select dropdown; save updates a local `categoryEdits` map (session-only). Show a subtle indicator on edited rows.
 - [x] **T36** Expandable transaction rows — chevron button expands a detail panel showing all fields (description, account_type, source_file, timestamps) and an editable subcategory Select.
 - [x] **T37** Pie chart view for Bills — view toggle (List / Chart); Chart.js doughnut by merchant sized by average monthly amount.
-- [ ] **T38** Pie chart view for Subscriptions — same view toggle pattern; doughnut by merchant sized by monthly cost.
+- [x] **T38** Pie chart view for Subscriptions — same view toggle pattern; doughnut by merchant sized by monthly cost.
 - [ ] **T39** Calendar view for Bills — third view tab; monthly calendar grid with bills plotted on their estimated due dates. Prev/next month navigation.
 - [ ] **T40** Calendar view for Subscriptions — same calendar pattern for subscription due dates.
 - [ ] **T41** Light / dark / system theme support — CSS custom properties in `index.html`, Tailwind semantic color aliases, `data-theme` toggle in `App.jsx`, theme selector in Settings. Replace all hardcoded hex colors across component/page files with semantic classes.
