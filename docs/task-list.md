@@ -10,7 +10,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T04** Create `src/utils/formatters.js` — implement `Formatters.currency()`, `Formatters.date()`, `Formatters.percent()`, `Formatters.relativeDate()`. Expose on `window.Formatters`.
 - [x] **T05** Create `src/utils/csvParser.js` — PapaParse wrapper that validates required fields and drops malformed rows. Expose on `window.CsvParser`.
 - [x] **T06** Create `src/utils/categorizer.js` — identifies recurring transactions (same merchant, 2+ months) for the Bills page. Expose on `window.Categorizer`.
-- [ ] **T07** Create `src/context/SettingsContext.jsx` — fetch `settings.json`, provide via context, expose `useSettings()`.
+- [x] **T07** Create `src/context/SettingsContext.jsx` — fetch `settings.json`, provide via context, expose `useSettings()`.
 - [ ] **T08** Create `src/hooks/useTransactions.js` — load CSV via PapaParse, expose `transactions`, `expenses`, `income`, `needsReview`, `subscriptions`, `bills`, `loading`, `error`.
 
 ## Phase 2 — Layout & Navigation
