@@ -15,12 +15,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-  <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
   <!-- Register Chart.js components once, globally -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      Chart.register(...Chart.registerables);
+      if (!window.Chart) return;
       Chart.defaults.color = '#9090b0';
       Chart.defaults.borderColor = '#2a2a3d';
       Chart.defaults.backgroundColor = 'transparent';

@@ -7,7 +7,7 @@
  */
 
 /**
- * Lucide React icon wrapper.
+ * Lucide icon wrapper.
  * Icon names come from settings.json — never hardcode them in components.
  *
  * @prop name        {string} Lucide icon name, e.g. 'TrendingUp'
@@ -16,12 +16,35 @@
  * @prop color       {string} CSS colour value
  */
 window.Icon = ({ name, size = 16, className = '', color, strokeWidth = 2, ...props }) => {
-  const IconComponent = LucideReact[name];
-  if (!IconComponent) {
+  if (!window.lucide || typeof window.lucide.createElement !== 'function') {
+    console.warn('[Icon] Lucide failed to load.');
+    return null;
+  }
+
+  const iconNode = window.lucide.icons?.[name];
+  if (!iconNode) {
     console.warn(`[Icon] Unknown Lucide icon: "${name}"`);
     return null;
   }
-  return React.createElement(IconComponent, { size, className, color, strokeWidth, ...props });
+
+  const containerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!containerRef.current) return;
+
+    const svgElement = window.lucide.createElement(iconNode, {
+      width: size,
+      height: size,
+      stroke: color || 'currentColor',
+      'stroke-width': strokeWidth,
+      class: className,
+      ...props,
+    });
+
+    containerRef.current.replaceChildren(svgElement);
+  }, [iconNode, size, color, strokeWidth, className, props]);
+
+  return <span ref={containerRef} aria-hidden="true" />;
 };
 
 /**
