@@ -17,14 +17,14 @@ const _PageStub = ({ name }) => (
   </Center>
 );
 
-const _renderPage = (page) => {
+const _renderPage = (page, onNavigate) => {
   // Real page components will be swapped in here as T19–T23 are completed.
   // Check for the real component first, fall back to stub.
-  if (page === 'dashboard'     && typeof Dashboard     !== 'undefined') return <Dashboard />;
-  if (page === 'transactions'  && typeof Transactions  !== 'undefined') return <Transactions />;
-  if (page === 'subscriptions' && typeof Subscriptions !== 'undefined') return <Subscriptions />;
-  if (page === 'bills'         && typeof Bills         !== 'undefined') return <Bills />;
-  if (page === 'settings'      && typeof Settings      !== 'undefined') return <Settings />;
+  if (page === 'dashboard'     && typeof Dashboard     !== 'undefined') return <Dashboard onNavigate={onNavigate} />;
+  if (page === 'transactions'  && typeof Transactions  !== 'undefined') return <Transactions onNavigate={onNavigate} />;
+  if (page === 'subscriptions' && typeof Subscriptions !== 'undefined') return <Subscriptions onNavigate={onNavigate} />;
+  if (page === 'bills'         && typeof Bills         !== 'undefined') return <Bills onNavigate={onNavigate} />;
+  if (page === 'settings'      && typeof Settings      !== 'undefined') return <Settings onNavigate={onNavigate} />;
 
   const labels = {
     dashboard:     'Dashboard',
@@ -46,7 +46,7 @@ const App = () => {
       <div className="flex h-screen bg-[#0a0a0f] text-[#f0f0fa] overflow-hidden">
         <Sidebar activePage={activePage} onNavigate={setActivePage} />
         <main className="flex-1 overflow-y-auto">
-          {_renderPage(activePage)}
+          {_renderPage(activePage, setActivePage)}
         </main>
       </div>
     </SettingsProvider>
