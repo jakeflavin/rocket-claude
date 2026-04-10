@@ -39,7 +39,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 
 ## Phase 5 — Polish
 
-- [ ] **T24** Add empty state components to every list: friendly message + icon when no data matches filters.
+- [x] **T24** Add empty state components to every list: friendly message + icon when no data matches filters.
 - [ ] **T25** Add loading skeleton screens for CSV parse delay.
 - [ ] **T26** Add error state if `transactions.csv` is missing or unparseable.
 - [ ] **T27** Verify all currency values use `font-mono` (JetBrains Mono).
