@@ -63,6 +63,10 @@ function Transactions() {
   const [editingId,   setEditingId]   = React.useState(null);
   const [editingNote, setEditingNote] = React.useState('');
 
+  // ─── Inline category edits (in-memory) ────────────────────────────────────
+  const [categoryEdits, setCategoryEdits] = React.useState({});
+  const [editingCatId,  setEditingCatId]  = React.useState(null);
+
   // ─── Derived: unique accounts ──────────────────────────────────────────────
   const accounts = React.useMemo(
     () => [...new Set(transactions.map(t => t.account))].sort(),
@@ -225,7 +229,38 @@ function Transactions() {
                         </Td>
 
                         <Td>
-                          <Badge color={catColor(t.category)}>{t.category}</Badge>
+                          {editingCatId === t.id ? (
+                            <select
+                              autoFocus
+                              value={categoryEdits[t.id] ?? t.category}
+                              onChange={e => {
+                                setCategoryEdits(prev => ({ ...prev, [t.id]: e.target.value }));
+                                setEditingCatId(null);
+                              }}
+                              onBlur={() => setEditingCatId(null)}
+                              className="bg-[#1a1a26] border border-[#2a2a3d] text-[#f0f0fa] text-xs rounded px-2 py-1 outline-none focus:border-[#10b981]"
+                            >
+                              {settings.categories.map(c => (
+                                <option key={c.name} value={c.name}>{c.name}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <HStack gap="gap-1.5" className="items-center">
+                              <Tooltip label="Click to edit category">
+                                <Box
+                                  className="cursor-pointer"
+                                  onClick={() => setEditingCatId(t.id)}
+                                >
+                                  <Badge color={catColor(categoryEdits[t.id] ?? t.category)}>
+                                    {categoryEdits[t.id] ?? t.category}
+                                  </Badge>
+                                </Box>
+                              </Tooltip>
+                              {categoryEdits[t.id] && categoryEdits[t.id] !== t.category && (
+                                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" title="Edited (session only)" />
+                              )}
+                            </HStack>
+                          )}
                         </Td>
 
                         <Td className="text-sm text-[#9090b0] whitespace-nowrap">{displayAccount(t.account)}</Td>
