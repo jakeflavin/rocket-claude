@@ -8,19 +8,19 @@ A companion **Claude Code skill** handles the messy work: ingesting bank PDFs an
 
 ## Goals
 
-- Zero-friction: double-click `index.html` to launch
+- Zero-friction: `npx serve .` and open `http://localhost:3000`
 - Claude Code is the data engine; the UI is pure display + interaction
-- Dark-first, polished, and fast
-- All financial logic lives in the CSV — the UI never mutates source data (except editable `notes` and `needs_review` fields written back to the CSV)
+- Dark-first, polished, and fast — light/dark/system theme toggle included
+- All financial logic lives in the CSV — the UI never mutates source data (except editable `notes`, `needs_review`, and category overrides)
 
 ## Tech Stack
 
-| Layer        | Choice                               | Why                                |
-|--------------|--------------------------------------|------------------------------------|
-| UI Framework | React 18 (via CDN)                   | No build step via Babel standalone |
-| Styling      | Tailwind CSS (via CDN)               | Utility-first, dark mode support   |
-| Components   | Custom primitives (`primitives.jsx`) | Box/VStack/HStack/Text — thin Tailwind wrappers; Gluestack has no CDN build |
-| Icons        | Lucide React (via CDN)               | Icon names stored in `settings.json`; rendered via `LucideReact[name]`      |
-| Charts       | Chart.js + react-chartjs-2 (via CDN) | Flexible, dark-theme friendly      |
-| CSV Parsing  | PapaParse (via CDN)                  | Fast, robust, browser-native       |
-| Routing      | No router — tab-based state          | Keeps everything in one HTML file  |
+| Layer        | Choice                                    | Why                                |
+|--------------|-------------------------------------------|------------------------------------|
+| UI Framework | React 18 (via CDN)                        | No build step via Babel standalone |
+| Styling      | Tailwind CSS (via CDN)                    | Utility-first, dark/light mode support |
+| Components   | Custom UI library (`src/components/ui/`)  | Box/VStack/HStack/Text — thin Tailwind wrappers across 9 files; no external UI framework |
+| Icons        | Lucide (vanilla, via CDN)                 | Icon names stored in `settings.json`; rendered via `Icon` primitive wrapping `window.lucide` |
+| Charts       | Chart.js (via CDN)                        | UMD bundle auto-registers; `useRef`+`useEffect` lifecycle |
+| CSV Parsing  | PapaParse (via CDN)                       | Fast, robust, browser-native       |
+| Routing      | No router — tab-based state               | Keeps everything in one HTML file  |

@@ -122,7 +122,7 @@ Full reference with props and when-to-use notes: **[docs/ui-library.md](docs/ui-
 
 ## Active Work Queue
 
-**[docs/task-list.md](docs/task-list.md)** — 30 tasks across 5 phases
+**[docs/task-list.md](docs/task-list.md)** — 41 tasks across 6 phases — all complete
 
 **Workflow:** Mark a task as complete and then commit all changes after each task is complete before moving to the next.
 

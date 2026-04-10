@@ -40,6 +40,9 @@ Shopping        → General Merchandise, Clothing, Electronics, Home Goods
 Health          → Medical, Pharmacy, Fitness
 Travel          → Flights, Hotels, Rental Car, Activities
 Entertainment   → Movies, Games, Events
+Child Care      → Daycare, Babysitting, School
+Transfers       → Internal Transfer
+Payments        → Credit Card Payment
 Misc            → Uncategorized
 ```
 
