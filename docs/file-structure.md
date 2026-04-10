@@ -50,13 +50,16 @@ rocket-claude/
     │   │   └── other.jsx             # EmptyState, PageHeader, Stat
     │   ├── Sidebar.jsx               # Left nav — app logo, page links, footer date
     │   ├── StatCard.jsx              # KPI card (label, value, delta, optional icon)
-    │   ├── NeedsReviewBanner.jsx     # Amber alert banner for flagged transactions
-    │   ├── SpendingChart.jsx         # Line chart — daily cumulative spend over month
+    │   ├── NeedsReviewBanner.jsx     # Dismissible amber alert banner for flagged transactions
+    │   ├── SpendingChart.jsx         # Line chart — daily cumulative spend over selected range
     │   ├── CategoryDonut.jsx         # Doughnut chart — spend by category
     │   ├── BudgetProgress.jsx        # Progress bars per budgeted category
     │   ├── RecentTransactions.jsx    # Last N transactions list
     │   ├── SubscriptionCard.jsx      # Single subscription merchant card
-    │   └── BillItem.jsx              # Single bill row with status indicator
+    │   ├── BillItem.jsx              # Single bill row with status indicator
+    │   ├── DataErrorState.jsx        # Error fallback for failed CSV load
+    │   ├── RecurringDonut.jsx        # Shared doughnut chart for Bills and Subscriptions chart views
+    │   └── RecurringCalendar.jsx     # Shared calendar grid for Bills and Subscriptions calendar views
     ├── pages/
     │   ├── Dashboard.jsx             # Overview — all widgets assembled
     │   ├── Transactions.jsx          # Full transaction list with filters + inline edit
@@ -74,11 +77,11 @@ Script load order **is** the dependency graph — there is no module bundler.
 Every file must come after the files it depends on.
 
 ```
-CDN deps (React 18, ReactDOM, Babel standalone, Tailwind, PapaParse, Chart.js, Lucide React)
+CDN deps (React 18, ReactDOM, Babel standalone, Tailwind, PapaParse, Chart.js, Lucide)
   │
   ├─ src/components/ui/layout.jsx          ← no dependencies
   ├─ src/components/ui/typography.jsx      ← no dependencies
-  ├─ src/components/ui/media.jsx           ← depends on: (LucideReact global from CDN)
+  ├─ src/components/ui/media.jsx           ← depends on: (lucide global from CDN)
   ├─ src/components/ui/forms.jsx           ← depends on: layout, typography, media
   ├─ src/components/ui/feedback.jsx        ← depends on: layout, typography, media
   ├─ src/components/ui/data-display.jsx    ← depends on: layout, typography
@@ -102,11 +105,14 @@ CDN deps (React 18, ReactDOM, Babel standalone, Tailwind, PapaParse, Chart.js, L
   ├─ src/components/RecentTransactions.jsx ← depends on: data-display, typography, other, formatters, SettingsContext
   ├─ src/components/SubscriptionCard.jsx   ← depends on: data-display, typography, media, formatters, SettingsContext
   ├─ src/components/BillItem.jsx           ← depends on: data-display, typography, media, formatters, SettingsContext
+  ├─ src/components/DataErrorState.jsx     ← depends on: other, layout
+  ├─ src/components/RecurringDonut.jsx     ← depends on: data-display, typography, other, SettingsContext
+  ├─ src/components/RecurringCalendar.jsx  ← depends on: layout, typography, data-display, formatters
   │
   ├─ src/pages/Dashboard.jsx              ← depends on: all components above + useTransactions
   ├─ src/pages/Transactions.jsx           ← depends on: all components above + useTransactions
-  ├─ src/pages/Subscriptions.jsx          ← depends on: SubscriptionCard + useTransactions
-  ├─ src/pages/Bills.jsx                  ← depends on: BillItem + useTransactions
+  ├─ src/pages/Subscriptions.jsx          ← depends on: SubscriptionCard, RecurringDonut, RecurringCalendar + useTransactions
+  ├─ src/pages/Bills.jsx                  ← depends on: BillItem, RecurringDonut, RecurringCalendar + useTransactions
   ├─ src/pages/Settings.jsx               ← depends on: forms, SettingsContext, useTransactions
   │
   └─ src/App.jsx                          ← depends on: everything

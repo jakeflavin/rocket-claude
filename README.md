@@ -80,11 +80,11 @@ If any transactions need review, an amber banner appears at the top of the Dashb
 
 | Page | What it shows |
 |------|--------------|
-| **Dashboard** | KPI cards, spending chart, category donut, budget progress, recent transactions, upcoming bills |
-| **Transactions** | Full searchable/filterable table with inline note editing |
-| **Subscriptions** | All subscription charges grouped by merchant, filterable by subcategory |
-| **Bills** | Recurring Utilities + Housing bills with payment status and next due date |
-| **Settings** | Profile, accounts, budget limits, notification toggles, imported files |
+| **Dashboard** | KPI cards, date-range selector, spending chart, category donut, budget progress, recent transactions, upcoming bills |
+| **Transactions** | Full searchable/filterable table with inline note and category editing, expandable detail rows |
+| **Subscriptions** | Subscription charges grouped by merchant — list, pie chart, or calendar view |
+| **Bills** | Recurring Utilities + Housing bills with status and due dates — list, pie chart, or calendar view |
+| **Settings** | Editable accounts, budget limits, notification toggles, theme selector, imported files |
 
 ---
 
@@ -92,7 +92,7 @@ If any transactions need review, an amber banner appears at the top of the Dashb
 
 | Key | What it controls |
 |-----|-----------------|
-| `user.name` | Display name shown in Settings |
+| `user.theme` | Starting theme — `"dark"`, `"light"`, or `"system"` (also changeable in Settings) |
 | `budgets` | Monthly spending limit per category (editable in Settings → Budget Limits) |
 | `categories` | Category names, hex colors, and Lucide icon names — edit here to change badge colors app-wide |
 | `dashboard.recentTransactionsCount` | How many rows appear in the Dashboard recent list |

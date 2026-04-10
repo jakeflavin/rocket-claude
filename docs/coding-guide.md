@@ -21,7 +21,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-<script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
 <!-- UI library — layout and typography first, everything else depends on them -->
 <script type="text/babel" src="src/components/ui/layout.jsx"></script>
