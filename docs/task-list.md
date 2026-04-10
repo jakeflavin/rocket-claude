@@ -8,7 +8,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T02** Create `settings.json` with full structure: `user`, `dashboard`, `budgets`, `categories` (all 12 from schema), `accounts`, `notifications`, `data`.
 - [x] **T03** Create `data/transactions.csv` with 60+ realistic mock rows spanning 3 months, covering all 12 categories, 3 accounts (TD Chequing, Chase Savings, Amex Gold), and at least 8 subscriptions and 6 recurring bills. Include 5 rows with `needs_review: true`.
 - [x] **T04** Create `src/utils/formatters.js` — implement `Formatters.currency()`, `Formatters.date()`, `Formatters.percent()`, `Formatters.relativeDate()`. Expose on `window.Formatters`.
-- [ ] **T05** Create `src/utils/csvParser.js` — PapaParse wrapper that validates required fields and drops malformed rows. Expose on `window.CsvParser`.
+- [x] **T05** Create `src/utils/csvParser.js` — PapaParse wrapper that validates required fields and drops malformed rows. Expose on `window.CsvParser`.
 - [ ] **T06** Create `src/utils/categorizer.js` — identifies recurring transactions (same merchant, 2+ months) for the Bills page. Expose on `window.Categorizer`.
 - [ ] **T07** Create `src/context/SettingsContext.jsx` — fetch `settings.json`, provide via context, expose `useSettings()`.
 - [ ] **T08** Create `src/hooks/useTransactions.js` — load CSV via PapaParse, expose `transactions`, `expenses`, `income`, `needsReview`, `subscriptions`, `bills`, `loading`, `error`.
