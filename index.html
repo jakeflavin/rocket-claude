@@ -68,6 +68,26 @@
 
   <style>
     body { font-family: 'DM Sans', sans-serif; }
+
+    /* ── Theme tokens — dark default, light override ── */
+    :root {
+      --c-surface: #0a0a0f;
+      --c-card:    #12121a;
+      --c-raised:  #1a1a26;
+      --c-rim:     #2a2a3d;
+      --c-fg:      #f0f0fa;
+      --c-muted:   #9090b0;
+      --c-faint:   #555575;
+    }
+    [data-theme="light"] {
+      --c-surface: #f5f5fc;
+      --c-card:    #ffffff;
+      --c-raised:  #ededf8;
+      --c-rim:     #d8d8ee;
+      --c-fg:      #1a1a2e;
+      --c-muted:   #5050a0;
+      --c-faint:   #9090b0;
+    }
   </style>
 </head>
 <body class="bg-[#0a0a0f]">
@@ -107,6 +127,8 @@
   <script type="text/babel" src="src/components/SubscriptionCard.jsx"></script>
   <script type="text/babel" src="src/components/BillItem.jsx"></script>
   <script type="text/babel" src="src/components/DataErrorState.jsx"></script>
+  <script type="text/babel" src="src/components/RecurringDonut.jsx"></script>
+  <script type="text/babel" src="src/components/RecurringCalendar.jsx"></script>
 
   <!-- ─── Pages ─────────────────────────────────────────────────────────── -->
   <script type="text/babel" src="src/pages/Dashboard.jsx"></script>
