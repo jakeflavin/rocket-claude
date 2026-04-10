@@ -34,7 +34,7 @@ Complete tasks in order. Each task must be fully working before moving to the ne
 - [x] **T19** Build `src/pages/Dashboard.jsx` — assemble all dashboard widgets. 4 KPI cards across top, 2-column grid below (SpendingChart + CategoryDonut), BudgetProgress, RecentTransactions + upcoming bills side by side. NeedsReviewBanner at top if applicable.
 - [x] **T20** Build `src/pages/Transactions.jsx` — full list with search input, category filter dropdown, account filter dropdown, date range pickers, needs_review toggle filter. Paginated 50/page. Sortable columns. Inline notes editor.
 - [x] **T21** Build `src/pages/Subscriptions.jsx` — group by merchant, show monthly cost, subcategory filter tabs (All / Streaming / Software / Memberships), monthly total header.
-- [ ] **T22** Build `src/pages/Bills.jsx` — recurring Utilities + Housing transactions. Group by merchant. Show last paid, estimated next due, status. Sort by next due date ascending.
+- [x] **T22** Build `src/pages/Bills.jsx` — recurring Utilities + Housing transactions. Group by merchant. Show last paid, estimated next due, status. Sort by next due date ascending.
 - [ ] **T23** Build `src/pages/Settings.jsx` — 5 sections: Profile editor, Accounts list (derived from CSV), Budget limits editor (saves to settings.json), Notifications toggles, Imported Files table (unique source_file values + transaction counts).
 
 ## Phase 5 — Polish
