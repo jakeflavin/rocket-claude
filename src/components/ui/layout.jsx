@@ -26,13 +26,29 @@ window.Center = ({ className = '', children, ...props }) => (
 
 /**
  * CSS grid wrapper.
- * @prop cols {1|2|3|4} number of columns
- * @prop gap  {string}  Tailwind gap class
+ * @prop cols       {1|2|3|4} number of columns
+ * @prop gap        {string}  Tailwind gap class
+ * @prop responsive {boolean} if true, stacks to 1-col on mobile and steps up:
+ *                            cols=4 → grid-cols-2 md:grid-cols-4
+ *                            cols=2 → grid-cols-1 md:grid-cols-2
+ *                            cols=3 → grid-cols-1 md:grid-cols-3
  */
-window.Grid = ({ className = '', cols = 2, gap = 'gap-4', children, ...props }) => {
-  const colsMap = { 1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4' };
+window.Grid = ({ className = '', cols = 2, gap = 'gap-4', responsive = false, children, ...props }) => {
+  let colsClass;
+  if (responsive) {
+    const responsiveMap = {
+      1: 'grid-cols-1',
+      2: 'grid-cols-1 md:grid-cols-2',
+      3: 'grid-cols-1 md:grid-cols-3',
+      4: 'grid-cols-2 lg:grid-cols-4',
+    };
+    colsClass = responsiveMap[cols] || 'grid-cols-1 md:grid-cols-2';
+  } else {
+    const colsMap = { 1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4' };
+    colsClass = colsMap[cols] || 'grid-cols-2';
+  }
   return (
-    <div className={`grid ${colsMap[cols] || 'grid-cols-2'} ${gap} ${className}`} {...props}>
+    <div className={`grid ${colsClass} ${gap} ${className}`} {...props}>
       {children}
     </div>
   );

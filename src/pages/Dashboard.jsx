@@ -3,15 +3,15 @@ function DashboardSkeleton() {
     <Box className="p-6">
       <VStack gap="gap-6">
         <Skeleton className="h-8 w-52" />
-        <Grid cols={4} gap="gap-4">
+        <Grid cols={4} gap="gap-4" responsive>
           {[0,1,2,3].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
         </Grid>
-        <Grid cols={2} gap="gap-4">
+        <Grid cols={2} gap="gap-4" responsive>
           <Skeleton className="h-64 rounded-xl" />
           <Skeleton className="h-64 rounded-xl" />
         </Grid>
         <Skeleton className="h-48 rounded-xl" />
-        <Grid cols={2} gap="gap-4">
+        <Grid cols={2} gap="gap-4" responsive>
           <Skeleton className="h-56 rounded-xl" />
           <Skeleton className="h-56 rounded-xl" />
         </Grid>
@@ -83,7 +83,7 @@ function Dashboard({ onNavigate }) {
         />
 
         {/* KPI Cards */}
-        <Grid cols={4} gap="gap-4">
+        <Grid cols={4} gap="gap-4" responsive>
           <StatCard label="Total Spent"       value={Formatters.currency(totalSpent)}   icon="TrendingDown" />
           <StatCard label="Total Income"      value={Formatters.currency(totalIncome)}  icon="TrendingUp"   />
           <StatCard
@@ -103,7 +103,7 @@ function Dashboard({ onNavigate }) {
         </Grid>
 
         {/* Charts */}
-        <Grid cols={2} gap="gap-4">
+        <Grid cols={2} gap="gap-4" responsive>
           <SpendingChart  transactions={transactions} month={currentMonth} />
           <CategoryDonut  transactions={transactions} month={currentMonth} />
         </Grid>
@@ -112,7 +112,7 @@ function Dashboard({ onNavigate }) {
         <BudgetProgress transactions={transactions} month={currentMonth} />
 
         {/* Recent Transactions + Upcoming Bills */}
-        <Grid cols={2} gap="gap-4">
+        <Grid cols={2} gap="gap-4" responsive>
           <RecentTransactions transactions={transactions} onNavigate={onNavigate} />
 
           <Card>
