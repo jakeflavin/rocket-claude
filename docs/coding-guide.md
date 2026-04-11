@@ -190,54 +190,39 @@ npx serve .
 The CDN loads `chart.umd.min.js` which auto-registers all controllers, elements,
 and scales — `Chart.register()` is not needed and should not be called.
 
-Chart instances must be created and destroyed via `useRef` + `useEffect`.
-Failing to destroy before re-creating causes a "canvas already in use" error.
+All Chart.js boilerplate lives in `src/components/ui/charts.jsx`. **Never copy
+the destroy/recreate pattern or tooltip config directly into a component.** Use
+the shared helpers instead.
+
+### `useChart` — lifecycle hook
+
+Handles the `useRef` + `useEffect` destroy/recreate cycle. Return `null` from
+`buildConfig` to skip creation when there is no data.
 
 ```javascript
 const canvasRef = React.useRef(null);
-const chartRef  = React.useRef(null);
 
-React.useEffect(() => {
-  if (!canvasRef.current || !data.length) return;
+useChart(canvasRef, () => {
+  if (!data.length) return null;         // skip — no canvas created
 
-  // Destroy previous instance before creating a new one
-  if (chartRef.current) {
-    chartRef.current.destroy();
-    chartRef.current = null;
-  }
+  const t = ChartTheme.read();           // read CSS vars for active theme
 
-  chartRef.current = new Chart(canvasRef.current, {
-    type: 'line', // or 'doughnut', 'bar', etc.
+  return {
+    type: 'line',
     data: { … },
     options: {
       responsive: true,
-      maintainAspectRatio: false,  // container div controls height
+      maintainAspectRatio: false,        // container div controls height
       plugins: {
-        legend: { display: false }, // use custom legend
-        tooltip: {
-          backgroundColor: '#1a1a26',
-          borderColor: '#2a2a3d',
-          borderWidth: 1,
-          titleColor: '#f0f0fa',
-          bodyColor: '#9090b0',
-          padding: 12,
-        },
+        legend: { display: false },
+        tooltip: ChartTheme.tooltip(t, {
+          label: ctx => `  ${Formatters.currency(ctx.parsed.y)}`,
+        }),
       },
-      scales: {
-        x: { grid: { color: '#2a2a3d' }, ticks: { color: '#9090b0' } },
-        y: { grid: { color: '#2a2a3d' }, ticks: { color: '#9090b0' } },
-      },
+      scales: ChartTheme.scales(t, v => Formatters.currency(v)),
     },
-  });
-
-  // Cleanup on unmount or dependency change
-  return () => {
-    if (chartRef.current) {
-      chartRef.current.destroy();
-      chartRef.current = null;
-    }
   };
-}, [data]); // re-run only when data changes
+}, [data]);                              // re-run only when data changes
 ```
 
 Always wrap the canvas in a container div with a fixed height and `relative`:
@@ -245,6 +230,22 @@ Always wrap the canvas in a container div with a fixed height and `relative`:
 <div className="relative h-56">
   <canvas ref={canvasRef} />
 </div>
+```
+
+### `ChartTheme` — theme token helpers
+
+```javascript
+const t = ChartTheme.read();                            // { raised, rim, fg, muted }
+ChartTheme.tooltip(t, callbacks)                        // tooltip plugin config
+ChartTheme.scales(t, yTickFn)                           // x/y scales config
+```
+
+### `ChartHelpers` — data utilities
+
+```javascript
+// Generate a hue-rotated color palette for subscription donut slices
+ChartHelpers.hueRotatedSlices(subscriptionGroups, baseHex)
+// → [{ label, amount, color }, …]
 ```
 
 ---

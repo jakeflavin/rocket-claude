@@ -1,4 +1,5 @@
-const BILL_STATUS = {
+// Canonical bill status config — shared with Dashboard's upcoming bills list.
+window.BILL_STATUS = {
   paid:     { label: 'Paid',     color: '#10b981' },
   due_soon: { label: 'Due Soon', color: '#f59e0b' },
   overdue:  { label: 'Overdue',  color: '#ef4444' },

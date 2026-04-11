@@ -20,13 +20,7 @@
 window.RecentTransactions = ({ transactions = [], count, onNavigate }) => {
   const { settings } = useSettings();
   const limit = count || settings.dashboard.recentTransactionsCount || 10;
-
-  // Color lookup keyed by category name
-  const colorMap = React.useMemo(() => {
-    const map = {};
-    settings.categories.forEach(c => { map[c.name] = c.color; });
-    return map;
-  }, [settings.categories]);
+  const colorMap = useCategoryColorMap();
 
   const recent = transactions.slice(0, limit);
 

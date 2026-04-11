@@ -52,7 +52,7 @@ function Transactions() {
   const { settings } = useSettings();
   const { transactions, loading, error, reload } = useTransactions();
 
-  // ─── Account alias helper ──────────────────────────────────────────────────
+  // ─── Account alias helper ─────────────────────────────────────────────────
   const displayAccount = React.useCallback(
     name => settings.accountAliases?.[name]?.displayName ?? name,
     [settings.accountAliases]
@@ -83,8 +83,7 @@ function Transactions() {
   const [editingCatId,  setEditingCatId]  = React.useState(null);
 
   // ─── Expandable rows ───────────────────────────────────────────────────────
-  const [expandedRows,    setExpandedRows]    = React.useState(new Set());
-  const [subcategoryEdits, setSubcategoryEdits] = React.useState({});
+  const [expandedRows, setExpandedRows] = React.useState(new Set());
 
   const toggleExpand = (id) => {
     setExpandedRows(prev => {
@@ -101,10 +100,8 @@ function Transactions() {
   );
 
   // ─── Category color lookup ─────────────────────────────────────────────────
-  const catColor = React.useCallback((name) => {
-    const cat = settings.categories.find(c => c.name === name);
-    return cat?.color ?? '#6b7280';
-  }, [settings.categories]);
+  const colorMap = useCategoryColorMap();
+  const catColor = name => colorMap[name] ?? '#6b7280';
 
   // ─── Filtered ─────────────────────────────────────────────────────────────
   const filtered = React.useMemo(() => {
@@ -375,8 +372,7 @@ function Transactions() {
                                   <Caption>Subcategory</Caption>
                                   {subcatOptions.length > 0 ? (
                                     <select
-                                      value={subcategoryEdits[t.id] ?? t.subcategory ?? ''}
-                                      onChange={e => setSubcategoryEdits(prev => ({ ...prev, [t.id]: e.target.value }))}
+                                      defaultValue={t.subcategory ?? ''}
                                       className="bg-raised border border-rim text-fg text-xs rounded px-2 py-1 outline-none focus:border-[#10b981] w-full"
                                     >
                                       <option value="">None</option>

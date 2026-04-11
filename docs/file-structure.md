@@ -34,7 +34,7 @@ rocket-claude/
     │   ├── csvParser.js              # PapaParse wrapper + row validation
     │   └── categorizer.js            # Derives bills recurrence from transaction list
     ├── context/
-    │   └── SettingsContext.jsx       # Settings loader + provider + useSettings hook
+    │   └── SettingsContext.jsx       # Settings loader + provider + useSettings + useCategoryColorMap
     ├── hooks/
     │   └── useTransactions.js        # CSV reader + derived data views
     ├── components/
@@ -47,19 +47,18 @@ rocket-claude/
     │   │   ├── data-display.jsx      # Card, CardHeader, CardBody, CardFooter, Badge, Table family
     │   │   ├── overlay.jsx           # Portal, Modal, AlertDialog, Tooltip, Popover, Menu, MenuItem
     │   │   ├── disclosure.jsx        # Accordion, AccordionItem, Collapsible, Tabs, Tab, TabPanel
-    │   │   └── other.jsx             # EmptyState, PageHeader, Stat
+    │   │   ├── other.jsx             # EmptyState, PageHeader, Stat
+    │   │   └── charts.jsx            # ChartTheme, useChart, ChartHelpers, SpendingChart, CategoryDonut, RecurringDonut
     │   ├── Sidebar.jsx               # Left nav — app logo, page links, footer date
     │   ├── StatCard.jsx              # KPI card (label, value, delta, optional icon)
     │   ├── NeedsReviewBanner.jsx     # Dismissible amber alert banner for flagged transactions
-    │   ├── SpendingChart.jsx         # Line chart — daily cumulative spend over selected range
-    │   ├── CategoryDonut.jsx         # Doughnut chart — spend by category
     │   ├── BudgetProgress.jsx        # Progress bars per budgeted category
     │   ├── RecentTransactions.jsx    # Last N transactions list
     │   ├── SubscriptionCard.jsx      # Single subscription merchant card
-    │   ├── BillItem.jsx              # Single bill row with status indicator
+    │   ├── BillItem.jsx              # Single bill row with status indicator (owns BILL_STATUS global)
     │   ├── DataErrorState.jsx        # Error fallback for failed CSV load
-    │   ├── RecurringDonut.jsx        # Shared doughnut chart for Bills and Subscriptions chart views
-    │   └── RecurringCalendar.jsx     # Shared calendar grid for Bills and Subscriptions calendar views
+    │   ├── RecurringCalendar.jsx     # Calendar grid for Bills and Subscriptions calendar views
+    │   └── ViewToggle.jsx            # List / Chart / Calendar view switcher
     ├── pages/
     │   ├── Dashboard.jsx             # Overview — all widgets assembled
     │   ├── Transactions.jsx          # Full transaction list with filters + inline edit
@@ -88,31 +87,32 @@ CDN deps (React 18, ReactDOM, Babel standalone, Tailwind, PapaParse, Chart.js, L
   ├─ src/components/ui/overlay.jsx         ← depends on: layout, typography, media, forms
   ├─ src/components/ui/disclosure.jsx      ← depends on: layout, typography, media
   ├─ src/components/ui/other.jsx           ← depends on: all other UI files
+  ├─ src/components/ui/charts.jsx          ← depends on: all other UI files
+  │                                          (Formatters/Chart.js called at render time only)
   │
   ├─ src/utils/formatters.js               ← no UI dependencies
   ├─ src/utils/csvParser.js                ← no UI dependencies
   ├─ src/utils/categorizer.js              ← depends on: formatters
   │
   ├─ src/context/SettingsContext.jsx       ← depends on: layout (loading state)
+  │                                          exposes: useSettings, useCategoryColorMap
   ├─ src/hooks/useTransactions.js          ← depends on: csvParser, categorizer
   │
   ├─ src/components/Sidebar.jsx            ← depends on: layout, typography, media, formatters
   ├─ src/components/StatCard.jsx           ← depends on: data-display, other, media
   ├─ src/components/NeedsReviewBanner.jsx  ← depends on: feedback
-  ├─ src/components/SpendingChart.jsx      ← depends on: data-display, typography, other, formatters
-  ├─ src/components/CategoryDonut.jsx      ← depends on: data-display, typography, other, formatters, SettingsContext
   ├─ src/components/BudgetProgress.jsx     ← depends on: data-display, feedback, media, typography, other, formatters, SettingsContext
   ├─ src/components/RecentTransactions.jsx ← depends on: data-display, typography, other, formatters, SettingsContext
   ├─ src/components/SubscriptionCard.jsx   ← depends on: data-display, typography, media, formatters, SettingsContext
-  ├─ src/components/BillItem.jsx           ← depends on: data-display, typography, media, formatters, SettingsContext
+  ├─ src/components/BillItem.jsx           ← depends on: data-display, typography, media, formatters
   ├─ src/components/DataErrorState.jsx     ← depends on: other, layout
-  ├─ src/components/RecurringDonut.jsx     ← depends on: data-display, typography, other, SettingsContext
-  ├─ src/components/RecurringCalendar.jsx  ← depends on: layout, typography, data-display, formatters
+  ├─ src/components/RecurringCalendar.jsx  ← depends on: layout, typography, data-display, overlay, formatters
+  ├─ src/components/ViewToggle.jsx         ← depends on: forms, layout, media
   │
   ├─ src/pages/Dashboard.jsx              ← depends on: all components above + useTransactions
   ├─ src/pages/Transactions.jsx           ← depends on: all components above + useTransactions
-  ├─ src/pages/Subscriptions.jsx          ← depends on: SubscriptionCard, RecurringDonut, RecurringCalendar + useTransactions
-  ├─ src/pages/Bills.jsx                  ← depends on: BillItem, RecurringDonut, RecurringCalendar + useTransactions
+  ├─ src/pages/Subscriptions.jsx          ← depends on: SubscriptionCard, RecurringCalendar, charts + useTransactions
+  ├─ src/pages/Bills.jsx                  ← depends on: BillItem, RecurringCalendar, charts + useTransactions
   ├─ src/pages/Settings.jsx               ← depends on: forms, SettingsContext, useTransactions
   │
   └─ src/App.jsx                          ← depends on: everything

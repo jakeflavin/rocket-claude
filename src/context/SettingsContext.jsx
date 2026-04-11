@@ -82,3 +82,18 @@ const useSettings = () => {
   if (!ctx) throw new Error('useSettings must be used inside SettingsProvider');
   return ctx;
 };
+
+/**
+ * Return a memoized { categoryName → hexColor } map from settings.categories.
+ * Eliminates the repeated manual map-building pattern in components.
+ *
+ * @returns {Object} e.g. { "Groceries": "#84cc16", "Housing": "#8b5cf6", … }
+ */
+window.useCategoryColorMap = () => {
+  const { settings } = useSettings();
+  return React.useMemo(() => {
+    const map = {};
+    settings.categories.forEach(c => { map[c.name] = c.color; });
+    return map;
+  }, [settings.categories]);
+};

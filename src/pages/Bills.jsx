@@ -22,19 +22,13 @@ function BillsSkeleton() {
 
 function Bills() {
   const { billGroups, loading, error, reload } = useTransactions();
-  const { settings } = useSettings();
   const [view, setView] = React.useState('list');
+
+  const colorMap = useCategoryColorMap();
 
   const monthlyEstimate = billGroups.reduce(
     (sum, b) => sum + Math.abs(b.averageAmount), 0
   );
-
-  // Resolve category colors once for both views
-  const colorMap = React.useMemo(() => {
-    const map = {};
-    settings.categories.forEach(c => { map[c.name] = c.color; });
-    return map;
-  }, [settings.categories]);
 
   // Slices for the donut chart
   const billSlices = React.useMemo(() =>
@@ -72,38 +66,7 @@ function Bills() {
         <HStack className="justify-between items-start flex-wrap gap-3">
           <PageHeader title="Bills" subtitle={`${billGroups.length} recurring`} />
           <HStack gap="gap-3">
-            <HStack gap="gap-1" className="bg-raised rounded-lg p-1">
-              <button
-                onClick={() => setView('list')}
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-                  view === 'list'
-                    ? 'bg-rim text-fg'
-                    : 'text-muted hover:text-fg'
-                }`}
-              >
-                List
-              </button>
-              <button
-                onClick={() => setView('chart')}
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-                  view === 'chart'
-                    ? 'bg-rim text-fg'
-                    : 'text-muted hover:text-fg'
-                }`}
-              >
-                Chart
-              </button>
-              <button
-                onClick={() => setView('calendar')}
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-                  view === 'calendar'
-                    ? 'bg-rim text-fg'
-                    : 'text-muted hover:text-fg'
-                }`}
-              >
-                Calendar
-              </button>
-            </HStack>
+            <ViewToggle view={view} onChange={setView} />
             <Stat label="Est. Monthly Total" value={Formatters.currency(monthlyEstimate)} />
           </HStack>
         </HStack>

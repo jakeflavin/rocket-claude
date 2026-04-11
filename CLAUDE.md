@@ -45,6 +45,7 @@ Every primitive is a thin Tailwind wrapper assigned to `window.*`.
 | `overlay.jsx` | `Portal`, `Modal`, `AlertDialog`, `Tooltip`, `Popover`, `Menu`, `MenuItem` |
 | `disclosure.jsx` | `Accordion`, `AccordionItem`, `Collapsible`, `Tabs`, `Tab`, `TabPanel` |
 | `other.jsx` | `EmptyState`, `PageHeader`, `Stat` |
+| `charts.jsx` | `ChartTheme`, `useChart`, `ChartHelpers`, `SpendingChart`, `CategoryDonut`, `RecurringDonut` |
 
 Full reference with props and when-to-use notes: **[docs/ui-library.md](docs/ui-library.md)**
 

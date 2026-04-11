@@ -81,13 +81,6 @@ function DashboardSkeleton() {
  *   RecentTransactions + Upcoming Bills (2-col)
  */
 
-const BILL_STATUS_CONFIG = {
-  paid:     { label: 'Paid',     color: '#10b981' },
-  due_soon: { label: 'Due Soon', color: '#f59e0b' },
-  overdue:  { label: 'Overdue',  color: '#ef4444' },
-  upcoming: { label: 'Upcoming', color: '#6b7280' },
-};
-
 function Dashboard({ onNavigate }) {
   const { settings } = useSettings();
   const { transactions, expenses, income, needsReview, billGroups, loading, error, reload } = useTransactions();
@@ -165,7 +158,7 @@ function Dashboard({ onNavigate }) {
         {/* Charts */}
         <Grid cols={2} gap="gap-4" responsive>
           <SpendingChart  transactions={transactions} start={start} end={end} rangeLabel={rangeLabel} />
-          <CategoryDonut  transactions={transactions} start={start} end={end} rangeLabel={rangeLabel} />
+          <CategoryDonut  transactions={transactions} categories={settings.categories} start={start} end={end} rangeLabel={rangeLabel} />
         </Grid>
 
         {/* Budget Progress */}
@@ -185,7 +178,7 @@ function Dashboard({ onNavigate }) {
               ) : (
                 <VStack gap="gap-0" className="divide-y divide-rim">
                   {upcomingBills.map(bill => {
-                    const cfg = BILL_STATUS_CONFIG[bill.status] ?? BILL_STATUS_CONFIG.upcoming;
+                    const cfg = BILL_STATUS[bill.status] ?? BILL_STATUS.upcoming;
                     return (
                       <HStack key={bill.merchant} gap="gap-3" className="px-4 py-3 justify-between">
                         <VStack gap="gap-0.5">
