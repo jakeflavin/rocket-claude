@@ -21,12 +21,41 @@ Read the first ~50 lines of the input file. Compare against the fingerprint stri
 **Rules:**
 - Match fingerprints literally (case-insensitive is fine)
 - The first bank whose fingerprint strings appear in the file wins
-- If no bank matches → **halt immediately**, report:
-  ```
-  FAILED: <filename> — unrecognized statement format
-  No output written.
-  ```
-  Do not produce partial output. Do not guess.
+- If no bank matches → **generate a new bank format doc** (see Step 1b below), then continue
+
+---
+
+## Step 1b — Generate Bank Format Doc (Unknown Bank Only)
+
+If no bank matched in Step 1, do the following before continuing:
+
+1. **Analyze the statement** — read the full file and identify:
+   - The institution name (look for bank name, website, logo text, copyright line)
+   - Source type: PDF (converted to markdown) or CSV
+   - Fingerprint strings unique to this institution
+   - Transaction table location and structure
+   - Column mapping to `date`, `description`, `amount`
+   - Sign convention (positive = charge? or negative = charge?)
+   - Rows to exclude (balance rows, totals, payment rows, headers)
+   - Any known quirks (multi-line descriptions, wide-space columns, etc.)
+   - `account_type`: `credit` (credit card) or `debit` (checking/savings)
+
+2. **Create `docs/bank-formats/<bank-slug>.md`** using the exact structure of an existing format doc (e.g. `docs/bank-formats/chase.md`) as a template. `<bank-slug>` should be lowercase with hyphens (e.g. `td-bank`, `wells-fargo`).
+
+3. **Report to the user**:
+   ```
+   Generated new bank format doc: docs/bank-formats/<bank-slug>.md
+   Please review it at docs/bank-formats/<bank-slug>.md before re-running.
+   Continuing with import using the generated format…
+   ```
+
+4. **Continue** — use the format doc you just created to proceed with Step 2. Do not halt.
+
+If the statement is genuinely unreadable (scanned image, corrupted, no text content) → halt and report:
+```
+FAILED: <filename> — no readable text content. The file may be a scanned image requiring OCR.
+No output written.
+```
 
 ---
 
