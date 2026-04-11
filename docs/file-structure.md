@@ -5,19 +5,24 @@ rocket-claude/
 ├── index.html                        # Entry point — load all scripts here
 ├── settings.json                     # App config — categories, budgets, accounts, notifications
 ├── README.md                         # Setup + usage instructions
+├── scripts/
+│   ├── pdf_to_markdown.py            # PDF → structured markdown (pdfplumber / pypdf)
+│   └── csv_utils.py                  # Concat, dedup, sort, write transactions.csv
 ├── data/
-│   └── transactions.csv              # Output from Claude Code skill (source of truth)
-├── statements/                       # Input folder — user drops bank PDFs/CSVs here
+│   ├── transactions.csv              # Output from /rocket skill (source of truth)
+│   └── merchants.json                # Persistent merchant normalization dictionary
+├── statements/                       # Drop zone — user drops bank PDFs/CSVs here
 │   └── .gitkeep
 ├── .claude/
-│   └── skills/
-│       └── rocket/                   # Claude Code import skill (/rocket)
-│           ├── SKILL.md              # Skill steps and error handling
-│           ├── RULES.md              # CSV schema, column order, categories
-│           └── scripts/
-│               ├── pdf_to_text.py    # PDF → .txt extraction (pdfplumber / pypdf)
-│               ├── import_statements.py  # Main pipeline: parse → categorize → merge → write
-│               └── categorize.py    # Rule-based + AI fallback categorization
+│   ├── CLAUDE.md                     # Agent conventions: field rules, pipeline, column schema
+│   ├── skills/
+│   │   └── rocket/                   # Claude Code import skill (/rocket)
+│   │       ├── SKILL.md              # Orchestrator — 9-step pipeline
+│   │       └── RULES.md              # CSV schema, column order, category taxonomy
+│   └── agents/
+│       ├── statement-normalizer.md   # Agent 1: bank detection + parse → _normalized.csv
+│       ├── merchant-normalizer.md    # Agent 2: raw desc → canonical merchant + merchants.json
+│       └── categorizer.md            # Agent 3: category + subcategory + needs_review
 ├── docs/
 │   ├── overview.md
 │   ├── data-flow.md
@@ -27,7 +32,12 @@ rocket-claude/
 │   ├── coding-guide.md
 │   ├── file-structure.md             # this file
 │   ├── ui-library.md                 # full UI primitive reference
-│   └── task-list.md
+│   ├── task-list.md
+│   └── bank-formats/                 # Per-bank statement format docs
+│       ├── pnc.md
+│       ├── amex.md
+│       ├── chase.md
+│       └── apple-card.md
 └── src/
     ├── utils/
     │   ├── formatters.js             # currency(), date(), percent(), relativeDate() etc.

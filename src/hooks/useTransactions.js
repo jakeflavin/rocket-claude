@@ -50,7 +50,7 @@ const useTransactions = () => {
   );
 
   const income = React.useMemo(
-    () => transactions.filter(t => t.amount > 0 && t.account_type !== 'credit_card' && t.category !== 'Transfers' && t.category !== 'Payments'),
+    () => transactions.filter(t => t.amount > 0 && t.account_type !== 'credit_card' && t.account_type !== 'credit' && t.category !== 'Transfers' && t.category !== 'Payments'),
     [transactions]
   );
 
