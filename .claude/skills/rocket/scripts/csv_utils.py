@@ -30,8 +30,8 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Paths (all derived from script location)
 # ---------------------------------------------------------------------------
-SCRIPTS_DIR = Path(__file__).resolve().parent   # project-root/scripts/
-PROJECT_DIR = SCRIPTS_DIR.parent                # project-root/
+SCRIPTS_DIR = Path(__file__).resolve().parent   # .claude/skills/rocket/scripts/
+PROJECT_DIR = SCRIPTS_DIR.parents[3]            # project-root/
 OUTPUT_CSV  = PROJECT_DIR / "data" / "transactions.csv"
 
 # ---------------------------------------------------------------------------

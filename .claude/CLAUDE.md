@@ -93,10 +93,10 @@ ISO 8601 UTC format: `2025-03-15T14:22:00Z`. Always UTC.
 
 | File | Purpose |
 |------|---------|
-| `RULES.md` | Category taxonomy — valid categories and subcategories |
+| `.claude/skills/rocket/RULES.md` | Category taxonomy — valid categories and subcategories |
+| `.claude/skills/rocket/bank-formats/` | Per-bank statement format docs (one file per institution) |
+| `.claude/skills/rocket/scripts/pdf_to_markdown.py` | PDF → structured markdown |
+| `.claude/skills/rocket/scripts/csv_utils.py` | CSV concat, dedup, sort, write |
 | `data/merchants.json` | Persistent merchant normalization dictionary |
 | `data/transactions.csv` | Canonical output — all imported transactions |
-| `docs/bank-formats/` | Per-bank statement format docs (one file per institution) |
 | `statements/` | Drop zone for raw statement files (PDF or CSV) |
-| `scripts/pdf_to_markdown.py` | PDF → structured markdown |
-| `scripts/csv_utils.py` | CSV concat, dedup, sort, write |

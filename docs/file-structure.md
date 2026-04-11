@@ -5,9 +5,6 @@ rocket-claude/
 ├── index.html                        # Entry point — load all scripts here
 ├── settings.json                     # App config — categories, budgets, accounts, notifications
 ├── README.md                         # Setup + usage instructions
-├── scripts/
-│   ├── pdf_to_markdown.py            # PDF → structured markdown (pdfplumber / pypdf)
-│   └── csv_utils.py                  # Concat, dedup, sort, write transactions.csv
 ├── data/
 │   ├── transactions.csv              # Output from /rocket skill (source of truth)
 │   └── merchants.json                # Persistent merchant normalization dictionary
@@ -18,7 +15,15 @@ rocket-claude/
 │   ├── skills/
 │   │   └── rocket/                   # Claude Code import skill (/rocket)
 │   │       ├── SKILL.md              # Orchestrator — 9-step pipeline
-│   │       └── RULES.md              # CSV schema, column order, category taxonomy
+│   │       ├── RULES.md              # CSV schema, column order, category taxonomy
+│   │       ├── bank-formats/         # Per-bank statement format docs
+│   │       │   ├── pnc.md
+│   │       │   ├── amex.md
+│   │       │   ├── chase.md
+│   │       │   └── apple-card.md
+│   │       └── scripts/
+│   │           ├── pdf_to_markdown.py    # PDF → structured markdown (pdfplumber / pypdf)
+│   │           └── csv_utils.py          # Concat, dedup, sort, write transactions.csv
 │   └── agents/
 │       ├── statement-normalizer.md   # Agent 1: bank detection + parse → _normalized.csv
 │       ├── merchant-normalizer.md    # Agent 2: raw desc → canonical merchant + merchants.json
@@ -32,12 +37,7 @@ rocket-claude/
 │   ├── coding-guide.md
 │   ├── file-structure.md             # this file
 │   ├── ui-library.md                 # full UI primitive reference
-│   ├── task-list.md
-│   └── bank-formats/                 # Per-bank statement format docs
-│       ├── pnc.md
-│       ├── amex.md
-│       ├── chase.md
-│       └── apple-card.md
+│   └── task-list.md
 └── src/
     ├── utils/
     │   ├── formatters.js             # currency(), date(), percent(), relativeDate() etc.

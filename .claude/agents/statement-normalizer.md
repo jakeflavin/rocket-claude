@@ -10,13 +10,13 @@ You will be invoked with a path to one statement file (`.md` converted from PDF,
 
 Before doing any work, read:
 1. `.claude/CLAUDE.md` — field definitions, sign conventions, column schema
-2. All files in `docs/bank-formats/` — you need to know every bank's fingerprints before you can identify this statement
+2. All files in `.claude/skills/rocket/bank-formats/` — you need to know every bank's fingerprints before you can identify this statement
 
 ---
 
 ## Step 1 — Bank Detection
 
-Read the first ~50 lines of the input file. Compare against the fingerprint strings in each `docs/bank-formats/<bank>.md`. Identify the bank.
+Read the first ~50 lines of the input file. Compare against the fingerprint strings in each `.claude/skills/rocket/bank-formats/<bank>.md`. Identify the bank.
 
 **Rules:**
 - Match fingerprints literally (case-insensitive is fine)
@@ -40,12 +40,12 @@ If no bank matched in Step 1, do the following before continuing:
    - Any known quirks (multi-line descriptions, wide-space columns, etc.)
    - `account_type`: `credit` (credit card) or `debit` (checking/savings)
 
-2. **Create `docs/bank-formats/<bank-slug>.md`** using the exact structure of an existing format doc (e.g. `docs/bank-formats/chase.md`) as a template. `<bank-slug>` should be lowercase with hyphens (e.g. `td-bank`, `wells-fargo`).
+2. **Create `.claude/skills/rocket/bank-formats/<bank-slug>.md`** using the exact structure of an existing format doc (e.g. `.claude/skills/rocket/bank-formats/chase.md`) as a template. `<bank-slug>` should be lowercase with hyphens (e.g. `td-bank`, `wells-fargo`).
 
 3. **Report to the user**:
    ```
-   Generated new bank format doc: docs/bank-formats/<bank-slug>.md
-   Please review it at docs/bank-formats/<bank-slug>.md before re-running.
+   Generated new bank format doc: .claude/skills/rocket/bank-formats/<bank-slug>.md
+   Please review it at .claude/skills/rocket/bank-formats/<bank-slug>.md before re-running.
    Continuing with import using the generated format…
    ```
 
@@ -61,7 +61,7 @@ No output written.
 
 ## Step 2 — Load Bank Format Doc
 
-Use the Read tool to load `docs/bank-formats/<detected-bank>.md`. This file defines:
+Use the Read tool to load `.claude/skills/rocket/bank-formats/<detected-bank>.md`. This file defines:
 - Where the transaction table is in the document
 - Column mappings to normalized field names
 - Which rows to exclude

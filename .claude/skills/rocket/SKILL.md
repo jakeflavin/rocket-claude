@@ -35,7 +35,7 @@ List all discovered files before proceeding. Initialize an empty `failed_files[]
 
 For each `.pdf` in `statements/`, run:
 ```bash
-python scripts/pdf_to_markdown.py statements/<file>.pdf
+python .claude/skills/rocket/scripts/pdf_to_markdown.py statements/<file>.pdf
 ```
 
 - On success: produces `statements/<file>.md`
@@ -87,7 +87,7 @@ For each `_normalized.csv` successfully processed by Step 4, invoke the categori
 
 Collect all successfully processed `_normalized.csv` files. Run:
 ```bash
-python scripts/csv_utils.py statements/<file1>_normalized.csv [statements/<file2>_normalized.csv ...]
+python .claude/skills/rocket/scripts/csv_utils.py statements/<file1>_normalized.csv [statements/<file2>_normalized.csv ...]
 ```
 
 This script:
