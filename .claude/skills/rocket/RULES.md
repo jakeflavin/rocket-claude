@@ -73,9 +73,8 @@
 
 ### account_type
 - Must be one of:
-  - `credit_card`
-  - `checking`
-  - `savings`
+  - `credit` — credit card accounts
+  - `debit` — checking, savings, or any bank account
 
 ### source_file
 - Required
@@ -85,8 +84,9 @@
 ### needs_review
 - Required
 - Boolean: `true` or `false`
-- Set to `true` when category was assigned by AI (no matching rule found)
-- Set to `false` when category was assigned by a rule
+- Set to `true` when merchant or category confidence is low
+- Set to `false` when merchant and category are high-confidence
+- Once set to `true` by any agent, preserve it — never downgrade to `false` downstream
 
 ### notes
 - Optional
