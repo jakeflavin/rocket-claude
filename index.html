@@ -5,75 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>rocket-claude</title>
 
-  <!-- file:// guard — must run before any other script -->
-  <script>
-    if (window.location.protocol === 'file:') {
-      document.addEventListener('DOMContentLoaded', function () {
-        document.body.innerHTML = [
-          '<div style="display:flex;align-items:center;justify-content:center;height:100vh;',
-          'background:#0a0a0f;font-family:monospace;text-align:center;padding:2rem;">',
-          '<div>',
-          '<p style="color:#ef4444;font-size:1rem;font-weight:600;margin:0 0 .75rem">',
-          '🚫 Cannot open via file://</p>',
-          '<p style="color:#9090b0;font-size:.85rem;margin:0 0 .5rem">',
-          'Browsers block local file access (CORS) for XHR and fetch requests.</p>',
-          '<p style="color:#555575;font-size:.8rem;margin:0">',
-          'Serve the app over HTTP instead:</p>',
-          '<pre style="color:#10b981;font-size:.85rem;margin:.75rem 0 0;',
-          'background:#12121a;padding:.75rem 1.25rem;border-radius:.5rem;',
-          'border:1px solid #2a2a3d;display:inline-block">npx serve .</pre>',
-          '<p style="color:#555575;font-size:.75rem;margin:.5rem 0 0">',
-          'Then open <span style="color:#9090b0">http://localhost:3000</span></p>',
-          '</div></div>',
-        ].join('');
-      });
-    }
-  </script>
-
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <!-- CDN dependencies -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-
-  <!-- Register Chart.js components once, globally -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      if (!window.Chart) return;
-      Chart.defaults.color = '#9090b0';
-      Chart.defaults.borderColor = '#2a2a3d';
-      Chart.defaults.backgroundColor = 'transparent';
-    });
-  </script>
-
-  <!-- Tailwind custom font + theme token config -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['DM Sans', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            surface: 'var(--c-surface)',
-            card:    'var(--c-card)',
-            raised:  'var(--c-raised)',
-            rim:     'var(--c-rim)',
-            fg:      'var(--c-fg)',
-            muted:   'var(--c-muted)',
-            faint:   'var(--c-faint)',
-          },
-        },
-      },
-    };
-  </script>
 
   <style>
     body { font-family: 'DM Sans', sans-serif; }
@@ -101,52 +34,6 @@
 </head>
 <body class="bg-surface">
   <div id="root"></div>
-
-  <!-- ─── UI Library (load order = dependency graph) ──────────────────── -->
-  <!-- layout and typography first — everything else depends on them     -->
-  <script type="text/babel" src="src/components/ui/layout.jsx"></script>
-  <script type="text/babel" src="src/components/ui/typography.jsx"></script>
-  <script type="text/babel" src="src/components/ui/media.jsx"></script>
-  <script type="text/babel" src="src/components/ui/forms.jsx"></script>
-  <script type="text/babel" src="src/components/ui/feedback.jsx"></script>
-  <script type="text/babel" src="src/components/ui/data-display.jsx"></script>
-  <script type="text/babel" src="src/components/ui/overlay.jsx"></script>
-  <script type="text/babel" src="src/components/ui/disclosure.jsx"></script>
-  <script type="text/babel" src="src/components/ui/other.jsx"></script>
-  <!-- charts.jsx: ChartTheme, useChart, ChartHelpers + all chart components -->
-  <script type="text/babel" src="src/components/ui/charts.jsx"></script>
-
-  <!-- ─── Utils ──────────────────────────────────────────────────────── -->
-  <script type="text/babel" src="src/utils/formatters.js"></script>
-  <script type="text/babel" src="src/utils/csvParser.js"></script>
-  <script type="text/babel" src="src/utils/categorizer.js"></script>
-
-  <!-- ─── Context ─────────────────────────────────────────────────────── -->
-  <script type="text/babel" src="src/context/SettingsContext.jsx"></script>
-
-  <!-- ─── Hooks ────────────────────────────────────────────────────────── -->
-  <script type="text/babel" src="src/hooks/useTransactions.js"></script>
-
-  <!-- ─── Components ───────────────────────────────────────────────────── -->
-  <script type="text/babel" src="src/components/Sidebar.jsx"></script>
-  <script type="text/babel" src="src/components/StatCard.jsx"></script>
-  <script type="text/babel" src="src/components/NeedsReviewBanner.jsx"></script>
-  <script type="text/babel" src="src/components/BudgetProgress.jsx"></script>
-  <script type="text/babel" src="src/components/RecentTransactions.jsx"></script>
-  <script type="text/babel" src="src/components/SubscriptionCard.jsx"></script>
-  <script type="text/babel" src="src/components/BillItem.jsx"></script>
-  <script type="text/babel" src="src/components/DataErrorState.jsx"></script>
-  <script type="text/babel" src="src/components/RecurringCalendar.jsx"></script>
-  <script type="text/babel" src="src/components/ViewToggle.jsx"></script>
-
-  <!-- ─── Pages ─────────────────────────────────────────────────────────── -->
-  <script type="text/babel" src="src/pages/Dashboard.jsx"></script>
-  <script type="text/babel" src="src/pages/Transactions.jsx"></script>
-  <script type="text/babel" src="src/pages/Subscriptions.jsx"></script>
-  <script type="text/babel" src="src/pages/Bills.jsx"></script>
-  <script type="text/babel" src="src/pages/Settings.jsx"></script>
-
-  <!-- ─── App entry point ───────────────────────────────────────────────── -->
-  <script type="text/babel" src="src/App.jsx"></script>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
