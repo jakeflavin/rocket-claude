@@ -1,4 +1,4 @@
-import { CreditCard, PiggyBank, Target, Wallet, type LucideIcon } from 'lucide-react';
+import { CreditCard, LayoutDashboard, PiggyBank, Target, Wallet, type LucideIcon } from 'lucide-react';
 
 export type NavChild = {
   label: string;
@@ -13,6 +13,11 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
+  {
+    label: 'Home',
+    icon: LayoutDashboard,
+    path: '/home',
+  },
   {
     label: 'Budgets',
     icon: PiggyBank,

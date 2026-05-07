@@ -9,8 +9,10 @@ import { SubscriptionsPage } from './features/subscriptions/SubscriptionsPage';
 import { SpendingAnalyticsPage } from './features/spending-analytics/SpendingAnalyticsPage';
 import { BudgetsPage } from './features/budgets/BudgetsPage';
 import { GoalsPage } from './features/goals/GoalsPage';
+import { HomePage } from './features/home/HomePage';
 
 const BREADCRUMBS: Record<string, string[]> = {
+  home: ['Home'],
   transactions: ['Transactions'],
   accounts: ['Accounts'],
   'accounts/settings': ['Accounts', 'Settings'],
@@ -24,7 +26,7 @@ const BREADCRUMBS: Record<string, string[]> = {
 
 function pathToPage(path: string): string {
   const pathname = path.split('?')[0];
-  return pathname.replace(/^\//, '') || 'transactions';
+  return pathname.replace(/^\//, '') || 'home';
 }
 
 function App() {
@@ -32,8 +34,8 @@ function App() {
 
   useEffect(() => {
     if (window.location.pathname === '/') {
-      history.replaceState(null, '', '/transactions');
-      setPage('transactions');
+      history.replaceState(null, '', '/home');
+      setPage('home');
     }
     function onPopState() {
       setPage(pathToPage(window.location.pathname));
@@ -49,6 +51,7 @@ function App() {
 
   return (
     <AppLayout currentPage={page} breadcrumbs={BREADCRUMBS[page] ?? []} onNavigate={navigate}>
+      {page === 'home' && <HomePage onNavigate={navigate} />}
       {page === 'transactions' && <TransactionsPage />}
       {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
       {page === 'accounts/settings' && <AccountManagementPage />}
