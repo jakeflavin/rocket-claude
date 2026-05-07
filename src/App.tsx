@@ -6,6 +6,7 @@ import { AccountManagementPage } from './features/account-management/AccountMana
 import { CategoriesOverviewPage } from './features/categories-tags-overview/CategoriesOverviewPage';
 import { CategoryRulesPage } from './features/category-rules-management/CategoryRulesPage';
 import { SubscriptionsPage } from './features/subscriptions/SubscriptionsPage';
+import { SpendingAnalyticsPage } from './features/spending-analytics/SpendingAnalyticsPage';
 
 const BREADCRUMBS: Record<string, string[]> = {
   transactions: ['Transactions'],
@@ -14,6 +15,7 @@ const BREADCRUMBS: Record<string, string[]> = {
   categories: ['Transactions', 'Categories'],
   'categories/rules': ['Transactions', 'Rules'],
   subscriptions: ['Transactions', 'Subscriptions & Bills'],
+  'spending-analytics': ['Transactions', 'Spending Analytics'],
 };
 
 function pathToPage(path: string): string {
@@ -49,6 +51,7 @@ function App() {
       {page === 'categories' && <CategoriesOverviewPage />}
       {page === 'categories/rules' && <CategoryRulesPage />}
       {page === 'subscriptions' && <SubscriptionsPage />}
+      {page === 'spending-analytics' && <SpendingAnalyticsPage />}
     </AppLayout>
   );
 }

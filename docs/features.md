@@ -2,32 +2,6 @@
 
 This documents describes planned features, tasks for the feature, and their current status. 
 
-## Subscriptions & Bills
-A new reoccurring page needs added that displays recorring transactions. This should be a sub page to transactions. Users should be able to see their reoccuring bills and subscriptions in different views (list, calendar). 
-
-For this feature to be completed users should be able to do the following:
-- Subscription detection
-- Recurring income detection
-- Bill reminders
-- Upcoming payment calendar
-- Frequency detection
-- Confidence scoring
-- Subscription spending summaries
-- Cancelled subscription tracking
-
-### Tasks
-- [x] Add tasks to docs/features.md
-- [x] Create `CalendarGrid<T>` generic shared component (`src/shared/components/CalendarGrid.tsx`)
-- [x] Create `types.ts` — `RecurringTransaction`, `RecurringFilters`, `RecurringSummary`
-- [x] Create `queries.ts` — `queryRecurring`, `queryRecurringSummary`
-- [x] Create `useRecurring.ts` and `useRecurringSummary.ts` hooks
-- [x] Create `SubscriptionSummaryBar.tsx` — stat cards for monthly cost, active count, due this week, cancelled
-- [x] Create `RecurringDetailDrawer.tsx` — Drawer with full item detail
-- [x] Create `SubscriptionListSection.tsx` — DataTable list view, row click opens detail drawer
-- [x] Create `SubscriptionCalendarSection.tsx` — CalendarGrid view for upcoming payments
-- [x] Create `SubscriptionsPage.tsx` — page shell with view toggle, filter bar, summary bar
-- [x] Wire up navigation and routing
-
 ## Spending Analytics
 A new page is needed where users can see their spending in filterable graphical represenation. This should be a sub page on transactions. 
 
@@ -39,6 +13,21 @@ For this feature to be completed users should be able to do the following:
 - Average monthly spending
 - Savings rate calculations
 - Cash flow tracking
+
+### Tasks
+- [x] Add tasks to docs/features.md
+- [x] Create `GroupedBarChart` generic shared component (`src/shared/components/GroupedBarChart.tsx`)
+- [x] Create `types.ts` — `PeriodPoint`, `MerchantSpend`, `SpendingPeriod`, `SpendingSummary`, `MerchantDetail`
+- [x] Create `queries.ts` — `querySpendingTrends`, `queryIncomeVsExpenses`, `queryCashFlow`, `queryMerchantSpending`, `queryMerchantDetail`, `querySpendingSummary`
+- [x] Create hooks — `useSpendingTrends`, `useIncomeVsExpenses`, `useCashFlow`, `useMerchantSpending`, `useSpendingSummary`
+- [x] Create `SpendingSummaryBar.tsx` — avg monthly spend, savings rate, net cash flow MetricCards
+- [x] Create `MerchantDetailDrawer.tsx` — Drawer with total, count, avg, mini trend chart
+- [x] Create `SpendingTrendsSection.tsx` — LineAreaChart for expense trend over time
+- [x] Create `IncomeExpensesSection.tsx` — GroupedBarChart for income vs expenses per period
+- [x] Create `CashFlowSection.tsx` — LineAreaChart for net cash flow per period
+- [x] Create `MerchantSpendingSection.tsx` — HorizontalBarChart; bar click opens MerchantDetailDrawer
+- [x] Create `SpendingAnalyticsPage.tsx` — page shell with period picker, summary bar, all sections
+- [x] Wire up navigation and routing
 
 ## Budgets
 A new page is needed where users should be able to create and manage budgets. Users should be able to see and create budgets on this page. 

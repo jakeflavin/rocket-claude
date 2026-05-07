@@ -30,6 +30,7 @@ export const navItems: NavItem[] = [
       { label: 'Categories', path: '/categories' },
       { label: 'Rules', path: '/categories/rules' },
       { label: 'Subscriptions & Bills', path: '/subscriptions' },
+      { label: 'Spending Analytics', path: '/spending-analytics' },
     ],
   },
 ];
