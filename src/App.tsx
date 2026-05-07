@@ -5,6 +5,7 @@ import { AccountOverviewPage } from './features/account-overview/AccountOverview
 import { AccountManagementPage } from './features/account-management/AccountManagementPage';
 import { CategoriesOverviewPage } from './features/categories-tags-overview/CategoriesOverviewPage';
 import { CategoryRulesPage } from './features/category-rules-management/CategoryRulesPage';
+import { SubscriptionsPage } from './features/subscriptions/SubscriptionsPage';
 
 const BREADCRUMBS: Record<string, string[]> = {
   transactions: ['Transactions'],
@@ -12,6 +13,7 @@ const BREADCRUMBS: Record<string, string[]> = {
   'accounts/settings': ['Accounts', 'Settings'],
   categories: ['Transactions', 'Categories'],
   'categories/rules': ['Transactions', 'Rules'],
+  subscriptions: ['Transactions', 'Subscriptions & Bills'],
 };
 
 function pathToPage(path: string): string {
@@ -46,6 +48,7 @@ function App() {
       {page === 'accounts/settings' && <AccountManagementPage />}
       {page === 'categories' && <CategoriesOverviewPage />}
       {page === 'categories/rules' && <CategoryRulesPage />}
+      {page === 'subscriptions' && <SubscriptionsPage />}
     </AppLayout>
   );
 }

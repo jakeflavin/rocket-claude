@@ -17,16 +17,16 @@ For this feature to be completed users should be able to do the following:
 
 ### Tasks
 - [x] Add tasks to docs/features.md
-- [ ] Create `CalendarGrid<T>` generic shared component (`src/shared/components/CalendarGrid.tsx`)
-- [ ] Create `types.ts` — `RecurringTransaction`, `RecurringFilters`, `RecurringSummary`
-- [ ] Create `queries.ts` — `queryRecurring`, `queryRecurringSummary`
-- [ ] Create `useRecurring.ts` and `useRecurringSummary.ts` hooks
-- [ ] Create `SubscriptionSummaryBar.tsx` — stat cards for monthly cost, active count, due this week, cancelled
-- [ ] Create `RecurringDetailDrawer.tsx` — Drawer with full item detail
-- [ ] Create `SubscriptionListSection.tsx` — DataTable list view, row click opens detail drawer
-- [ ] Create `SubscriptionCalendarSection.tsx` — CalendarGrid view for upcoming payments
-- [ ] Create `SubscriptionsPage.tsx` — page shell with view toggle, filter bar, summary bar
-- [ ] Wire up navigation and routing
+- [x] Create `CalendarGrid<T>` generic shared component (`src/shared/components/CalendarGrid.tsx`)
+- [x] Create `types.ts` — `RecurringTransaction`, `RecurringFilters`, `RecurringSummary`
+- [x] Create `queries.ts` — `queryRecurring`, `queryRecurringSummary`
+- [x] Create `useRecurring.ts` and `useRecurringSummary.ts` hooks
+- [x] Create `SubscriptionSummaryBar.tsx` — stat cards for monthly cost, active count, due this week, cancelled
+- [x] Create `RecurringDetailDrawer.tsx` — Drawer with full item detail
+- [x] Create `SubscriptionListSection.tsx` — DataTable list view, row click opens detail drawer
+- [x] Create `SubscriptionCalendarSection.tsx` — CalendarGrid view for upcoming payments
+- [x] Create `SubscriptionsPage.tsx` — page shell with view toggle, filter bar, summary bar
+- [x] Wire up navigation and routing
 
 ## Spending Analytics
 A new page is needed where users can see their spending in filterable graphical represenation. This should be a sub page on transactions. 

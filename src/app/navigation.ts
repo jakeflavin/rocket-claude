@@ -13,6 +13,15 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
+
+  {
+    label: 'Accounts',
+    icon: Wallet,
+    path: '/accounts',
+    children: [
+      { label: 'Settings', path: '/accounts/settings' },
+    ],
+  },
   {
     label: 'Transactions',
     icon: CreditCard,
@@ -20,14 +29,7 @@ export const navItems: NavItem[] = [
     children: [
       { label: 'Categories', path: '/categories' },
       { label: 'Rules', path: '/categories/rules' },
-    ],
-  },
-  {
-    label: 'Accounts',
-    icon: Wallet,
-    path: '/accounts',
-    children: [
-      { label: 'Settings', path: '/accounts/settings' },
+      { label: 'Subscriptions & Bills', path: '/subscriptions' },
     ],
   },
 ];
