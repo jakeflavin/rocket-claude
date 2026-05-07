@@ -2,14 +2,13 @@ import { useCallback, useState } from 'react';
 import { SpendingSection } from './SpendingSection';
 import { CategoryListSection } from './CategoryListSection';
 import { TagsSection } from './TagsSection';
-import { UncategorizedSection } from './UncategorizedSection';
 import { CategoryEditPanel } from './CategoryEditPanel';
 import { useCategories } from './useCategories';
 import { useTags } from './useTags';
 import type { PanelState, SpendingPeriod } from './types';
 
 export function CategoriesOverviewPage() {
-  const { categories, loading: catsLoading, addCategory, editCategory, removeCategory } = useCategories();
+  const { categories, addCategory, editCategory, removeCategory } = useCategories();
   const { tags, loading: tagsLoading, addTag, editTag, removeTag } = useTags();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [period, setPeriod] = useState<SpendingPeriod>('month');
@@ -65,7 +64,6 @@ export function CategoriesOverviewPage() {
           loading={tagsLoading}
           onOpenPanel={setPanel}
         />
-        <UncategorizedSection categories={categories} />
       </div>
 
       {panel && (

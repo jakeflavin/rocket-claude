@@ -44,7 +44,7 @@ function CategoryRow({
   onAddSubcategory: () => void;
   onOpenPanel: (panel: PanelState) => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
   return (
