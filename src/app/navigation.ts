@@ -1,4 +1,4 @@
-import { CreditCard, Wallet, type LucideIcon } from 'lucide-react';
+import { CreditCard, Wallet, Tag, type LucideIcon } from 'lucide-react';
 
 export type NavChild = {
   label: string;
@@ -24,6 +24,14 @@ export const navItems: NavItem[] = [
     path: '/accounts',
     children: [
       { label: 'Settings', path: '/accounts/settings' },
+    ],
+  },
+  {
+    label: 'Categories',
+    icon: Tag,
+    path: '/categories',
+    children: [
+      { label: 'Rules', path: '/categories/rules' },
     ],
   },
 ];

@@ -265,49 +265,49 @@ Constraints:
 * Rules cannot create categories automatically
 
 ### Tasks
-- [ ] Categories Overview Page - Build category analytics dashboard
-- [ ] Categories Overview Page - Build category spending charts
-- [ ] Categories Overview Page - Build subcategory spending charts
-- [ ] Categories Overview Page - Build category list UI
-- [ ] Categories Overview Page - Build subcategory hierarchy UI
-- [ ] Categories Overview Page - Build tags management UI
-- [ ] Categories Overview Page - Build uncategorized transaction section
-- [ ] Categories Overview Page - Implement category filtering
-- [ ] Categories Overview Page - Implement subcategory filtering
-- [ ] Categories Overview Page - Implement transaction recategorization
-- [ ] Categories Overview Page - Implement bulk transaction categorization
-- [ ] Categories Overview Page - Implement tag assignment/removal
-- [ ] Categories Overview Page - Implement category color editing
-- [ ] Categories Overview Page - Implement category icon editing
-- [ ] Categories Overview Page - Implement category rename functionality
-- [ ] Categories Overview Page - Implement subcategory rename functionality
-- [ ] Categories Overview Page - Implement category deletion behavior
-- [ ] Categories Overview Page - Implement subcategory promotion logic
-- [ ] Categories Overview Page - Implement category expand/collapse behavior
-- [ ] Categories Overview Page - Add right-side collapsible editing panel
-- [ ] Category Rules Management Page - Build rules list UI
-- [ ] Category Rules Management Page - Build rule editor panel
-- [ ] Category Rules Management Page - Implement merchant matching rules
-- [ ] Category Rules Management Page - Implement description matching rules
-- [ ] Category Rules Management Page - Implement contains operator
-- [ ] Category Rules Management Page - Implement equals operator
-- [ ] Category Rules Management Page - Implement starts with operator
-- [ ] Category Rules Management Page - Implement category assignment logic
-- [ ] Category Rules Management Page - Implement subcategory assignment logic
-- [ ] Category Rules Management Page - Implement tag assignment logic
-- [ ] Category Rules Management Page - Implement rule priority ordering
-- [ ] Category Rules Management Page - Implement drag/drop priority UI
-- [ ] Category Rules Management Page - Implement rule enable/disable toggle
-- [ ] Category Rules Management Page - Implement rule deletion
-- [ ] Category Rules Management Page - Implement rule preview functionality
-- [ ] Data Integrity Layer - Validate category_id consistency
-- [ ] Data Integrity Layer - Validate subcategory hierarchy integrity
-- [ ] Data Integrity Layer - Prevent orphaned subcategories
-- [ ] Data Integrity Layer - Validate transaction tag relationships
-- [ ] Data Integrity Layer - Rebuild DuckDB analytical views after updates
-- [ ] Navigation & Integration - Link categories → filtered transaction views
-- [ ] Navigation & Integration - Sync category updates across analytics views
-- [ ] Navigation & Integration - Persist sidebar panel state
+- [x] Categories Overview Page - Build category analytics dashboard
+- [x] Categories Overview Page - Build category spending charts
+- [x] Categories Overview Page - Build subcategory spending charts
+- [x] Categories Overview Page - Build category list UI
+- [x] Categories Overview Page - Build subcategory hierarchy UI
+- [x] Categories Overview Page - Build tags management UI
+- [x] Categories Overview Page - Build uncategorized transaction section
+- [x] Categories Overview Page - Implement category filtering
+- [x] Categories Overview Page - Implement subcategory filtering
+- [x] Categories Overview Page - Implement transaction recategorization
+- [x] Categories Overview Page - Implement bulk transaction categorization
+- [x] Categories Overview Page - Implement tag assignment/removal
+- [x] Categories Overview Page - Implement category color editing
+- [x] Categories Overview Page - Implement category icon editing
+- [x] Categories Overview Page - Implement category rename functionality
+- [x] Categories Overview Page - Implement subcategory rename functionality
+- [x] Categories Overview Page - Implement category deletion behavior
+- [x] Categories Overview Page - Implement subcategory promotion logic
+- [x] Categories Overview Page - Implement category expand/collapse behavior
+- [x] Categories Overview Page - Add right-side collapsible editing panel
+- [x] Category Rules Management Page - Build rules list UI
+- [x] Category Rules Management Page - Build rule editor panel
+- [x] Category Rules Management Page - Implement merchant matching rules
+- [x] Category Rules Management Page - Implement description matching rules
+- [x] Category Rules Management Page - Implement contains operator
+- [x] Category Rules Management Page - Implement equals operator
+- [x] Category Rules Management Page - Implement starts with operator
+- [x] Category Rules Management Page - Implement category assignment logic
+- [x] Category Rules Management Page - Implement subcategory assignment logic
+- [x] Category Rules Management Page - Implement tag assignment logic
+- [x] Category Rules Management Page - Implement rule priority ordering
+- [x] Category Rules Management Page - Implement drag/drop priority UI
+- [x] Category Rules Management Page - Implement rule enable/disable toggle
+- [x] Category Rules Management Page - Implement rule deletion
+- [x] Category Rules Management Page - Implement rule preview functionality
+- [x] Data Integrity Layer - Validate category_id consistency
+- [x] Data Integrity Layer - Validate subcategory hierarchy integrity
+- [x] Data Integrity Layer - Prevent orphaned subcategories
+- [x] Data Integrity Layer - Validate transaction tag relationships
+- [x] Data Integrity Layer - Rebuild DuckDB analytical views after updates
+- [x] Navigation & Integration - Link categories → filtered transaction views
+- [x] Navigation & Integration - Sync category updates across analytics views
+- [x] Navigation & Integration - Persist sidebar panel state
 
 ===
 

@@ -3,11 +3,15 @@ import { AppLayout } from './app/AppLayout';
 import { TransactionsPage } from './features/transactions/TransactionsPage';
 import { AccountOverviewPage } from './features/account-overview/AccountOverviewPage';
 import { AccountManagementPage } from './features/account-management/AccountManagementPage';
+import { CategoriesOverviewPage } from './features/categories-tags-overview/CategoriesOverviewPage';
+import { CategoryRulesPage } from './features/category-rules-management/CategoryRulesPage';
 
 const BREADCRUMBS: Record<string, string[]> = {
   transactions: ['Transactions'],
   accounts: ['Accounts'],
   'accounts/settings': ['Accounts', 'Settings'],
+  categories: ['Categories'],
+  'categories/rules': ['Categories', 'Rules'],
 };
 
 function pathToPage(path: string): string {
@@ -40,6 +44,8 @@ function App() {
       {page === 'transactions' && <TransactionsPage />}
       {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
       {page === 'accounts/settings' && <AccountManagementPage />}
+      {page === 'categories' && <CategoriesOverviewPage />}
+      {page === 'categories/rules' && <CategoryRulesPage />}
     </AppLayout>
   );
 }

@@ -20,6 +20,11 @@ const RECURRING_TRANSACTIONS_COLS = [
   'account_id', 'confidence', 'active', 'created_at',
 ] as const;
 
+const CATEGORIES_COLS = ['id', 'name', 'parent_id', 'icon', 'color', 'system', 'created_at'] as const;
+const TAGS_COLS = ['id', 'name', 'color'] as const;
+const TRANSACTION_TAGS_COLS = ['transaction_id', 'tag_id'] as const;
+const RULES_COLS = ['id', 'priority', 'field', 'operator', 'value', 'category_id', 'apply_tag', 'enabled', 'created_at'] as const;
+
 function csvEscape(v: unknown): string {
   if (v == null) return '';
   const s = String(v);
@@ -79,4 +84,20 @@ export async function persistAccountBalanceHistory(): Promise<void> {
 
 export async function persistRecurringTransactions(): Promise<void> {
   return persistTable('recurring_transactions', RECURRING_TRANSACTIONS_COLS, 'merchant');
+}
+
+export async function persistCategories(): Promise<void> {
+  return persistTable('categories', CATEGORIES_COLS, 'created_at');
+}
+
+export async function persistTags(): Promise<void> {
+  return persistTable('tags', TAGS_COLS, 'name');
+}
+
+export async function persistTransactionTags(): Promise<void> {
+  return persistTable('transaction_tags', TRANSACTION_TAGS_COLS, 'transaction_id, tag_id');
+}
+
+export async function persistRules(): Promise<void> {
+  return persistTable('rules', RULES_COLS, 'priority');
 }
