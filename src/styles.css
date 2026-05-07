@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Surfaces */
+  --color-canvas: #f7f5f2;
+  --color-sidebar: #f0ede8;
+  --color-hover: #e8e4df;
+  --color-surface: #ffffff;
+  --color-border: #e2ddd8;
+  --color-row-hover: #faf9f7;
+
+  /* Text */
+  --color-text: #1a1915;
+  --color-muted: #6b6862;
+  --color-subtle: #9e9b96;
+
+  /* Brand */
+  --color-brand: #d4622a;
+  --color-brand-hover: #b8521f;
+  --color-brand-active: #9a4418;
+  --color-brand-light: #fdf0e8;
+  --color-link: #c96b2e;
+
+  /* Semantic */
+  --color-success: #2d7d46;
+  --color-success-bg: #f0faf4;
+  --color-success-border: #b8e4c8;
+  --color-warning: #b45309;
+  --color-warning-bg: #fef9ec;
+  --color-warning-border: #f9d78a;
+  --color-error: #c0392b;
+  --color-error-bg: #fef2f1;
+  --color-error-border: #f0c0bc;
+  --color-info: #1d6fa4;
+  --color-info-bg: #eef6fc;
+  --color-info-border: #a8d4f0;
+
+  /* Shadows — warm-tinted, no cool blue */
+  --shadow-xs: 0 1px 2px rgba(26, 25, 21, 0.05);
+  --shadow-sm: 0 1px 3px rgba(26, 25, 21, 0.08), 0 1px 2px rgba(26, 25, 21, 0.04);
+  --shadow-md: 0 4px 6px rgba(26, 25, 21, 0.06), 0 2px 4px rgba(26, 25, 21, 0.04);
+  --shadow-lg: 0 10px 15px rgba(26, 25, 21, 0.07), 0 4px 6px rgba(26, 25, 21, 0.04);
+  --shadow-xl: 0 20px 25px rgba(26, 25, 21, 0.08), 0 8px 10px rgba(26, 25, 21, 0.04);
+
+  /* Motion */
+  --ease-default: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark mode — override surface/text tokens; brand unchanged */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: #1a1917;
+    --color-sidebar: #111110;
+    --color-hover: #2a2826;
+    --color-surface: #242320;
+    --color-border: #2e2c29;
+    --color-row-hover: #2a2826;
+    --color-text: #f0ede8;
+    --color-muted: #8c8880;
+    --color-subtle: #5c5852;
+  }
+}
+
+@layer base {
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    color-scheme: light dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
