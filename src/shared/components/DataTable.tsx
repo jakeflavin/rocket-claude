@@ -24,6 +24,7 @@ type Props<T> = {
   error?: string | null;
   emptyMessage?: string;
   renderExpanded?: (row: T) => ReactNode;
+  onRowClick?: (row: T) => void;
 };
 
 export function DataTable<T>({
@@ -37,6 +38,7 @@ export function DataTable<T>({
   error,
   emptyMessage = 'No results',
   renderExpanded,
+  onRowClick,
 }: Props<T>) {
   const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set());
   const totalCols = columns.length + (renderExpanded ? 1 : 0);
@@ -120,10 +122,16 @@ export function DataTable<T>({
                     <tr
                       className={[
                         'border-b border-border',
-                        renderExpanded ? 'cursor-pointer' : '',
+                        renderExpanded || onRowClick ? 'cursor-pointer' : '',
                         expanded ? 'bg-row-hover' : 'hover:bg-row-hover',
                       ].join(' ')}
-                      onClick={renderExpanded ? () => toggle(key) : undefined}
+                      onClick={
+                        onRowClick
+                          ? () => onRowClick(row)
+                          : renderExpanded
+                          ? () => toggle(key)
+                          : undefined
+                      }
                     >
                       {renderExpanded && (
                         <td className="w-9 px-3 py-3 text-subtle">
