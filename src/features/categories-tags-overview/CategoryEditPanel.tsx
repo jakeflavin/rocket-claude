@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Trash2 } from 'lucide-react';
-import { Card } from '../../shared/components/Card';
+import { Trash2 } from 'lucide-react';
 import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
 import type { PanelState } from './types';
@@ -182,28 +181,8 @@ function TagForm({
 }
 
 export function CategoryEditPanel({ panel, onClose, onSaveCategory, onDeleteCategory, onSaveTag, onDeleteTag }: Props) {
-  const title =
-    panel.mode === 'newCategory' ? 'New Category' :
-    panel.mode === 'category' ? 'Edit Category' :
-    panel.mode === 'newSubcategory' ? 'New Subcategory' :
-    panel.mode === 'subcategory' ? 'Edit Subcategory' :
-    panel.mode === 'newTag' ? 'New Tag' :
-    'Edit Tag';
-
   return (
-    <Card className="sticky top-0 overflow-hidden">
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 className="text-sm font-semibold text-text">{title}</h2>
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-muted hover:bg-hover hover:text-text transition-colors duration-[100ms]"
-        >
-          <X size={16} />
-        </button>
-      </div>
-      <div className="p-4">
-
+    <div className="p-4 space-y-0">
       {(panel.mode === 'category' || panel.mode === 'newCategory') && (
         <CategoryForm
           title={title}
@@ -258,7 +237,6 @@ export function CategoryEditPanel({ panel, onClose, onSaveCategory, onDeleteCate
           onClose={onClose}
         />
       )}
-      </div>
-    </Card>
+    </div>
   );
 }

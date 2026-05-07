@@ -3,9 +3,20 @@ import { SpendingSection } from './SpendingSection';
 import { CategoryListSection } from './CategoryListSection';
 import { TagsSection } from './TagsSection';
 import { CategoryEditPanel } from './CategoryEditPanel';
+import { Drawer } from '../../shared/components/Drawer';
 import { useCategories } from './useCategories';
 import { useTags } from './useTags';
 import type { PanelState, SpendingPeriod } from './types';
+
+function panelTitle(panel: PanelState): string {
+  if (!panel) return '';
+  if (panel.mode === 'newCategory') return 'New Category';
+  if (panel.mode === 'category') return 'Edit Category';
+  if (panel.mode === 'newSubcategory') return 'New Subcategory';
+  if (panel.mode === 'subcategory') return 'Edit Subcategory';
+  if (panel.mode === 'newTag') return 'New Tag';
+  return 'Edit Tag';
+}
 
 export function CategoriesOverviewPage() {
   const { categories, addCategory, editCategory, removeCategory } = useCategories();
@@ -45,8 +56,8 @@ export function CategoriesOverviewPage() {
   );
 
   return (
-    <div className="flex min-h-0 gap-6">
-      <div className="flex-1 min-w-0 space-y-6">
+    <>
+      <div className="space-y-6">
         <SpendingSection
           period={period}
           selectedCategoryId={selectedCategoryId}
@@ -66,8 +77,12 @@ export function CategoriesOverviewPage() {
         />
       </div>
 
-      {panel && (
-        <div className="w-[300px] shrink-0">
+      <Drawer
+        open={panel !== null}
+        onClose={() => setPanel(null)}
+        title={panelTitle(panel)}
+      >
+        {panel && (
           <CategoryEditPanel
             panel={panel}
             onClose={() => setPanel(null)}
@@ -76,8 +91,8 @@ export function CategoriesOverviewPage() {
             onSaveTag={handleSaveTag}
             onDeleteTag={removeTag}
           />
-        </div>
-      )}
-    </div>
+        )}
+      </Drawer>
+    </>
   );
 }

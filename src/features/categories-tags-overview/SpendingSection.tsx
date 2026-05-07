@@ -62,20 +62,19 @@ export function SpendingSection({ period, selectedCategoryId, onSelectCategory, 
         </div>
       </Card>
 
-      {selectedCategoryId && subcategoryItems.length > 0 && (
-        <Card>
-          <div className="flex items-center border-b border-border px-5 py-3">
-            <h2 className="text-sm font-semibold text-text">Spending by Subcategory</h2>
-          </div>
-          <div className="px-5 py-4">
-            <HorizontalBarChart
-              data={subcategoryItems}
-              height={Math.max(subcategoryItems.length * 44, 80)}
-              valueFormatter={formatCurrency}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <div className="flex items-center border-b border-border px-5 py-3">
+          <h2 className="text-sm font-semibold text-text">Spending by Subcategory</h2>
+        </div>
+        <div className="px-5 py-4">
+          <HorizontalBarChart
+            data={subcategoryItems}
+            height={Math.max(subcategoryItems.length * 44, 80)}
+            valueFormatter={formatCurrency}
+            emptyMessage={selectedCategoryId ? 'No subcategory data for this period.' : 'Select a category above to see subcategory breakdown.'}
+          />
+        </div>
+      </Card>
     </div>
   );
 }

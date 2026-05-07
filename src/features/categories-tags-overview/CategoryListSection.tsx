@@ -13,13 +13,13 @@ type Props = {
 
 function SubcategoryRow({ cat, parent, onEdit }: { cat: Category; parent: Category; onEdit: () => void }) {
   return (
-    <div className="group flex items-center gap-2 rounded-lg py-2 pl-9 pr-2 hover:bg-hover transition-colors duration-[100ms]">
+    <div className="flex items-center gap-2 rounded-lg py-2 pl-9 pr-2 hover:bg-hover transition-colors duration-[100ms]">
       <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cat.color }} />
       <span className="flex-1 truncate text-sm text-text">{cat.name}</span>
       <button
         type="button"
         onClick={onEdit}
-        className="hidden group-hover:flex items-center justify-center w-6 h-6 rounded text-muted hover:text-text hover:bg-hover"
+        className="flex items-center justify-center w-6 h-6 rounded text-muted hover:text-text hover:bg-hover transition-colors duration-[100ms]"
       >
         <Pencil size={12} />
       </button>
@@ -49,7 +49,7 @@ function CategoryRow({
 
   return (
     <div>
-      <div className={`group flex items-center gap-2 rounded-lg py-2 pr-2 transition-colors duration-[100ms] hover:bg-hover ${isSelected ? 'bg-hover ring-1 ring-inset ring-brand/20' : ''}`}>
+      <div className={`flex items-center gap-2 rounded-lg py-2 pr-2 transition-colors duration-[100ms] hover:bg-hover ${isSelected ? 'bg-hover ring-1 ring-inset ring-brand/20' : ''}`}>
         <button
           type="button"
           onClick={() => setExpanded((e) => !e)}
@@ -62,11 +62,11 @@ function CategoryRow({
           <span className="flex-1 truncate text-sm font-medium text-text text-left">{cat.name}</span>
           {subcategories.length > 0 && <Badge variant="default">{subcategories.length}</Badge>}
         </button>
-        <div className="hidden group-hover:flex items-center gap-1">
+        <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={onAddSubcategory}
-            className="flex items-center justify-center w-6 h-6 rounded text-muted hover:text-text hover:bg-hover"
+            className="flex items-center justify-center w-6 h-6 rounded text-muted hover:text-text hover:bg-hover transition-colors duration-[100ms]"
             title="Add subcategory"
           >
             <Plus size={12} />
@@ -74,7 +74,7 @@ function CategoryRow({
           <button
             type="button"
             onClick={onEdit}
-            className="flex items-center justify-center w-6 h-6 rounded text-muted hover:text-text hover:bg-hover"
+            className="flex items-center justify-center w-6 h-6 rounded text-muted hover:text-text hover:bg-hover transition-colors duration-[100ms]"
           >
             <Pencil size={12} />
           </button>
