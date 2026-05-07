@@ -1,4 +1,4 @@
-import { X, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { Badge } from '../../shared/components/Badge';
 import { Button } from '../../shared/components/Button';
 import { useAccountBalanceHistory } from './useAccountBalanceHistory';
@@ -6,7 +6,6 @@ import type { Account } from './types';
 
 type Props = {
   account: Account;
-  onClose: () => void;
   onNavigateToTransactions: (accountId: string) => void;
 };
 
@@ -45,24 +44,14 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export function AccountDetailPanel({ account, onClose, onNavigateToTransactions }: Props) {
+export function AccountDetailPanel({ account, onNavigateToTransactions }: Props) {
   const { history, loading: histLoading } = useAccountBalanceHistory(account.id);
   const isCredit = account.type === 'credit';
   const balanceLabel = isCredit ? 'Balance Owed' : 'Balance';
   const displayBalance = isCredit ? Math.abs(account.balance) : account.balance;
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-border bg-surface">
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-text">{account.name}</p>
-          <p className="text-xs text-muted">{account.institution}</p>
-        </div>
-        <Button variant="icon" size="sm" onClick={onClose} aria-label="Close panel">
-          <X size={16} />
-        </Button>
-      </div>
-
+    <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <div className="flex items-center gap-2">
           <Badge variant="default">{account.subtype}</Badge>

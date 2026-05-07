@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Badge } from '../../shared/components/Badge';
 import { Card } from '../../shared/components/Card';
+import { Drawer } from '../../shared/components/Drawer';
 import { useAccounts } from './useAccounts';
 import { AccountDetailPanel } from './AccountDetailPanel';
 import { GROUPED_SUBTYPES, SUBTYPE_GROUP_LABEL, type Account, type AccountGroup } from './types';
@@ -34,8 +35,8 @@ function AccountRow({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors duration-[100ms] hover:bg-hover ${
-        isSelected ? 'bg-hover ring-1 ring-inset ring-brand/20' : ''
+      className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-[100ms] hover:bg-hover ${
+        isSelected ? 'bg-hover' : ''
       }`}
     >
       <span className={`h-2 w-2 shrink-0 rounded-full ${
@@ -122,8 +123,8 @@ export function AccountOverviewPage({ onNavigate }: Props) {
   }
 
   return (
-    <div className="flex min-h-0 gap-6">
-      <div className="flex-1 min-w-0 space-y-4">
+    <>
+      <div className="space-y-4">
         {grouped.length === 0 ? (
           <p className="text-sm text-muted">No accounts found.</p>
         ) : (
@@ -138,15 +139,21 @@ export function AccountOverviewPage({ onNavigate }: Props) {
         )}
       </div>
 
-      {selectedAccount && (
-        <div className="w-[300px] shrink-0">
+      <Drawer
+        open={selectedAccount !== null}
+        onClose={() => setSelectedAccount(null)}
+        title={selectedAccount?.name ?? ''}
+      >
+        {selectedAccount && (
           <AccountDetailPanel
             account={selectedAccount}
-            onClose={() => setSelectedAccount(null)}
-            onNavigateToTransactions={(id) => onNavigate(`/transactions?account=${id}`)}
+            onNavigateToTransactions={(id) => {
+              setSelectedAccount(null);
+              onNavigate(`/transactions?account=${id}`);
+            }}
           />
-        </div>
-      )}
-    </div>
+        )}
+      </Drawer>
+    </>
   );
 }
