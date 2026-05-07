@@ -51,7 +51,7 @@ export async function queryBudgets(): Promise<BudgetWithStats[]> {
       ), 0) AS spent
     FROM budgets b
     LEFT JOIN categories c ON c.id = b.category_id
-    WHERE (b.end_date IS NULL OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
+    WHERE (b.end_date IS NULL OR TRIM(CAST(b.end_date AS VARCHAR)) = '' OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
     ORDER BY c.name
   `;
 
@@ -140,11 +140,11 @@ export async function queryAvailableCategories(excludeBudgetId?: string): Promis
     ? `AND c.id NOT IN (
          SELECT b.category_id FROM budgets b
          WHERE b.id != '${esc(excludeBudgetId)}'
-           AND (b.end_date IS NULL OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
+           AND (b.end_date IS NULL OR TRIM(CAST(b.end_date AS VARCHAR)) = '' OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
        )`
     : `AND c.id NOT IN (
          SELECT b.category_id FROM budgets b
-         WHERE (b.end_date IS NULL OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
+         WHERE (b.end_date IS NULL OR TRIM(CAST(b.end_date AS VARCHAR)) = '' OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
        )`;
 
   const result = await conn.query(`
