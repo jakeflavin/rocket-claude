@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Badge } from '../../shared/components/Badge';
 import { Card } from '../../shared/components/Card';
 import { useAccounts } from './useAccounts';
@@ -70,34 +69,22 @@ function AccountGroupSection({
   selectedId: string | null;
   onSelect: (account: Account) => void;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const ChevronIcon = collapsed ? ChevronRight : ChevronDown;
-
   return (
     <Card className="overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setCollapsed((c) => !c)}
-        className="flex w-full items-center justify-between border-b border-border px-4 py-3 text-left hover:bg-hover transition-colors duration-[100ms]"
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-text">{group.label}</span>
-          <Badge variant="default">{group.accounts.length}</Badge>
-        </div>
-        <ChevronIcon size={16} className="text-subtle" aria-hidden="true" />
-      </button>
-      {!collapsed && (
-        <div className="divide-y divide-border">
-          {group.accounts.map((account) => (
-            <AccountRow
-              key={account.id}
-              account={account}
-              isSelected={selectedId === account.id}
-              onClick={() => onSelect(account)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+        <span className="text-sm font-semibold text-text">{group.label}</span>
+        <Badge variant="default">{group.accounts.length}</Badge>
+      </div>
+      <div className="divide-y divide-border">
+        {group.accounts.map((account) => (
+          <AccountRow
+            key={account.id}
+            account={account}
+            isSelected={selectedId === account.id}
+            onClick={() => onSelect(account)}
+          />
+        ))}
+      </div>
     </Card>
   );
 }
