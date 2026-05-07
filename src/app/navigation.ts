@@ -1,17 +1,25 @@
-import { CreditCard, type LucideIcon } from 'lucide-react';
+import { CreditCard, Settings2, Wallet, type LucideIcon } from 'lucide-react';
 
 export type NavItem = {
   label: string;
   icon: LucideIcon;
-  href: string;
-  active: boolean;
+  path: string;
 };
 
 export const navItems: NavItem[] = [
   {
     label: 'Transactions',
     icon: CreditCard,
-    href: '#transactions',
-    active: true,
+    path: '/transactions',
+  },
+  {
+    label: 'Accounts',
+    icon: Wallet,
+    path: '/accounts',
+  },
+  {
+    label: 'Manage Accounts',
+    icon: Settings2,
+    path: '/account-management',
   },
 ];
