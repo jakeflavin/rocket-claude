@@ -101,3 +101,9 @@ export async function persistTransactionTags(): Promise<void> {
 export async function persistRules(): Promise<void> {
   return persistTable('rules', RULES_COLS, 'priority');
 }
+
+const BUDGETS_COLS = ['id', 'category_id', 'amount', 'period', 'rollover', 'start_date', 'end_date', 'created_at'] as const;
+
+export async function persistBudgets(): Promise<void> {
+  return persistTable('budgets', BUDGETS_COLS, 'created_at');
+}
