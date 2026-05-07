@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Card } from '../../shared/components/Card';
 import { HorizontalBarChart, type HorizontalBarChartItem } from '../../shared/components/HorizontalBarChart';
+import { SegmentedControl } from '../../shared/components/SegmentedControl';
 import { useCategorySpending } from './useCategorySpending';
 import type { SpendingPeriod } from './types';
 
@@ -11,11 +12,11 @@ type Props = {
   onPeriodChange: (p: SpendingPeriod) => void;
 };
 
-const PERIOD_LABELS: Record<SpendingPeriod, string> = {
-  month: 'This Month',
-  quarter: 'This Quarter',
-  year: 'This Year',
-};
+const PERIOD_SEGMENTS = [
+  { value: 'month' as const, label: 'This Month' },
+  { value: 'quarter' as const, label: 'This Quarter' },
+  { value: 'year' as const, label: 'This Year' },
+];
 
 function formatCurrency(v: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v);
@@ -39,20 +40,7 @@ export function SpendingSection({ period, selectedCategoryId, onSelectCategory, 
       <Card>
         <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <h2 className="text-sm font-semibold text-text">Spending by Category</h2>
-          <div className="flex gap-1">
-            {(Object.keys(PERIOD_LABELS) as SpendingPeriod[]).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => onPeriodChange(p)}
-                className={`rounded px-2 py-1 text-xs font-medium transition-colors duration-[100ms] ${
-                  period === p ? 'bg-brand text-white' : 'text-muted hover:bg-hover hover:text-text'
-                }`}
-              >
-                {PERIOD_LABELS[p]}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl segments={PERIOD_SEGMENTS} value={period} onChange={onPeriodChange} />
         </div>
         <div className="px-5 py-4">
           {loading && (
