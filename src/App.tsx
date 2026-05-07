@@ -10,8 +10,8 @@ const BREADCRUMBS: Record<string, string[]> = {
   transactions: ['Transactions'],
   accounts: ['Accounts'],
   'accounts/settings': ['Accounts', 'Settings'],
-  categories: ['Categories'],
-  'categories/rules': ['Categories', 'Rules'],
+  categories: ['Transactions', 'Categories'],
+  'categories/rules': ['Transactions', 'Rules'],
 };
 
 function pathToPage(path: string): string {
