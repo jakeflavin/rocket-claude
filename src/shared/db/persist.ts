@@ -107,3 +107,9 @@ const BUDGETS_COLS = ['id', 'category_id', 'amount', 'period', 'rollover', 'star
 export async function persistBudgets(): Promise<void> {
   return persistTable('budgets', BUDGETS_COLS, 'created_at');
 }
+
+const GOALS_COLS = ['id', 'name', 'target_amount', 'current_amount', 'target_date', 'linked_account_id', 'created_at'] as const;
+
+export async function persistGoals(): Promise<void> {
+  return persistTable('goals', GOALS_COLS, 'target_date');
+}
