@@ -3,11 +3,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { navItems } from './navigation';
 
 type AppLayoutProps = {
+  currentPage: string;
   breadcrumbs: string[];
   children: ReactNode;
+  onNavigate: (path: string) => void;
 };
 
-export function AppLayout({ breadcrumbs, children }: AppLayoutProps) {
+export function AppLayout({ currentPage, breadcrumbs, children, onNavigate }: AppLayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
@@ -38,25 +40,47 @@ export function AppLayout({ breadcrumbs, children }: AppLayoutProps) {
         <nav className="flex flex-1 flex-col gap-0.5 p-2" aria-label="Main navigation">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const active = item.path === `/${currentPage}`;
+            const childActive = item.children?.some((c) => c.path === `/${currentPage}`);
             return (
-              <a
-                key={item.label}
-                href={item.href}
-                aria-current={item.active ? 'page' : undefined}
-                title={isSidebarCollapsed ? item.label : undefined}
-                className={`flex h-9 items-center gap-[10px] rounded-[6px] px-3 text-sm transition-colors duration-[100ms] ${
-                  item.active
-                    ? 'bg-hover font-medium text-text'
-                    : 'font-normal text-muted hover:bg-hover hover:text-text'
-                } ${isSidebarCollapsed ? 'justify-center' : ''}`}
-              >
-                <Icon
-                  size={20}
-                  aria-hidden="true"
-                  className={item.active ? 'text-brand' : 'text-current'}
-                />
-                {!isSidebarCollapsed && <span>{item.label}</span>}
-              </a>
+              <div key={item.label}>
+                <a
+                  href={item.path}
+                  aria-current={active ? 'page' : undefined}
+                  title={isSidebarCollapsed ? item.label : undefined}
+                  onClick={(e) => { e.preventDefault(); onNavigate(item.path); }}
+                  className={`flex h-9 items-center gap-[10px] rounded-[6px] px-3 text-sm transition-colors duration-[100ms] ${
+                    active
+                      ? 'bg-hover font-medium text-text'
+                      : 'font-normal text-muted hover:bg-hover hover:text-text'
+                  } ${isSidebarCollapsed ? 'justify-center' : ''}`}
+                >
+                  <Icon
+                    size={20}
+                    aria-hidden="true"
+                    className={active || childActive ? 'text-brand' : 'text-current'}
+                  />
+                  {!isSidebarCollapsed && <span>{item.label}</span>}
+                </a>
+                {!isSidebarCollapsed && (active || childActive) && item.children?.map((child) => {
+                  const childIsActive = child.path === `/${currentPage}`;
+                  return (
+                    <a
+                      key={child.label}
+                      href={child.path}
+                      aria-current={childIsActive ? 'page' : undefined}
+                      onClick={(e) => { e.preventDefault(); onNavigate(child.path); }}
+                      className={`ml-8 flex h-7 items-center rounded-[6px] px-3 text-xs transition-colors duration-[100ms] ${
+                        childIsActive
+                          ? 'font-medium text-text bg-hover'
+                          : 'font-normal text-muted hover:bg-hover hover:text-text'
+                      }`}
+                    >
+                      {child.label}
+                    </a>
+                  );
+                })}
+              </div>
             );
           })}
         </nav>

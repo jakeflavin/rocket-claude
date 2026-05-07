@@ -7,7 +7,7 @@ import { AccountManagementPage } from './features/account-management/AccountMana
 const BREADCRUMBS: Record<string, string[]> = {
   transactions: ['Transactions'],
   accounts: ['Accounts'],
-  'account-management': ['Accounts', 'Manage'],
+  'accounts/settings': ['Accounts', 'Settings'],
 };
 
 function pathToPage(path: string): string {
@@ -39,7 +39,7 @@ function App() {
     <AppLayout currentPage={page} breadcrumbs={BREADCRUMBS[page] ?? []} onNavigate={navigate}>
       {page === 'transactions' && <TransactionsPage />}
       {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
-      {page === 'account-management' && <AccountManagementPage />}
+      {page === 'accounts/settings' && <AccountManagementPage />}
     </AppLayout>
   );
 }
