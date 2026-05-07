@@ -1,9 +1,14 @@
 import { useState } from 'react';
+import { Badge } from '../../shared/components/Badge';
+import { Button } from '../../shared/components/Button';
+import { Card } from '../../shared/components/Card';
 import { DataTable, type ColumnDef } from '../../shared/components/DataTable';
-import { TransactionExpandedRow } from './TransactionExpandedRow';
+import { Input } from '../../shared/components/Input';
 import { Pagination, type PageSize } from '../../shared/components/Pagination';
-import { useTransactions } from './useTransactions';
+import { Select } from '../../shared/components/Select';
+import { TransactionExpandedRow } from './TransactionExpandedRow';
 import { useFilterOptions } from './useFilterOptions';
+import { useTransactions } from './useTransactions';
 import {
   DEFAULT_FILTERS,
   DEFAULT_SORT,
@@ -63,13 +68,7 @@ const COLUMNS: ColumnDef<Transaction>[] = [
     headerClassName: 'text-right',
     cellClassName: 'text-right',
     render: (row) => (
-      <span
-        className={
-          row.amount >= 0
-            ? 'font-semibold text-success'
-            : 'font-semibold text-text'
-        }
-      >
+      <span className={row.amount >= 0 ? 'font-semibold text-success' : 'font-semibold text-text'}>
         {formatAmount(row.amount, row.currency)}
       </span>
     ),
@@ -78,21 +77,12 @@ const COLUMNS: ColumnDef<Transaction>[] = [
     key: 'pending',
     header: 'Status',
     render: (row) => (
-      <span
-        className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-          row.pending
-            ? 'border-warning-border bg-warning-bg text-warning'
-            : 'border-success-border bg-success-bg text-success'
-        }`}
-      >
+      <Badge variant={row.pending ? 'warning' : 'success'}>
         {row.pending ? 'Pending' : 'Cleared'}
-      </span>
+      </Badge>
     ),
   },
 ];
-
-const INPUT_CLS =
-  'h-9 rounded-lg border border-border bg-surface px-3 text-sm text-text placeholder:text-subtle focus:border-link focus:outline-none focus:ring-[3px] focus:ring-brand/[0.12]';
 
 export function TransactionsPage() {
   const [filters, setFilters] = useState<TransactionFilters>(DEFAULT_FILTERS);
@@ -123,18 +113,17 @@ export function TransactionsPage() {
   return (
     <section className="grid gap-4" aria-label="Transactions">
       {/* Filter bar */}
-      <div className="rounded-xl border border-border bg-surface p-3">
+      <Card className="p-3">
         <div className="flex flex-wrap gap-2">
-          <input
-            className={`${INPUT_CLS} min-w-48 flex-1`}
+          <Input
             type="search"
             placeholder="Search merchant or description…"
+            className="min-w-48 flex-1"
             value={filters.search}
             onChange={(e) => setFilter('search', e.target.value)}
           />
 
-          <select
-            className={INPUT_CLS}
+          <Select
             value={filters.accountId}
             onChange={(e) => setFilter('accountId', e.target.value)}
           >
@@ -144,10 +133,9 @@ export function TransactionsPage() {
                 {a.name}
               </option>
             ))}
-          </select>
+          </Select>
 
-          <select
-            className={INPUT_CLS}
+          <Select
             value={filters.categoryId}
             onChange={(e) => setFilter('categoryId', e.target.value)}
           >
@@ -157,57 +145,55 @@ export function TransactionsPage() {
                 {c.name}
               </option>
             ))}
-          </select>
+          </Select>
 
-          <input
-            className={`${INPUT_CLS} min-w-[136px]`}
+          <Input
             type="date"
+            className="min-w-[136px]"
             value={filters.dateFrom}
             onChange={(e) => setFilter('dateFrom', e.target.value)}
             aria-label="From date"
           />
 
-          <input
-            className={`${INPUT_CLS} min-w-[136px]`}
+          <Input
             type="date"
+            className="min-w-[136px]"
             value={filters.dateTo}
             onChange={(e) => setFilter('dateTo', e.target.value)}
             aria-label="To date"
           />
 
-          <select
-            className={INPUT_CLS}
+          <Select
             value={filters.type}
             onChange={(e) => setFilter('type', e.target.value as TransactionFilters['type'])}
           >
             <option value="all">All types</option>
             <option value="income">Income</option>
             <option value="expense">Expense</option>
-          </select>
+          </Select>
 
-          <select
-            className={INPUT_CLS}
+          <Select
             value={filters.status}
             onChange={(e) => setFilter('status', e.target.value as TransactionFilters['status'])}
           >
             <option value="all">All statuses</option>
             <option value="cleared">Cleared</option>
             <option value="pending">Pending</option>
-          </select>
+          </Select>
 
           {hasActiveFilters && (
-            <button
-              className="h-9 rounded-lg border border-border bg-transparent px-3 text-sm text-muted transition-colors duration-[100ms] hover:bg-hover hover:text-text"
+            <Button
+              variant="ghost"
               onClick={() => {
                 setFilters(DEFAULT_FILTERS);
                 setPage(1);
               }}
             >
               Clear
-            </button>
+            </Button>
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Table */}
       <DataTable<Transaction>

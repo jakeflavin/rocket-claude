@@ -1,3 +1,8 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from './Button';
+import { Card } from './Card';
+import { Select } from './Select';
+
 export type PageSize = 25 | 50 | 100;
 
 const PAGE_SIZES: PageSize[] = [25, 50, 100];
@@ -16,7 +21,7 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
   const to = Math.min(page * pageSize, total);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-sm text-muted">
+    <Card className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm text-muted">
       <span>
         {total === 0
           ? 'No results'
@@ -26,8 +31,8 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
       <div className="flex items-center gap-4">
         <label className="flex items-center gap-2 text-xs">
           Per page
-          <select
-            className="rounded border border-border bg-surface px-2 py-1 text-xs text-text focus:outline-none focus:ring-2 focus:ring-brand/30"
+          <Select
+            className="h-7 px-2 text-xs"
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value) as PageSize)}
           >
@@ -36,31 +41,33 @@ export function Pagination({ page, pageSize, total, onPageChange, onPageSizeChan
                 {s}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
 
         <div className="flex items-center gap-1">
-          <button
-            className="rounded-[6px] px-2 py-1 transition-colors duration-[100ms] hover:bg-hover disabled:cursor-not-allowed disabled:opacity-40"
+          <Button
+            variant="icon"
+            size="sm"
             disabled={page <= 1}
             onClick={() => onPageChange(page - 1)}
             aria-label="Previous page"
           >
-            ←
-          </button>
+            <ChevronLeft size={14} aria-hidden="true" />
+          </Button>
           <span className="min-w-[4rem] text-center text-xs">
             {page} / {totalPages}
           </span>
-          <button
-            className="rounded-[6px] px-2 py-1 transition-colors duration-[100ms] hover:bg-hover disabled:cursor-not-allowed disabled:opacity-40"
+          <Button
+            variant="icon"
+            size="sm"
             disabled={page >= totalPages}
             onClick={() => onPageChange(page + 1)}
             aria-label="Next page"
           >
-            →
-          </button>
+            <ChevronRight size={14} aria-hidden="true" />
+          </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

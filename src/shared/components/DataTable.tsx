@@ -1,4 +1,6 @@
 import { useState, Fragment, type ReactNode } from 'react';
+import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
+import { Card } from './Card';
 
 export type SortDir = 'asc' | 'desc';
 
@@ -53,7 +55,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-surface">
+    <Card className="overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[700px] border-collapse text-left text-sm">
           <thead className="border-b-2 border-border bg-canvas">
@@ -64,9 +66,7 @@ export function DataTable<T>({
                   key={col.key}
                   className={[
                     'px-4 py-[10px] text-xs font-medium uppercase tracking-[0.04em] text-muted',
-                    col.sortable
-                      ? 'cursor-pointer select-none hover:text-text'
-                      : '',
+                    col.sortable ? 'cursor-pointer select-none hover:text-text' : '',
                     col.headerClassName ?? '',
                   ].join(' ')}
                   onClick={col.sortable ? () => handleHeaderClick(col.key) : undefined}
@@ -75,7 +75,15 @@ export function DataTable<T>({
                     {col.header}
                     {col.sortable && (
                       <span className={sortKey === col.key ? 'text-brand' : 'text-subtle'}>
-                        {sortKey === col.key ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
+                        {sortKey === col.key ? (
+                          sortDir === 'asc' ? (
+                            <ArrowUp size={12} aria-hidden="true" />
+                          ) : (
+                            <ArrowDown size={12} aria-hidden="true" />
+                          )
+                        ) : (
+                          <ArrowUpDown size={12} aria-hidden="true" />
+                        )}
                       </span>
                     )}
                   </span>
@@ -138,10 +146,7 @@ export function DataTable<T>({
 
                     {renderExpanded && expanded && (
                       <tr className="border-b border-border bg-canvas">
-                        <td
-                          colSpan={totalCols}
-                          className="px-4 pb-5 pt-3"
-                        >
+                        <td colSpan={totalCols} className="px-4 pb-5 pt-3">
                           {renderExpanded(row)}
                         </td>
                       </tr>
@@ -153,6 +158,6 @@ export function DataTable<T>({
           </tbody>
         </table>
       </div>
-    </div>
+    </Card>
   );
 }

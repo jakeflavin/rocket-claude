@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { Badge } from '../../shared/components/Badge';
 import type { Transaction } from './types';
 
 function formatDate(iso: string): string {
@@ -56,13 +57,7 @@ export function TransactionExpandedRow({ row }: { row: Transaction }) {
       </Field>
 
       <Field label="Transfer">
-        {row.is_transfer ? (
-          <span className="inline-flex items-center rounded-full border border-info-border bg-info-bg px-2 py-0.5 text-xs font-medium text-info">
-            Yes
-          </span>
-        ) : (
-          <span className="text-subtle">No</span>
-        )}
+        {row.is_transfer ? <Badge variant="info">Yes</Badge> : <span className="text-subtle">No</span>}
       </Field>
 
       <Field label="Transfer Group">{row.transfer_group ?? <Dash />}</Field>
