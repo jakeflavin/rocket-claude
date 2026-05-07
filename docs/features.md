@@ -13,19 +13,19 @@ For this feature to be completed users should be able to do the following:
 
 ### Tasks
 - [x] Add task list to `docs/features.md`
-- [ ] Add `persistGoals()` to `src/shared/db/persist.ts`
-- [ ] Create `src/shared/components/ProjectionChart.tsx`
-- [ ] Create `src/features/goals/types.ts`
-- [ ] Create `src/features/goals/queries.ts`
-- [ ] Create `src/features/goals/useGoals.ts`
-- [ ] Create `src/features/goals/GoalSummaryBar.tsx`
-- [ ] Create `src/features/goals/GoalCard.tsx`
-- [ ] Create `src/features/goals/GoalListSection.tsx`
-- [ ] Create `src/features/goals/GoalDetailDrawer.tsx`
-- [ ] Create `src/features/goals/GoalEditorDrawer.tsx`
-- [ ] Create `src/features/goals/GoalsPage.tsx`
-- [ ] Wire up navigation (`navigation.ts`) and routing (`App.tsx`)
-- [ ] Commit all changes
+- [x] Add `persistGoals()` to `src/shared/db/persist.ts`
+- [x] Create `src/shared/components/ProjectionChart.tsx`
+- [x] Create `src/features/goals/types.ts`
+- [x] Create `src/features/goals/queries.ts`
+- [x] Create `src/features/goals/useGoals.ts`
+- [x] Create `src/features/goals/GoalSummaryBar.tsx`
+- [x] Create `src/features/goals/GoalCard.tsx`
+- [x] Create `src/features/goals/GoalListSection.tsx`
+- [x] Create `src/features/goals/GoalDetailDrawer.tsx`
+- [x] Create `src/features/goals/GoalEditorDrawer.tsx`
+- [x] Create `src/features/goals/GoalsPage.tsx`
+- [x] Wire up navigation (`navigation.ts`) and routing (`App.tsx`)
+- [x] Commit all changes
 - Contribution recommendations
 
 ## Home Dashboard

@@ -8,6 +8,7 @@ import { CategoryRulesPage } from './features/category-rules-management/Category
 import { SubscriptionsPage } from './features/subscriptions/SubscriptionsPage';
 import { SpendingAnalyticsPage } from './features/spending-analytics/SpendingAnalyticsPage';
 import { BudgetsPage } from './features/budgets/BudgetsPage';
+import { GoalsPage } from './features/goals/GoalsPage';
 
 const BREADCRUMBS: Record<string, string[]> = {
   transactions: ['Transactions'],
@@ -18,6 +19,7 @@ const BREADCRUMBS: Record<string, string[]> = {
   subscriptions: ['Transactions', 'Subscriptions & Bills'],
   'spending-analytics': ['Transactions', 'Spending Analytics'],
   budgets: ['Budgets'],
+  goals: ['Goals'],
 };
 
 function pathToPage(path: string): string {
@@ -55,6 +57,7 @@ function App() {
       {page === 'subscriptions' && <SubscriptionsPage />}
       {page === 'spending-analytics' && <SpendingAnalyticsPage />}
       {page === 'budgets' && <BudgetsPage />}
+      {page === 'goals' && <GoalsPage />}
     </AppLayout>
   );
 }
