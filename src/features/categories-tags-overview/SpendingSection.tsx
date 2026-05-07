@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Card } from '../../shared/components/Card';
+import { DonutChart, type DonutChartItem } from '../../shared/components/DonutChart';
 import { HorizontalBarChart, type HorizontalBarChartItem } from '../../shared/components/HorizontalBarChart';
 import { SegmentedControl } from '../../shared/components/SegmentedControl';
 import { useCategorySpending } from './useCategorySpending';
@@ -25,7 +26,7 @@ function formatCurrency(v: number): string {
 export function SpendingSection({ period, selectedCategoryId, onSelectCategory, onPeriodChange }: Props) {
   const { categorySpending, subcategorySpending, loading, error } = useCategorySpending(period, selectedCategoryId);
 
-  const categoryItems = useMemo<HorizontalBarChartItem[]>(
+  const categoryItems = useMemo<DonutChartItem[]>(
     () => categorySpending.map((c) => ({ id: c.category_id, label: c.category_name, value: c.total, color: c.color })),
     [categorySpending],
   );
@@ -50,12 +51,11 @@ export function SpendingSection({ period, selectedCategoryId, onSelectCategory, 
           )}
           {error && <p className="text-sm text-error">{error.message}</p>}
           {!loading && !error && (
-            <HorizontalBarChart
+            <DonutChart
               data={categoryItems}
-              height={Math.max(categoryItems.length * 44, 120)}
               valueFormatter={formatCurrency}
               selectedId={selectedCategoryId}
-              onBarClick={(id) => onSelectCategory(selectedCategoryId === id ? null : id)}
+              onItemClick={(id) => onSelectCategory(selectedCategoryId === id ? null : id)}
               emptyMessage="No spending data for this period."
             />
           )}
