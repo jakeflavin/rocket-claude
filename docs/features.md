@@ -18,20 +18,20 @@ For this feature to be completed users should be able to do the following:
 
 ### Tasks
 - [x] Add task list to `docs/features.md`
-- [ ] Add `persistBudgets()` to `src/shared/db/persist.ts`
-- [ ] Create `src/shared/components/RadialProgressChart.tsx`
-- [ ] Create `src/features/budgets/types.ts`
-- [ ] Create `src/features/budgets/queries.ts`
-- [ ] Create `src/features/budgets/useBudgets.ts` and `useBudgetHistory.ts`
-- [ ] Create `src/features/budgets/BudgetSummaryBar.tsx`
-- [ ] Create `src/features/budgets/BudgetCard.tsx`
-- [ ] Create `src/features/budgets/BudgetAllocationSection.tsx`
-- [ ] Create `src/features/budgets/BudgetListSection.tsx`
-- [ ] Create `src/features/budgets/BudgetDetailDrawer.tsx`
-- [ ] Create `src/features/budgets/BudgetEditorDrawer.tsx`
-- [ ] Create `src/features/budgets/BudgetsPage.tsx`
-- [ ] Wire up navigation (`navigation.ts`) and routing (`App.tsx`)
-- [ ] Commit all changes
+- [x] Add `persistBudgets()` to `src/shared/db/persist.ts`
+- [x] Create `src/shared/components/RadialProgressChart.tsx`
+- [x] Create `src/features/budgets/types.ts`
+- [x] Create `src/features/budgets/queries.ts`
+- [x] Create `src/features/budgets/useBudgets.ts` and `useBudgetHistory.ts`
+- [x] Create `src/features/budgets/BudgetSummaryBar.tsx`
+- [x] Create `src/features/budgets/BudgetCard.tsx`
+- [x] Create `src/features/budgets/BudgetAllocationSection.tsx`
+- [x] Create `src/features/budgets/BudgetListSection.tsx`
+- [x] Create `src/features/budgets/BudgetDetailDrawer.tsx`
+- [x] Create `src/features/budgets/BudgetEditorDrawer.tsx`
+- [x] Create `src/features/budgets/BudgetsPage.tsx`
+- [x] Wire up navigation (`navigation.ts`) and routing (`App.tsx`)
+- [x] Commit all changes
 
 ## Goals
 A new goals page should be added htat allows users to set and manage savings goals. 
