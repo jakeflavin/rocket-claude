@@ -27,11 +27,7 @@ export function UncategorizedSection({ categories }: Props) {
   const topLevel = categories.filter((c) => c.parent_id == null);
 
   function toggleAll() {
-    if (selected.size === transactions.length) {
-      setSelected(new Set());
-    } else {
-      setSelected(new Set(transactions.map((t) => t.id)));
-    }
+    setSelected(selected.size === transactions.length ? new Set() : new Set(transactions.map((t) => t.id)));
   }
 
   function toggleOne(id: string) {
@@ -56,8 +52,8 @@ export function UncategorizedSection({ categories }: Props) {
   }
 
   return (
-    <Card>
-      <div className="flex items-center justify-between mb-3">
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold text-text">Uncategorized Transactions</h2>
           {total > 0 && <Badge variant="warning">{total}</Badge>}
@@ -67,7 +63,7 @@ export function UncategorizedSection({ categories }: Props) {
             <button
               type="button"
               onClick={() => setAssigningTo(assigningTo ? null : 'open')}
-              className="flex items-center gap-1 rounded-lg bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-hover transition-colors duration-[100ms]"
+              className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-hover transition-colors duration-[100ms]"
               disabled={saving}
             >
               <Check size={12} />
@@ -94,22 +90,20 @@ export function UncategorizedSection({ categories }: Props) {
       </div>
 
       {loading && (
-        <div className="space-y-2">
-          {[1, 2, 3].map((n) => (
-            <div key={n} className="h-10 animate-pulse rounded-lg bg-hover" />
-          ))}
+        <div className="space-y-2 p-4">
+          {[1, 2, 3].map((n) => <div key={n} className="h-10 animate-pulse rounded-lg bg-hover" />)}
         </div>
       )}
-      {error && <p className="text-sm text-error">{error.message}</p>}
+      {error && <p className="p-4 text-sm text-error">{error.message}</p>}
       {!loading && !error && transactions.length === 0 && (
-        <p className="text-sm text-muted py-4 text-center">All transactions are categorized.</p>
+        <p className="p-4 text-center text-sm text-muted">All transactions are categorized.</p>
       )}
       {!loading && !error && transactions.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
+        <>
+          <div className="flex items-center gap-2 border-b border-border px-4 py-2">
             <input
               type="checkbox"
-              checked={selected.size === transactions.length && transactions.length > 0}
+              checked={selected.size === transactions.length}
               onChange={toggleAll}
               className="h-3.5 w-3.5 accent-brand"
             />
@@ -119,7 +113,7 @@ export function UncategorizedSection({ categories }: Props) {
             {transactions.map((txn) => (
               <label
                 key={txn.id}
-                className="flex cursor-pointer items-center gap-3 px-3 py-2.5 hover:bg-row-hover transition-colors duration-[100ms]"
+                className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-row-hover transition-colors duration-[100ms]"
               >
                 <input
                   type="checkbox"
@@ -133,7 +127,7 @@ export function UncategorizedSection({ categories }: Props) {
               </label>
             ))}
           </div>
-        </div>
+        </>
       )}
     </Card>
   );

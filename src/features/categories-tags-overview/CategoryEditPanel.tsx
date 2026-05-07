@@ -191,8 +191,8 @@ export function CategoryEditPanel({ panel, onClose, onSaveCategory, onDeleteCate
     'Edit Tag';
 
   return (
-    <Card className="sticky top-0">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="sticky top-0 overflow-hidden">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <h2 className="text-sm font-semibold text-text">{title}</h2>
         <button
           type="button"
@@ -202,6 +202,7 @@ export function CategoryEditPanel({ panel, onClose, onSaveCategory, onDeleteCate
           <X size={16} />
         </button>
       </div>
+      <div className="p-4">
 
       {(panel.mode === 'category' || panel.mode === 'newCategory') && (
         <CategoryForm
@@ -257,6 +258,7 @@ export function CategoryEditPanel({ panel, onClose, onSaveCategory, onDeleteCate
           onClose={onClose}
         />
       )}
+      </div>
     </Card>
   );
 }

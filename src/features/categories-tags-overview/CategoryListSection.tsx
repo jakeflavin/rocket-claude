@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronDown, ChevronRight, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Pencil, Plus } from 'lucide-react';
 import { Badge } from '../../shared/components/Badge';
 import { Card } from '../../shared/components/Card';
 import type { Category, PanelState } from './types';
@@ -11,16 +11,9 @@ type Props = {
   onOpenPanel: (panel: PanelState) => void;
 };
 
-function SubcategoryRow({
-  cat,
-  onEdit,
-}: {
-  cat: Category;
-  parent: Category;
-  onEdit: () => void;
-}) {
+function SubcategoryRow({ cat, parent, onEdit }: { cat: Category; parent: Category; onEdit: () => void }) {
   return (
-    <div className="group flex items-center gap-2 py-2 pl-10 pr-3 hover:bg-hover rounded-lg">
+    <div className="group flex items-center gap-2 rounded-lg py-2 pl-9 pr-2 hover:bg-hover transition-colors duration-[100ms]">
       <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: cat.color }} />
       <span className="flex-1 truncate text-sm text-text">{cat.name}</span>
       <button
@@ -56,24 +49,18 @@ function CategoryRow({
 
   return (
     <div>
-      <div
-        className={`group flex items-center gap-2 rounded-lg px-3 py-2 transition-colors duration-[100ms] hover:bg-hover ${isSelected ? 'bg-hover ring-1 ring-inset ring-brand/20' : ''}`}
-      >
+      <div className={`group flex items-center gap-2 rounded-lg py-2 pr-2 transition-colors duration-[100ms] hover:bg-hover ${isSelected ? 'bg-hover ring-1 ring-inset ring-brand/20' : ''}`}>
         <button
           type="button"
           onClick={() => setExpanded((e) => !e)}
-          className="flex items-center justify-center w-5 h-5 text-subtle hover:text-text"
+          className="flex w-7 shrink-0 items-center justify-center text-subtle hover:text-text"
         >
-          {subcategories.length > 0
-            ? <ChevronIcon size={14} />
-            : <span className="w-3.5 h-3.5 inline-block" />}
+          {subcategories.length > 0 ? <ChevronIcon size={14} /> : <span className="w-3.5 h-3.5" />}
         </button>
         <button type="button" onClick={onSelect} className="flex flex-1 items-center gap-2 min-w-0">
           <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: cat.color }} />
           <span className="flex-1 truncate text-sm font-medium text-text text-left">{cat.name}</span>
-          {subcategories.length > 0 && (
-            <Badge variant="default">{subcategories.length}</Badge>
-          )}
+          {subcategories.length > 0 && <Badge variant="default">{subcategories.length}</Badge>}
         </button>
         <div className="hidden group-hover:flex items-center gap-1">
           <button
@@ -119,8 +106,8 @@ export function CategoryListSection({ categories, selectedCategoryId, onSelectCa
   }, [categories]);
 
   return (
-    <Card>
-      <div className="flex items-center justify-between mb-3">
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <h2 className="text-sm font-semibold text-text">Categories</h2>
         <button
           type="button"
@@ -130,22 +117,23 @@ export function CategoryListSection({ categories, selectedCategoryId, onSelectCa
           <Plus size={12} /> New
         </button>
       </div>
-      {parents.length === 0 && (
-        <p className="text-sm text-muted py-4 text-center">No categories yet.</p>
-      )}
-      <div className="space-y-0.5">
-        {parents.map((cat) => (
-          <CategoryRow
-            key={cat.id}
-            cat={cat}
-            subcategories={childMap[cat.id] ?? []}
-            isSelected={selectedCategoryId === cat.id}
-            onSelect={() => onSelectCategory(selectedCategoryId === cat.id ? null : cat.id)}
-            onEdit={() => onOpenPanel({ mode: 'category', category: cat })}
-            onAddSubcategory={() => onOpenPanel({ mode: 'newSubcategory', parent: cat })}
-            onOpenPanel={onOpenPanel}
-          />
-        ))}
+      <div className="p-2 space-y-0.5">
+        {parents.length === 0 ? (
+          <p className="py-4 text-center text-sm text-muted">No categories yet.</p>
+        ) : (
+          parents.map((cat) => (
+            <CategoryRow
+              key={cat.id}
+              cat={cat}
+              subcategories={childMap[cat.id] ?? []}
+              isSelected={selectedCategoryId === cat.id}
+              onSelect={() => onSelectCategory(selectedCategoryId === cat.id ? null : cat.id)}
+              onEdit={() => onOpenPanel({ mode: 'category', category: cat })}
+              onAddSubcategory={() => onOpenPanel({ mode: 'newSubcategory', parent: cat })}
+              onOpenPanel={onOpenPanel}
+            />
+          ))
+        )}
       </div>
     </Card>
   );

@@ -11,12 +11,10 @@ type Props = {
 
 function TagRow({ tag, onEdit }: { tag: Tag; onEdit: () => void }) {
   return (
-    <div className="group flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-hover transition-colors duration-[100ms]">
+    <div className="group flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-hover transition-colors duration-[100ms]">
       <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: tag.color }} />
       <span className="flex-1 text-sm text-text">{tag.name}</span>
-      {tag.usage_count > 0 && (
-        <Badge variant="default">{tag.usage_count}</Badge>
-      )}
+      {tag.usage_count > 0 && <Badge variant="default">{tag.usage_count}</Badge>}
       <button
         type="button"
         onClick={onEdit}
@@ -30,8 +28,8 @@ function TagRow({ tag, onEdit }: { tag: Tag; onEdit: () => void }) {
 
 export function TagsSection({ tags, loading, onOpenPanel }: Props) {
   return (
-    <Card>
-      <div className="flex items-center justify-between mb-3">
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <h2 className="text-sm font-semibold text-text">Tags</h2>
         <button
           type="button"
@@ -41,27 +39,21 @@ export function TagsSection({ tags, loading, onOpenPanel }: Props) {
           <Plus size={12} /> New
         </button>
       </div>
-      {loading && (
-        <div className="space-y-2">
-          {[1, 2].map((n) => (
-            <div key={n} className="h-9 animate-pulse rounded-lg bg-hover" />
-          ))}
-        </div>
-      )}
-      {!loading && tags.length === 0 && (
-        <p className="text-sm text-muted py-4 text-center">No tags yet.</p>
-      )}
-      {!loading && tags.length > 0 && (
-        <div className="space-y-0.5">
-          {tags.map((tag) => (
-            <TagRow
-              key={tag.id}
-              tag={tag}
-              onEdit={() => onOpenPanel({ mode: 'tag', tag })}
-            />
-          ))}
-        </div>
-      )}
+      <div className="p-2 space-y-0.5">
+        {loading && (
+          <>
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="h-9 animate-pulse rounded-lg bg-hover" />
+            ))}
+          </>
+        )}
+        {!loading && tags.length === 0 && (
+          <p className="py-4 text-center text-sm text-muted">No tags yet.</p>
+        )}
+        {!loading && tags.map((tag) => (
+          <TagRow key={tag.id} tag={tag} onEdit={() => onOpenPanel({ mode: 'tag', tag })} />
+        ))}
+      </div>
     </Card>
   );
 }

@@ -37,7 +37,7 @@ export function SpendingSection({ period, selectedCategoryId, onSelectCategory, 
   return (
     <div className="space-y-4">
       <Card>
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between border-b border-border px-5 py-3">
           <h2 className="text-sm font-semibold text-text">Spending by Category</h2>
           <div className="flex gap-1">
             {(Object.keys(PERIOD_LABELS) as SpendingPeriod[]).map((p) => (
@@ -54,32 +54,38 @@ export function SpendingSection({ period, selectedCategoryId, onSelectCategory, 
             ))}
           </div>
         </div>
-        {loading && (
-          <div className="space-y-2">
-            {[1, 2, 3, 4].map((n) => <div key={n} className="h-8 animate-pulse rounded bg-hover" />)}
-          </div>
-        )}
-        {error && <p className="text-sm text-error">{error.message}</p>}
-        {!loading && !error && (
-          <HorizontalBarChart
-            data={categoryItems}
-            height={Math.max(categoryItems.length * 44, 120)}
-            valueFormatter={formatCurrency}
-            selectedId={selectedCategoryId}
-            onBarClick={(id) => onSelectCategory(selectedCategoryId === id ? null : id)}
-            emptyMessage="No spending data for this period."
-          />
-        )}
+        <div className="px-5 py-4">
+          {loading && (
+            <div className="space-y-2">
+              {[1, 2, 3, 4].map((n) => <div key={n} className="h-8 animate-pulse rounded bg-hover" />)}
+            </div>
+          )}
+          {error && <p className="text-sm text-error">{error.message}</p>}
+          {!loading && !error && (
+            <HorizontalBarChart
+              data={categoryItems}
+              height={Math.max(categoryItems.length * 44, 120)}
+              valueFormatter={formatCurrency}
+              selectedId={selectedCategoryId}
+              onBarClick={(id) => onSelectCategory(selectedCategoryId === id ? null : id)}
+              emptyMessage="No spending data for this period."
+            />
+          )}
+        </div>
       </Card>
 
       {selectedCategoryId && subcategoryItems.length > 0 && (
         <Card>
-          <h2 className="text-sm font-semibold text-text mb-5">Spending by Subcategory</h2>
-          <HorizontalBarChart
-            data={subcategoryItems}
-            height={Math.max(subcategoryItems.length * 44, 80)}
-            valueFormatter={formatCurrency}
-          />
+          <div className="flex items-center border-b border-border px-5 py-3">
+            <h2 className="text-sm font-semibold text-text">Spending by Subcategory</h2>
+          </div>
+          <div className="px-5 py-4">
+            <HorizontalBarChart
+              data={subcategoryItems}
+              height={Math.max(subcategoryItems.length * 44, 80)}
+              valueFormatter={formatCurrency}
+            />
+          </div>
         </Card>
       )}
     </div>
