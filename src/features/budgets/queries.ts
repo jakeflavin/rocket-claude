@@ -44,7 +44,7 @@ export async function queryBudgets(): Promise<BudgetWithStats[]> {
           AND CAST(t.amount AS DOUBLE) < 0
           AND CAST(t.date AS DATE) >= CASE b.period
             WHEN 'monthly' THEN DATE_TRUNC('month', CURRENT_DATE)
-            WHEN 'weekly'  THEN CURRENT_DATE - (DAYOFWEEK(CURRENT_DATE) - 1)
+            WHEN 'weekly'  THEN CURRENT_DATE - CAST((DAYOFWEEK(CURRENT_DATE) - 1) AS INTEGER)
             WHEN 'annual'  THEN DATE_TRUNC('year', CURRENT_DATE)
           END
           AND CAST(t.date AS DATE) <= CURRENT_DATE
