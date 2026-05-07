@@ -2,39 +2,12 @@
 
 This documents describes planned features, tasks for the feature, and their current status. 
 
-## Spending Analytics
-A new page is needed where users can see their spending in filterable graphical represenation. This should be a sub page on transactions. 
-
-For this feature to be completed users should be able to do the following:
-- Monthly spending trends
-- Yearly spending trends
-- Spending by merchant
-- Income vs expenses
-- Average monthly spending
-- Savings rate calculations
-- Cash flow tracking
-
-### Tasks
-- [x] Add tasks to docs/features.md
-- [x] Create `GroupedBarChart` generic shared component (`src/shared/components/GroupedBarChart.tsx`)
-- [x] Create `types.ts` — `PeriodPoint`, `MerchantSpend`, `SpendingPeriod`, `SpendingSummary`, `MerchantDetail`
-- [x] Create `queries.ts` — `querySpendingTrends`, `queryIncomeVsExpenses`, `queryCashFlow`, `queryMerchantSpending`, `queryMerchantDetail`, `querySpendingSummary`
-- [x] Create hooks — `useSpendingTrends`, `useIncomeVsExpenses`, `useCashFlow`, `useMerchantSpending`, `useSpendingSummary`
-- [x] Create `SpendingSummaryBar.tsx` — avg monthly spend, savings rate, net cash flow MetricCards
-- [x] Create `MerchantDetailDrawer.tsx` — Drawer with total, count, avg, mini trend chart
-- [x] Create `SpendingTrendsSection.tsx` — LineAreaChart for expense trend over time
-- [x] Create `IncomeExpensesSection.tsx` — GroupedBarChart for income vs expenses per period
-- [x] Create `CashFlowSection.tsx` — LineAreaChart for net cash flow per period
-- [x] Create `MerchantSpendingSection.tsx` — HorizontalBarChart; bar click opens MerchantDetailDrawer
-- [x] Create `SpendingAnalyticsPage.tsx` — page shell with period picker, summary bar, all sections
-- [x] Wire up navigation and routing
-
 ## Budgets
 A new page is needed where users should be able to create and manage budgets. Users should be able to see and create budgets on this page. 
 
 For this feature to be completed users should be able to do the following:
-- Create onthly budgets
-- Creat weekly budgets
+- Create monthly budgets
+- Create weekly budgets
 - Apply custom budget periods
 - Apply category budgets
 - Rollover budgets for periods
@@ -42,6 +15,23 @@ For this feature to be completed users should be able to do the following:
 - Budget alerts/warnings
 - Remaining budget calculations
 - Overspending detection
+
+### Tasks
+- [x] Add task list to `docs/features.md`
+- [ ] Add `persistBudgets()` to `src/shared/db/persist.ts`
+- [ ] Create `src/shared/components/RadialProgressChart.tsx`
+- [ ] Create `src/features/budgets/types.ts`
+- [ ] Create `src/features/budgets/queries.ts`
+- [ ] Create `src/features/budgets/useBudgets.ts` and `useBudgetHistory.ts`
+- [ ] Create `src/features/budgets/BudgetSummaryBar.tsx`
+- [ ] Create `src/features/budgets/BudgetCard.tsx`
+- [ ] Create `src/features/budgets/BudgetAllocationSection.tsx`
+- [ ] Create `src/features/budgets/BudgetListSection.tsx`
+- [ ] Create `src/features/budgets/BudgetDetailDrawer.tsx`
+- [ ] Create `src/features/budgets/BudgetEditorDrawer.tsx`
+- [ ] Create `src/features/budgets/BudgetsPage.tsx`
+- [ ] Wire up navigation (`navigation.ts`) and routing (`App.tsx`)
+- [ ] Commit all changes
 
 ## Goals
 A new goals page should be added htat allows users to set and manage savings goals. 
