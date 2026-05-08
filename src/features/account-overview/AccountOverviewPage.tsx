@@ -4,10 +4,8 @@ import { Badge } from '../../shared/components/Badge';
 import { Button } from '../../shared/components/Button';
 import { Card } from '../../shared/components/Card';
 import { Drawer } from '../../shared/components/Drawer';
-import { SegmentedControl } from '../../shared/components/SegmentedControl';
 import { useAccountManagement } from '../account-management/useAccountManagement';
-import { AccountEditPanel } from '../account-management/AccountEditPanel';
-import { AccountDetailPanel } from './AccountDetailPanel';
+import { AccountPanel } from './AccountPanel';
 import { AccountMergeWizard } from './AccountMergeWizard';
 import { GROUPED_SUBTYPES, SUBTYPE_GROUP_LABEL, type Account, type AccountGroup } from './types';
 
@@ -95,13 +93,10 @@ function AccountGroupSection({
   );
 }
 
-type DrawerTab = 'Details' | 'Edit';
-
 export function AccountOverviewPage({ onNavigate }: Props) {
   const { accounts, loading, error, refresh } = useAccountManagement();
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-  const [drawerTab, setDrawerTab] = useState<DrawerTab>('Details');
   const [mergeWizardOpen, setMergeWizardOpen] = useState(false);
 
   const visibleAccounts = useMemo(
@@ -118,11 +113,6 @@ export function AccountOverviewPage({ onNavigate }: Props) {
       }))
       .filter((g) => g.accounts.length > 0);
   }, [visibleAccounts]);
-
-  function handleSelectAccount(account: Account) {
-    setSelectedAccount(account);
-    setDrawerTab('Details');
-  }
 
   if (loading) {
     return (
@@ -153,7 +143,7 @@ export function AccountOverviewPage({ onNavigate }: Props) {
               key={group.subtype}
               group={group}
               selectedId={selectedAccount?.id ?? null}
-              onSelect={handleSelectAccount}
+              onSelect={setSelectedAccount}
             />
           ))
         )}
@@ -174,35 +164,14 @@ export function AccountOverviewPage({ onNavigate }: Props) {
         title={selectedAccount?.name ?? ''}
       >
         {selectedAccount && (
-          <>
-            <div className="px-4 py-3 border-b border-border">
-              <SegmentedControl
-                segments={[
-                  { value: 'Details', label: 'Details' },
-                  { value: 'Edit', label: 'Edit' },
-                ]}
-                value={drawerTab}
-                onChange={setDrawerTab}
-              />
-            </div>
-            {drawerTab === 'Details' ? (
-              <AccountDetailPanel
-                account={selectedAccount}
-                onNavigateToTransactions={(id) => {
-                  setSelectedAccount(null);
-                  onNavigate(`/transactions?account=${id}`);
-                }}
-              />
-            ) : (
-              <AccountEditPanel
-                account={selectedAccount}
-                onSaved={() => {
-                  setDrawerTab('Details');
-                  refresh();
-                }}
-              />
-            )}
-          </>
+          <AccountPanel
+            account={selectedAccount}
+            onNavigateToTransactions={(id) => {
+              setSelectedAccount(null);
+              onNavigate(`/transactions?account=${id}`);
+            }}
+            onUpdated={refresh}
+          />
         )}
       </Drawer>
 

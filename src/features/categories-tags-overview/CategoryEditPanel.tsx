@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '../../shared/components/Button';
 import { Input } from '../../shared/components/Input';
-import type { PanelState } from './types';
+import type { Category, PanelState } from './types';
 
 const PRESET_COLORS = [
   '#f97316', '#fb923c', '#f59e0b', '#d97706', '#84cc16',
@@ -12,11 +12,12 @@ const PRESET_COLORS = [
 
 type Props = {
   panel: NonNullable<PanelState>;
+  subcategories?: Category[];
   onClose: () => void;
   onSaveCategory: (id: string | null, name: string, color: string, parentId: string | null, icon?: string) => Promise<void>;
   onDeleteCategory: (id: string) => Promise<void>;
-  onSaveTag: (id: string | null, name: string, color: string) => Promise<void>;
-  onDeleteTag: (id: string) => Promise<void>;
+  onAddSubcategory?: () => void;
+  onEditSubcategory?: (sub: Category) => void;
 };
 
 function ColorPicker({ value, onChange }: { value: string; onChange: (c: string) => void }) {
@@ -48,19 +49,23 @@ function ColorPicker({ value, onChange }: { value: string; onChange: (c: string)
 }
 
 function CategoryForm({
-  title,
   initial,
   isSystem,
+  subcategories,
   onSave,
   onDelete,
   onClose,
+  onAddSubcategory,
+  onEditSubcategory,
 }: {
-  title: string;
   initial: { id: string | null; name: string; color: string; parentId: string | null };
   isSystem: boolean;
+  subcategories?: Category[];
   onSave: (name: string, color: string) => Promise<void>;
   onDelete?: () => Promise<void>;
   onClose: () => void;
+  onAddSubcategory?: () => void;
+  onEditSubcategory?: (sub: Category) => void;
 }) {
   const [name, setName] = useState(initial.name);
   const [color, setColor] = useState(initial.color);
@@ -95,148 +100,108 @@ function CategoryForm({
   }
 
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-[13px] font-medium text-text mb-1.5">Name</label>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Category name" />
+    <div className="flex h-full flex-col">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div>
+          <label className="block text-[13px] font-medium text-text mb-1.5">Name</label>
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Category name" />
+        </div>
+        <ColorPicker value={color} onChange={setColor} />
+
+        {subcategories !== undefined && (
+          <div className="pt-2 border-t border-border space-y-1">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[13px] font-medium text-text">Subcategories</span>
+              <button
+                type="button"
+                onClick={onAddSubcategory}
+                className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-muted hover:bg-hover hover:text-text transition-colors duration-[100ms]"
+              >
+                <Plus size={12} /> New
+              </button>
+            </div>
+            {(!subcategories || subcategories.length === 0) && (
+              <p className="text-xs text-muted py-1">No subcategories.</p>
+            )}
+            {subcategories?.map((sub) => (
+              <button
+                key={sub.id}
+                type="button"
+                onClick={() => onEditSubcategory?.(sub)}
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-hover transition-colors duration-[100ms] text-left"
+              >
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: sub.color }} />
+                <span className="flex-1 truncate text-sm text-text">{sub.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {error && <p className="text-xs text-error">{error}</p>}
       </div>
-      <ColorPicker value={color} onChange={setColor} />
-      {error && <p className="text-xs text-error">{error}</p>}
-      <div className="flex gap-2">
-        <Button variant="primary" onClick={handleSave} disabled={saving} className="flex-1">
-          {saving ? 'Saving…' : 'Save'}
+
+      <div className="shrink-0 border-t border-border p-4 space-y-2">
+        <Button variant="primary" className="w-full" onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving…' : initial.id ? 'Save' : 'Create'}
         </Button>
-        <Button variant="ghost" onClick={onClose} disabled={saving}>Cancel</Button>
+        {!isSystem && onDelete && initial.id && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={saving}
+            className="flex w-full items-center justify-center gap-2 rounded-lg border border-error-border px-4 py-2 text-sm font-medium text-error hover:bg-error-bg transition-colors duration-[100ms] disabled:opacity-50"
+          >
+            <Trash2 size={14} /> Delete
+          </button>
+        )}
       </div>
-      {!isSystem && onDelete && initial.id && (
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={saving}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-error-border px-4 py-2 text-sm font-medium text-error hover:bg-error-bg transition-colors duration-[100ms]"
-        >
-          <Trash2 size={14} /> Delete
-        </button>
-      )}
     </div>
   );
 }
 
-function TagForm({
-  initial,
-  onSave,
-  onDelete,
-  onClose,
-}: {
-  initial: { id: string | null; name: string; color: string };
-  onSave: (name: string, color: string) => Promise<void>;
-  onDelete?: () => Promise<void>;
-  onClose: () => void;
-}) {
-  const [name, setName] = useState(initial.name);
-  const [color, setColor] = useState(initial.color);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSave() {
-    if (!name.trim()) { setError('Name is required.'); return; }
-    setSaving(true);
-    setError(null);
-    try {
-      await onSave(name.trim(), color);
-      onClose();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Save failed.');
-    } finally {
-      setSaving(false);
-    }
+export function CategoryEditPanel({ panel, subcategories, onClose, onSaveCategory, onDeleteCategory, onAddSubcategory, onEditSubcategory }: Props) {
+  if (panel.mode === 'category' || panel.mode === 'newCategory') {
+    return (
+      <CategoryForm
+        initial={{
+          id: panel.mode === 'category' ? panel.category.id : null,
+          name: panel.mode === 'category' ? panel.category.name : '',
+          color: panel.mode === 'category' ? panel.category.color : '#6b7280',
+          parentId: null,
+        }}
+        isSystem={panel.mode === 'category' ? panel.category.system : false}
+        subcategories={panel.mode === 'category' ? subcategories : undefined}
+        onSave={(name, color) =>
+          onSaveCategory(
+            panel.mode === 'category' ? panel.category.id : null,
+            name, color, null,
+          )
+        }
+        onDelete={panel.mode === 'category' ? () => onDeleteCategory(panel.category.id) : undefined}
+        onClose={onClose}
+        onAddSubcategory={panel.mode === 'category' ? onAddSubcategory : undefined}
+        onEditSubcategory={panel.mode === 'category' ? onEditSubcategory : undefined}
+      />
+    );
   }
 
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-[13px] font-medium text-text mb-1.5">Name</label>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Tag name" />
-      </div>
-      <ColorPicker value={color} onChange={setColor} />
-      {error && <p className="text-xs text-error">{error}</p>}
-      <div className="flex gap-2">
-        <Button variant="primary" onClick={handleSave} disabled={saving} className="flex-1">
-          {saving ? 'Saving…' : 'Save'}
-        </Button>
-        <Button variant="ghost" onClick={onClose} disabled={saving}>Cancel</Button>
-      </div>
-      {onDelete && initial.id && (
-        <button
-          type="button"
-          onClick={async () => { setSaving(true); try { await onDelete?.(); onClose(); } finally { setSaving(false); } }}
-          disabled={saving}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-error-border px-4 py-2 text-sm font-medium text-error hover:bg-error-bg transition-colors duration-[100ms]"
-        >
-          <Trash2 size={14} /> Delete
-        </button>
-      )}
-    </div>
-  );
-}
-
-export function CategoryEditPanel({ panel, onClose, onSaveCategory, onDeleteCategory, onSaveTag, onDeleteTag }: Props) {
-  return (
-    <div className="p-4 space-y-0">
-      {(panel.mode === 'category' || panel.mode === 'newCategory') && (
-        <CategoryForm
-          title={title}
-          initial={{
-            id: panel.mode === 'category' ? panel.category.id : null,
-            name: panel.mode === 'category' ? panel.category.name : '',
-            color: panel.mode === 'category' ? panel.category.color : '#6b7280',
-            parentId: null,
-          }}
-          isSystem={panel.mode === 'category' ? panel.category.system : false}
-          onSave={(name, color) =>
-            onSaveCategory(
-              panel.mode === 'category' ? panel.category.id : null,
-              name, color, null,
-            )
-          }
-          onDelete={panel.mode === 'category' ? () => onDeleteCategory(panel.category.id) : undefined}
-          onClose={onClose}
-        />
-      )}
-
-      {(panel.mode === 'subcategory' || panel.mode === 'newSubcategory') && (
-        <CategoryForm
-          title={title}
-          initial={{
-            id: panel.mode === 'subcategory' ? panel.category.id : null,
-            name: panel.mode === 'subcategory' ? panel.category.name : '',
-            color: panel.mode === 'subcategory' ? panel.category.color : panel.parent.color,
-            parentId: panel.mode === 'subcategory' ? panel.parent.id : panel.parent.id,
-          }}
-          isSystem={panel.mode === 'subcategory' ? panel.category.system : false}
-          onSave={(name, color) =>
-            onSaveCategory(
-              panel.mode === 'subcategory' ? panel.category.id : null,
-              name, color, panel.parent.id,
-            )
-          }
-          onDelete={panel.mode === 'subcategory' ? () => onDeleteCategory(panel.category.id) : undefined}
-          onClose={onClose}
-        />
-      )}
-
-      {(panel.mode === 'tag' || panel.mode === 'newTag') && (
-        <TagForm
-          initial={{
-            id: panel.mode === 'tag' ? panel.tag.id : null,
-            name: panel.mode === 'tag' ? panel.tag.name : '',
-            color: panel.mode === 'tag' ? panel.tag.color : '#6b7280',
-          }}
-          onSave={(name, color) => onSaveTag(panel.mode === 'tag' ? panel.tag.id : null, name, color)}
-          onDelete={panel.mode === 'tag' ? () => onDeleteTag(panel.tag.id) : undefined}
-          onClose={onClose}
-        />
-      )}
-    </div>
+    <CategoryForm
+      initial={{
+        id: panel.mode === 'subcategory' ? panel.category.id : null,
+        name: panel.mode === 'subcategory' ? panel.category.name : '',
+        color: panel.mode === 'subcategory' ? panel.category.color : panel.parent.color,
+        parentId: panel.mode === 'subcategory' ? panel.parent.id : panel.parent.id,
+      }}
+      isSystem={panel.mode === 'subcategory' ? panel.category.system : false}
+      onSave={(name, color) =>
+        onSaveCategory(
+          panel.mode === 'subcategory' ? panel.category.id : null,
+          name, color, panel.parent.id,
+        )
+      }
+      onDelete={panel.mode === 'subcategory' ? () => onDeleteCategory(panel.category.id) : undefined}
+      onClose={onClose}
+    />
   );
 }

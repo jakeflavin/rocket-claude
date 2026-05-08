@@ -1,69 +1,42 @@
 import { useCallback, useState } from 'react';
-import { Plus } from 'lucide-react';
-import { Button } from '../../shared/components/Button';
+import { FAB } from '../../shared/components/FAB';
 import { BudgetSummaryBar } from './BudgetSummaryBar';
 import { BudgetAllocationSection } from './BudgetAllocationSection';
 import { BudgetListSection } from './BudgetListSection';
-import { BudgetDetailDrawer } from './BudgetDetailDrawer';
-import { BudgetEditorDrawer } from './BudgetEditorDrawer';
+import { BudgetDrawer } from './BudgetDrawer';
 import { useBudgets } from './useBudgets';
 import type { BudgetWithStats } from './types';
-
-type EditorMode =
-  | { kind: 'create' }
-  | { kind: 'edit'; budget: BudgetWithStats };
+import type { BudgetDrawerMode } from './BudgetDrawer';
 
 export function BudgetsPage() {
   const { budgets, loading, refresh } = useBudgets();
-  const [selectedBudget, setSelectedBudget] = useState<BudgetWithStats | null>(null);
-  const [editorMode, setEditorMode] = useState<EditorMode | null>(null);
+  const [drawerMode, setDrawerMode] = useState<BudgetDrawerMode>(null);
 
-  const handleSaved = useCallback(() => {
-    refresh();
-  }, [refresh]);
+  const handleSaved = useCallback(() => { refresh(); }, [refresh]);
 
-  function openEditor(budget?: BudgetWithStats) {
-    setSelectedBudget(null);
-    setEditorMode(budget ? { kind: 'edit', budget } : { kind: 'create' });
+  function openBudget(budget: BudgetWithStats) {
+    setDrawerMode(budget);
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text">Budgets</h1>
-        <Button variant="primary" onClick={() => openEditor()}>
-          <Plus className="w-4 h-4 mr-1.5 inline-block" />
-          New Budget
-        </Button>
-      </div>
-
-      {/* Summary stat bar */}
       <BudgetSummaryBar tick={budgets.length} />
 
-      {/* Allocation donut */}
       <BudgetAllocationSection budgets={budgets} loading={loading} />
 
-      {/* Budget cards grid */}
       <BudgetListSection
         budgets={budgets}
         loading={loading}
-        onSelect={setSelectedBudget}
+        onSelect={openBudget}
       />
 
-      {/* Detail drawer */}
-      <BudgetDetailDrawer
-        budget={selectedBudget}
-        onClose={() => setSelectedBudget(null)}
-        onEdit={(b) => openEditor(b)}
-      />
-
-      {/* Editor drawer */}
-      <BudgetEditorDrawer
-        mode={editorMode}
-        onClose={() => setEditorMode(null)}
+      <BudgetDrawer
+        mode={drawerMode}
+        onClose={() => setDrawerMode(null)}
         onSaved={handleSaved}
       />
+
+      <FAB onClick={() => setDrawerMode('new')} label="New Budget" text="New Budget" />
     </div>
   );
 }

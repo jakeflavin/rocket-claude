@@ -1,54 +1,35 @@
 import { useCallback, useState } from 'react';
-import { Plus } from 'lucide-react';
-import { Button } from '../../shared/components/Button';
+import { FAB } from '../../shared/components/FAB';
 import { GoalSummaryBar } from './GoalSummaryBar';
 import { GoalListSection } from './GoalListSection';
-import { GoalDetailDrawer } from './GoalDetailDrawer';
-import { GoalEditorDrawer } from './GoalEditorDrawer';
+import { GoalDrawer } from './GoalDrawer';
 import { useGoals } from './useGoals';
 import type { GoalWithStats } from './types';
-
-type EditorMode =
-  | { kind: 'create' }
-  | { kind: 'edit'; goal: GoalWithStats };
+import type { GoalDrawerMode } from './GoalDrawer';
 
 export function GoalsPage() {
   const { goals, loading, refresh } = useGoals();
-  const [selectedGoal, setSelectedGoal] = useState<GoalWithStats | null>(null);
-  const [editorMode, setEditorMode] = useState<EditorMode | null>(null);
+  const [drawerMode, setDrawerMode] = useState<GoalDrawerMode>(null);
 
   const handleSaved = useCallback(() => { refresh(); }, [refresh]);
 
-  function openEditor(goal?: GoalWithStats) {
-    setSelectedGoal(null);
-    setEditorMode(goal ? { kind: 'edit', goal } : { kind: 'create' });
+  function openGoal(goal: GoalWithStats) {
+    setDrawerMode(goal);
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text">Goals</h1>
-        <Button variant="primary" onClick={() => openEditor()}>
-          <Plus className="w-4 h-4 mr-1.5 inline-block" />
-          New Goal
-        </Button>
-      </div>
-
       <GoalSummaryBar goals={goals} loading={loading} />
 
-      <GoalListSection goals={goals} loading={loading} onSelect={setSelectedGoal} />
+      <GoalListSection goals={goals} loading={loading} onSelect={openGoal} />
 
-      <GoalDetailDrawer
-        goal={selectedGoal}
-        onClose={() => setSelectedGoal(null)}
-        onEdit={(g) => openEditor(g)}
-      />
-
-      <GoalEditorDrawer
-        mode={editorMode}
-        onClose={() => setEditorMode(null)}
+      <GoalDrawer
+        mode={drawerMode}
+        onClose={() => setDrawerMode(null)}
         onSaved={handleSaved}
       />
+
+      <FAB onClick={() => setDrawerMode('new')} label="New Goal" text="New Goal" />
     </div>
   );
 }
