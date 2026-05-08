@@ -2,11 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { AppLayout } from './app/AppLayout';
 import { TransactionsPage } from './features/transactions/TransactionsPage';
 import { AccountOverviewPage } from './features/account-overview/AccountOverviewPage';
-import { AccountManagementPage } from './features/account-management/AccountManagementPage';
-import { CategoriesOverviewPage } from './features/categories-tags-overview/CategoriesOverviewPage';
 import { CategoryRulesPage } from './features/category-rules-management/CategoryRulesPage';
 import { SubscriptionsPage } from './features/subscriptions/SubscriptionsPage';
-import { SpendingAnalyticsPage } from './features/spending-analytics/SpendingAnalyticsPage';
+import { SpendingPage } from './features/spending-analytics/SpendingPage';
 import { BudgetsPage } from './features/budgets/BudgetsPage';
 import { GoalsPage } from './features/goals/GoalsPage';
 import { HomePage } from './features/home/HomePage';
@@ -15,11 +13,9 @@ const BREADCRUMBS: Record<string, string[]> = {
   home: ['Home'],
   transactions: ['Transactions'],
   accounts: ['Accounts'],
-  'accounts/settings': ['Accounts', 'Settings'],
-  categories: ['Transactions', 'Categories'],
   'categories/rules': ['Transactions', 'Rules'],
-  subscriptions: ['Transactions', 'Subscriptions & Bills'],
-  'spending-analytics': ['Transactions', 'Spending Analytics'],
+  subscriptions: ['Subscriptions & Bills'],
+  spending: ['Spending'],
   budgets: ['Budgets'],
   goals: ['Goals'],
 };
@@ -54,11 +50,9 @@ function App() {
       {page === 'home' && <HomePage onNavigate={navigate} />}
       {page === 'transactions' && <TransactionsPage />}
       {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
-      {page === 'accounts/settings' && <AccountManagementPage />}
-      {page === 'categories' && <CategoriesOverviewPage />}
       {page === 'categories/rules' && <CategoryRulesPage />}
       {page === 'subscriptions' && <SubscriptionsPage />}
-      {page === 'spending-analytics' && <SpendingAnalyticsPage />}
+      {page === 'spending' && <SpendingPage />}
       {page === 'budgets' && <BudgetsPage />}
       {page === 'goals' && <GoalsPage />}
     </AppLayout>

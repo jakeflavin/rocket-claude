@@ -1,4 +1,4 @@
-import { CreditCard, LayoutDashboard, PiggyBank, Target, Wallet, type LucideIcon } from 'lucide-react';
+import { CalendarClock, CreditCard, LayoutDashboard, PiggyBank, Target, TrendingUp, Wallet, type LucideIcon } from 'lucide-react';
 
 export type NavChild = {
   label: string;
@@ -29,22 +29,29 @@ export const navItems: NavItem[] = [
     path: '/goals',
   },
   {
+    label: 'Spending',
+    icon: TrendingUp,
+    path: '/spending',
+  },
+  {
     label: 'Accounts',
     icon: Wallet,
     path: '/accounts',
-    children: [
-      { label: 'Settings', path: '/accounts/settings' },
-    ],
+  },
+    {
+    label: 'Reoccuring',
+    icon: CalendarClock,
+    path: '/subscriptions',
   },
   {
     label: 'Transactions',
     icon: CreditCard,
     path: '/transactions',
     children: [
-      { label: 'Categories', path: '/categories' },
       { label: 'Rules', path: '/categories/rules' },
-      { label: 'Subscriptions & Bills', path: '/subscriptions' },
-      { label: 'Spending Analytics', path: '/spending-analytics' },
     ],
   },
 ];
+
+
+// calendar-clock
