@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSettings } from './features/settings/useSettings';
+import { SettingsDrawer } from './features/settings/SettingsDrawer';
 import { AppLayout } from './app/AppLayout';
 import { TransactionsPage } from './features/transactions/TransactionsPage';
 import { AccountOverviewPage } from './features/account-overview/AccountOverviewPage';
@@ -27,6 +29,8 @@ function pathToPage(path: string): string {
 
 function App() {
   const [page, setPage] = useState(() => pathToPage(window.location.pathname));
+  const { appearance, setAppearance } = useSettings();
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     if (window.location.pathname === '/') {
@@ -46,16 +50,24 @@ function App() {
   }, []);
 
   return (
-    <AppLayout currentPage={page} breadcrumbs={BREADCRUMBS[page] ?? []} onNavigate={navigate}>
-      {page === 'home' && <HomePage onNavigate={navigate} />}
-      {page === 'transactions' && <TransactionsPage />}
-      {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
-      {page === 'categories/rules' && <CategoryRulesPage />}
-      {page === 'subscriptions' && <SubscriptionsPage />}
-      {page === 'spending' && <SpendingPage />}
-      {page === 'budgets' && <BudgetsPage />}
-      {page === 'goals' && <GoalsPage />}
-    </AppLayout>
+    <>
+      <AppLayout currentPage={page} breadcrumbs={BREADCRUMBS[page] ?? []} onNavigate={navigate} onOpenSettings={() => setSettingsOpen(true)}>
+        {page === 'home' && <HomePage onNavigate={navigate} />}
+        {page === 'transactions' && <TransactionsPage />}
+        {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
+        {page === 'categories/rules' && <CategoryRulesPage />}
+        {page === 'subscriptions' && <SubscriptionsPage />}
+        {page === 'spending' && <SpendingPage />}
+        {page === 'budgets' && <BudgetsPage />}
+        {page === 'goals' && <GoalsPage />}
+      </AppLayout>
+      <SettingsDrawer
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        appearance={appearance}
+        onSetAppearance={setAppearance}
+      />
+    </>
   );
 }
 

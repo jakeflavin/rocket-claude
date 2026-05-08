@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Rocket, Settings } from 'lucide-react';
 import { navItems } from './navigation';
 
 type AppLayoutProps = {
@@ -7,9 +7,10 @@ type AppLayoutProps = {
   breadcrumbs: string[];
   children: ReactNode;
   onNavigate: (path: string) => void;
+  onOpenSettings: () => void;
 };
 
-export function AppLayout({ currentPage, breadcrumbs, children, onNavigate }: AppLayoutProps) {
+export function AppLayout({ currentPage, breadcrumbs, children, onNavigate, onOpenSettings }: AppLayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
@@ -27,11 +28,9 @@ export function AppLayout({ currentPage, breadcrumbs, children, onNavigate }: Ap
           }`}
         >
           <div className="flex min-w-0 items-center gap-3">
-            <span className="text-2xl leading-none" aria-hidden="true">
-              🚀
-            </span>
+            <Rocket size={24} />
             {!isSidebarCollapsed && (
-              <span className="truncate text-sm font-semibold text-text">Rocket Claude</span>
+              <span className="truncate uppercase text-md font-semibold text-text">Rocket Claude</span>
             )}
           </div>
         </div>
@@ -110,7 +109,7 @@ export function AppLayout({ currentPage, breadcrumbs, children, onNavigate }: Ap
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
-        <header className="flex h-[52px] shrink-0 items-center border-b border-border bg-canvas px-6">
+        <header className="flex h-[52px] shrink-0 items-center justify-between border-b border-border bg-canvas px-6">
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-2">
               {breadcrumbs.map((breadcrumb, index) => {
@@ -124,7 +123,7 @@ export function AppLayout({ currentPage, breadcrumbs, children, onNavigate }: Ap
                     )}
                     <span
                       className={
-                        isCurrentPage ? 'text-sm font-semibold text-text' : 'text-sm text-subtle'
+                        isCurrentPage ? 'text-xs uppercase font-semibold text-text' : 'text-xs uppercase text-subtle'
                       }
                       aria-current={isCurrentPage ? 'page' : undefined}
                     >
@@ -135,6 +134,14 @@ export function AppLayout({ currentPage, breadcrumbs, children, onNavigate }: Ap
               })}
             </ol>
           </nav>
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            aria-label="Open settings"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors duration-[100ms] hover:bg-hover hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+          >
+            <Settings size={16} aria-hidden="true" />
+          </button>
         </header>
 
         {/* Content */}

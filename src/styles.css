@@ -65,6 +65,33 @@
   }
 }
 
+/* Explicit theme overrides — higher specificity than the media query above */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --color-canvas: #1a1917;
+  --color-sidebar: #111110;
+  --color-hover: #2a2826;
+  --color-surface: #242320;
+  --color-border: #2e2c29;
+  --color-row-hover: #2a2826;
+  --color-text: #f0ede8;
+  --color-muted: #8c8880;
+  --color-subtle: #5c5852;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --color-canvas: #f7f5f2;
+  --color-sidebar: #f0ede8;
+  --color-hover: #e8e4df;
+  --color-surface: #ffffff;
+  --color-border: #e2ddd8;
+  --color-row-hover: #faf9f7;
+  --color-text: #1a1915;
+  --color-muted: #6b6862;
+  --color-subtle: #9e9b96;
+}
+
 @layer base {
   body {
     min-width: 320px;

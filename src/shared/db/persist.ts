@@ -113,3 +113,7 @@ const GOALS_COLS = ['id', 'name', 'target_amount', 'current_amount', 'target_dat
 export async function persistGoals(): Promise<void> {
   return persistTable('goals', GOALS_COLS, 'target_date');
 }
+
+export async function persistSettings(): Promise<void> {
+  return persistTable('settings', ['key', 'value'], 'key');
+}
