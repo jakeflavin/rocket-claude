@@ -1,0 +1,11 @@
+id,priority,field,operator,value,category_id,is_default,apply_tag,enabled,created_at
+rule_001,1,merchant,contains,Whole Foods,cat_groceries,true,,true,2024-01-01 00:00:00
+rule_002,2,merchant,contains,Trader Joe,cat_groceries,true,,true,2024-01-01 00:00:00
+rule_003,3,merchant,contains,Starbucks,cat_coffee,true,,true,2024-01-01 00:00:00
+rule_004,4,merchant,contains,MTA,cat_transit,true,,true,2024-01-01 00:00:00
+rule_005,5,merchant,contains,Netflix,cat_streaming,true,,true,2024-01-01 00:00:00
+rule_006,6,merchant,contains,Spotify,cat_streaming,true,,true,2024-01-01 00:00:00
+rule_007,7,merchant,contains,Shell,cat_gas,true,,true,2024-01-01 00:00:00
+rule_008,8,merchant,contains,CVS,cat_pharmacy,true,,true,2024-01-01 00:00:00
+rule_009,9,merchant,contains,Payroll,cat_paycheck,true,,true,2024-01-01 00:00:00
+rule_010,10,merchant,contains,Rent,cat_rent,true,,true,2024-01-01 00:00:00

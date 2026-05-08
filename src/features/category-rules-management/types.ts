@@ -8,7 +8,7 @@ export type Rule = {
   operator: RuleOperator;
   value: string;
   category_id: string;
-  apply_tag: string | null;
+  is_default: boolean;
   enabled: boolean;
   created_at: string;
 };
@@ -18,6 +18,5 @@ export type RulePatch = Partial<{
   operator: RuleOperator;
   value: string;
   category_id: string;
-  apply_tag: string | null;
   enabled: boolean;
 }>;

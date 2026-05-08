@@ -23,7 +23,7 @@ const RECURRING_TRANSACTIONS_COLS = [
 const CATEGORIES_COLS = ['id', 'name', 'parent_id', 'icon', 'color', 'system', 'created_at'] as const;
 const TAGS_COLS = ['id', 'name', 'color'] as const;
 const TRANSACTION_TAGS_COLS = ['transaction_id', 'tag_id'] as const;
-const RULES_COLS = ['id', 'priority', 'field', 'operator', 'value', 'category_id', 'apply_tag', 'enabled', 'created_at'] as const;
+const RULES_COLS = ['id', 'priority', 'field', 'operator', 'value', 'category_id', 'is_default', 'apply_tag', 'enabled', 'created_at'] as const;
 
 function csvEscape(v: unknown): string {
   if (v == null) return '';

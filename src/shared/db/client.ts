@@ -97,6 +97,9 @@ async function initDB(): Promise<DBHandle> {
     `ALTER TABLE transactions ADD COLUMN IF NOT EXISTS is_recurring BOOLEAN DEFAULT false`,
   );
 
+  // Ensure is_default column exists on rules (added after initial release)
+  await conn.query(`ALTER TABLE rules ADD COLUMN IF NOT EXISTS is_default BOOLEAN DEFAULT false`);
+
   // Ensure settings table and default appearance row exist
   await conn.query(`CREATE TABLE IF NOT EXISTS settings (key VARCHAR, value VARCHAR)`);
   await conn.query(`

@@ -15,7 +15,7 @@ const BREADCRUMBS: Record<string, string[]> = {
   home: ['Home'],
   transactions: ['Transactions'],
   accounts: ['Accounts'],
-  'categories/rules': ['Transactions', 'Rules'],
+  'settings/categories/rules': ['Settings', 'Categories', 'Rules'],
   subscriptions: ['Subscriptions & Bills'],
   spending: ['Spending'],
   budgets: ['Budgets'],
@@ -55,7 +55,7 @@ function App() {
         {page === 'home' && <HomePage onNavigate={navigate} />}
         {page === 'transactions' && <TransactionsPage />}
         {page === 'accounts' && <AccountOverviewPage onNavigate={navigate} />}
-        {page === 'categories/rules' && <CategoryRulesPage />}
+        {page === 'settings/categories/rules' && <CategoryRulesPage />}
         {page === 'subscriptions' && <SubscriptionsPage />}
         {page === 'spending' && <SpendingPage />}
         {page === 'budgets' && <BudgetsPage />}
@@ -66,6 +66,7 @@ function App() {
         onClose={() => setSettingsOpen(false)}
         appearance={appearance}
         onSetAppearance={setAppearance}
+        onNavigate={navigate}
       />
     </>
   );

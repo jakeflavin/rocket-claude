@@ -47,9 +47,6 @@ export const navItems: NavItem[] = [
     label: 'Transactions',
     icon: CreditCard,
     path: '/transactions',
-    children: [
-      { label: 'Rules', path: '/categories/rules' },
-    ],
   },
 ];
 

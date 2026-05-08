@@ -10,7 +10,8 @@ export async function queryRules(): Promise<Rule[]> {
   const conn = await getConnection();
   const result = await conn.query(`
     SELECT id, CAST(priority AS INTEGER) AS priority, field, operator, value,
-           category_id, apply_tag, enabled, CAST(created_at AS VARCHAR) AS created_at
+           category_id, CAST(is_default AS BOOLEAN) AS is_default,
+           enabled, CAST(created_at AS VARCHAR) AS created_at
     FROM rules
     ORDER BY priority ASC
   `);
@@ -22,17 +23,15 @@ export async function createRule(
   operator: Rule['operator'],
   value: string,
   categoryId: string,
-  applyTag: string | null,
 ): Promise<string> {
   const conn = await getConnection();
   const id = `rule_${Date.now().toString(36)}`;
   const maxResult = await conn.query(`SELECT COALESCE(MAX(CAST(priority AS INTEGER)), 0) AS mx FROM rules`);
   const nextPriority = Number(maxResult.toArray()[0].toJSON().mx) + 1;
-  const tagVal = applyTag ? `'${esc(applyTag)}'` : 'NULL';
   await conn.query(`
-    INSERT INTO rules (id, priority, field, operator, value, category_id, apply_tag, enabled, created_at)
+    INSERT INTO rules (id, priority, field, operator, value, category_id, is_default, enabled, created_at)
     VALUES ('${esc(id)}', ${nextPriority}, '${esc(field)}', '${esc(operator)}', '${esc(value)}',
-            '${esc(categoryId)}', ${tagVal}, true, NOW())
+            '${esc(categoryId)}', false, true, NOW())
   `);
   persistRules().catch((e) => console.error('CSV persist failed:', e));
   return id;
@@ -45,9 +44,6 @@ export async function updateRule(id: string, patch: RulePatch): Promise<void> {
   if ('operator' in patch && patch.operator) clauses.push(`operator = '${esc(patch.operator)}'`);
   if ('value' in patch && patch.value != null) clauses.push(`value = '${esc(patch.value)}'`);
   if ('category_id' in patch && patch.category_id) clauses.push(`category_id = '${esc(patch.category_id)}'`);
-  if ('apply_tag' in patch) {
-    clauses.push(patch.apply_tag == null ? `apply_tag = NULL` : `apply_tag = '${esc(patch.apply_tag)}'`);
-  }
   if ('enabled' in patch && patch.enabled != null) clauses.push(`enabled = ${patch.enabled}`);
   if (clauses.length === 0) return;
   await conn.query(`UPDATE rules SET ${clauses.join(', ')} WHERE id = '${esc(id)}'`);
