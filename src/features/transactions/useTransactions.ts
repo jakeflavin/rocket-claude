@@ -14,6 +14,7 @@ export function useTransactions(
   sort: TransactionSort,
   page: number,
   pageSize: PageSize,
+  version = 0,
 ): Result {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
@@ -57,7 +58,7 @@ export function useTransactions(
     return () => {
       cancelled = true;
     };
-  }, [debouncedSearch, accountId, categoryId, dateFrom, dateTo, type, status, sort.key, sort.dir, page, pageSize]);
+  }, [debouncedSearch, accountId, categoryId, dateFrom, dateTo, type, status, sort.key, sort.dir, page, pageSize, version]);
 
   return { transactions, total, loading, error };
 }

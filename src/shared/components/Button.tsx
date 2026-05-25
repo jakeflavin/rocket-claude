@@ -10,11 +10,10 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const VARIANT_CLS: Record<ButtonVariant, string> = {
-  primary:
-    'bg-brand text-white hover:bg-brand-hover active:bg-brand-active disabled:bg-border disabled:text-subtle',
+  primary: 'bg-brand text-white hover:bg-brand-hover active:bg-brand-active disabled:bg-border disabled:text-subtle',
   secondary: 'border border-border bg-transparent text-text hover:bg-hover',
   ghost: 'border border-border bg-transparent text-muted hover:bg-hover hover:text-text',
-  destructive: 'border border-error-border bg-transparent text-error hover:bg-error-bg',
+  destructive: 'border border-error-border bg-error text-white hover:bg-error-bg',
   icon: 'bg-transparent text-muted hover:bg-hover hover:text-text',
 };
 
@@ -44,7 +43,7 @@ export function Button({
         'inline-flex items-center justify-center gap-2 rounded-lg font-medium',
         'transition-colors duration-[100ms]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40',
-        'disabled:cursor-not-allowed',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         VARIANT_CLS[variant],
         isIcon ? ICON_SIZE_CLS[size] : SIZE_CLS[size],
         className ?? '',

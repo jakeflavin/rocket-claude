@@ -1,10 +1,17 @@
 import { useCallback, useState } from 'react';
-import { SpendingSection } from './SpendingSection';
-import { CategoryListSection } from './CategoryListSection';
-import { CategoryEditPanel } from './CategoryEditPanel';
+import { SegmentedControl } from '../../shared/components/SegmentedControl';
 import { Drawer } from '../../shared/components/Drawer';
-import { useCategories } from './useCategories';
-import type { PanelState, SpendingPeriod } from './types';
+import { SpendingSummaryBar } from './SpendingSummaryBar';
+import { SpendingTrendsSection } from './SpendingTrendsSection';
+import { IncomeExpensesSection } from './IncomeExpensesSection';
+import { CashFlowSection } from './CashFlowSection';
+import { MerchantSpendingSection } from './MerchantSpendingSection';
+import { SpendingSection } from '../categories-tags-overview/SpendingSection';
+import { CategoryListSection } from '../categories-tags-overview/CategoryListSection';
+import { CategoryEditPanel } from '../categories-tags-overview/CategoryEditPanel';
+import { useCategories } from '../categories-tags-overview/useCategories';
+import type { SpendingPeriod as AnalyticsPeriod } from './types';
+import type { SpendingPeriod as CategoryPeriod, PanelState } from '../categories-tags-overview/types';
 
 function panelTitle(panel: PanelState): string {
   if (!panel) return '';
@@ -12,14 +19,22 @@ function panelTitle(panel: PanelState): string {
   if (panel.mode === 'category') return 'Edit Category';
   if (panel.mode === 'newSubcategory') return 'New Subcategory';
   if (panel.mode === 'subcategory') return 'Edit Subcategory';
-  return '';
+  if (panel.mode === 'newTag') return 'New Tag';
+  return 'Edit Tag';
 }
 
-export function CategoriesOverviewPage() {
-  const { categories, addCategory, editCategory, removeCategory } = useCategories();
+const ANALYTICS_PERIOD_SEGMENTS = [
+  { value: 'monthly' as AnalyticsPeriod, label: 'Monthly' },
+  { value: 'yearly' as AnalyticsPeriod, label: 'Yearly' },
+];
+
+export function SpendingPage() {
+  const [analyticsPeriod, setAnalyticsPeriod] = useState<AnalyticsPeriod>('monthly');
+  const [categoryPeriod, setCategoryPeriod] = useState<CategoryPeriod>('month');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [period, setPeriod] = useState<SpendingPeriod>('month');
   const [panel, setPanel] = useState<PanelState>(null);
+
+  const { categories, addCategory, editCategory, removeCategory } = useCategories();
 
   const handleSaveCategory = useCallback(
     async (id: string | null, name: string, color: string, parentId: string | null, icon?: string) => {
@@ -42,13 +57,35 @@ export function CategoriesOverviewPage() {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-end">
+          <SegmentedControl<AnalyticsPeriod>
+            segments={ANALYTICS_PERIOD_SEGMENTS}
+            value={analyticsPeriod}
+            onChange={setAnalyticsPeriod}
+          />
+        </div>
+
+        <SpendingSummaryBar />
+
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <SpendingTrendsSection period={analyticsPeriod} />
+          <IncomeExpensesSection period={analyticsPeriod} />
+        </div>
+
+        <CashFlowSection period={analyticsPeriod} />
+
+        <MerchantSpendingSection period={analyticsPeriod} />
+
+        <div className="border-t border-border pt-2" />
+
         <SpendingSection
-          period={period}
+          period={categoryPeriod}
           selectedCategoryId={selectedCategoryId}
           onSelectCategory={setSelectedCategoryId}
-          onPeriodChange={setPeriod}
+          onPeriodChange={setCategoryPeriod}
         />
+
         <CategoryListSection categories={categories} onOpenPanel={setPanel} />
       </div>
 

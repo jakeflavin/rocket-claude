@@ -16,21 +16,22 @@ export function useDashboard() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    Promise.all([
-      queryDashboardSummary(),
-      queryDashboardCashFlow(),
-      queryDashboardAccounts(),
-      queryDashboardBudgets(),
-      queryDashboardRecentTransactions(),
-      queryDashboardUpcomingBills(),
-    ]).then(([summary, cashFlow, accounts, budgets, recentTransactions, upcomingBills]) => {
-      if (!cancelled) {
-        setData({ summary, cashFlow, accounts, budgets, recentTransactions, upcomingBills });
-        setLoading(false);
+    (async () => {
+      try {
+        const summary = await queryDashboardSummary();
+        const cashFlow = await queryDashboardCashFlow();
+        const accounts = await queryDashboardAccounts();
+        const budgets = await queryDashboardBudgets();
+        const recentTransactions = await queryDashboardRecentTransactions();
+        const upcomingBills = await queryDashboardUpcomingBills();
+        if (!cancelled) {
+          setData({ summary, cashFlow, accounts, budgets, recentTransactions, upcomingBills });
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) setLoading(false);
       }
-    }).catch(() => {
-      if (!cancelled) setLoading(false);
-    });
+    })();
     return () => { cancelled = true; };
   }, []);
 

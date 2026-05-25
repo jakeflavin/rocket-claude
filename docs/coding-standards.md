@@ -6,6 +6,31 @@ Every piece of code has one job. Components render. Hooks coordinate state and s
 
 ---
 
+## Data Access Rule
+
+**All reads, writes, sorting, and filtering go through DuckDB — never directly against CSV files.**
+
+CSV files are the persistence format, not the access layer. Application code must never fetch, parse, or write a CSV file directly. DuckDB is initialized once at startup by loading the CSVs, and from that point on it is the sole source of truth. Any mutation that needs to survive a page reload is flushed back to CSV by the DB layer internally — feature code never participates in that process.
+
+**Wrong:**
+```ts
+// ❌ fetching or parsing CSV in feature code
+const text = await fetch('/data/transactions.csv').then(r => r.text());
+const rows = text.split('\n').map(line => line.split(','));
+
+// ❌ writing CSV from a component or hook
+await fetch('/api/csv/transactions', { method: 'POST', body: csvString });
+```
+
+**Correct:**
+```ts
+// ✓ all access through query functions backed by DuckDB
+const { transactions } = await queryTransactions(filters, sort, page, pageSize);
+await updateTransaction(id, patch);
+```
+
+---
+
 ## The Layer Rule
 
 All data flow follows this pipeline — no exceptions:

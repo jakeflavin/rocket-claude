@@ -1,4 +1,5 @@
 import { getConnection } from '../../shared/db/client';
+import { persistTransactions } from '../../shared/db/persist';
 import type { Transaction, TransactionFilters, TransactionSort, FilterOption, PageSize } from './types';
 
 const SORT_COLUMNS: Record<string, string> = {
@@ -61,6 +62,7 @@ export async function queryTransactions(
         CAST(t.date AS VARCHAR)            AS date,
         t.merchant,
         COALESCE(c.name, 'Uncategorized')  AS category,
+        t.category_id,
         COALESCE(a.name, 'Unknown')         AS account,
         CAST(t.amount AS DOUBLE)            AS amount,
         t.currency,
@@ -74,7 +76,9 @@ export async function queryTransactions(
         t.tags,
         t.location,
         t.external_id,
-        t.created_at
+        t.created_at,
+        t.is_recurring,
+        t.exclude_from_analytics
       ${JOINS}
       ${where}
       ORDER BY ${sortCol} ${sort.dir.toUpperCase()}, t.id
@@ -91,6 +95,44 @@ export async function queryTransactions(
     transactions: dataResult.toArray().map((r) => r.toJSON() as Transaction),
     total: Number(countResult.toArray()[0].toJSON().total),
   };
+}
+
+export type TransactionPatch = {
+  merchant?: string;
+  description?: string | null;
+  category_id?: string | null;
+  notes?: string | null;
+  tags?: string | null;
+  is_recurring?: boolean;
+  exclude_from_analytics?: boolean;
+};
+
+function sqlVal(v: string | null | undefined): string {
+  return v == null ? 'NULL' : `'${esc(v)}'`;
+}
+
+export async function updateTransaction(id: string, patch: TransactionPatch): Promise<void> {
+  const conn = await getConnection();
+  const clauses: string[] = [];
+
+  if ('merchant' in patch) clauses.push(`merchant = '${esc(patch.merchant ?? '')}'`);
+  if ('description' in patch) clauses.push(`description = ${sqlVal(patch.description)}`);
+  if ('category_id' in patch) clauses.push(`category_id = ${sqlVal(patch.category_id)}`);
+  if ('notes' in patch) clauses.push(`notes = ${sqlVal(patch.notes)}`);
+  if ('tags' in patch) clauses.push(`tags = ${sqlVal(patch.tags)}`);
+  if ('is_recurring' in patch) clauses.push(`is_recurring = ${patch.is_recurring}`);
+  if ('exclude_from_analytics' in patch)
+    clauses.push(`exclude_from_analytics = ${patch.exclude_from_analytics}`);
+
+  if (clauses.length === 0) return;
+  await conn.query(`UPDATE transactions SET ${clauses.join(', ')} WHERE id = '${esc(id)}'`);
+  persistTransactions().catch((e) => console.error('CSV persist failed:', e));
+}
+
+export async function deleteTransaction(id: string): Promise<void> {
+  const conn = await getConnection();
+  await conn.query(`DELETE FROM transactions WHERE id = '${esc(id)}'`);
+  persistTransactions().catch((e) => console.error('CSV persist failed:', e));
 }
 
 export type FilterOptionsResult = {

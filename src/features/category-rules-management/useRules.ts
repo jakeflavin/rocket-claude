@@ -12,7 +12,6 @@ type Result = {
     operator: Rule['operator'],
     value: string,
     categoryId: string,
-    applyTag: string | null,
   ) => Promise<string>;
   editRule: (id: string, patch: RulePatch) => Promise<void>;
   removeRule: (id: string) => Promise<void>;
@@ -55,9 +54,8 @@ export function useRules(): Result {
       operator: Rule['operator'],
       value: string,
       categoryId: string,
-      applyTag: string | null,
     ) => {
-      const id = await createRule(field, operator, value, categoryId, applyTag);
+      const id = await createRule(field, operator, value, categoryId);
       refresh();
       return id;
     },

@@ -1,11 +1,9 @@
 import { getConnection } from '../../shared/db/client';
 import {
   persistCategories,
-  persistTags,
   persistTransactions,
-  persistTransactionTags,
 } from '../../shared/db/persist';
-import type { Category, CategorySpending, SubcategorySpending, Tag, UncategorizedTransaction, SpendingPeriod } from './types';
+import type { Category, CategorySpending, SubcategorySpending, UncategorizedTransaction, SpendingPeriod } from './types';
 
 function esc(v: string): string {
   return v.replace(/'/g, "''");
@@ -76,19 +74,6 @@ export async function querySubcategorySpending(
   return result.toArray().map((r) => r.toJSON() as SubcategorySpending);
 }
 
-export async function queryTags(): Promise<Tag[]> {
-  const conn = await getConnection();
-  const result = await conn.query(`
-    SELECT t.id, t.name, t.color,
-           CAST(COUNT(tt.transaction_id) AS INTEGER) AS usage_count
-    FROM tags t
-    LEFT JOIN transaction_tags tt ON t.id = tt.tag_id
-    GROUP BY t.id, t.name, t.color
-    ORDER BY t.name
-  `);
-  return result.toArray().map((r) => r.toJSON() as Tag);
-}
-
 export async function queryUncategorizedTransactions(limit = 50): Promise<UncategorizedTransaction[]> {
   const conn = await getConnection();
   const result = await conn.query(`
@@ -155,37 +140,6 @@ export async function deleteCategory(id: string): Promise<void> {
   await Promise.all([persistCategories(), persistTransactions()]);
 }
 
-export async function createTag(name: string, color: string): Promise<string> {
-  const conn = await getConnection();
-  const id = `tag_${Date.now().toString(36)}`;
-  await conn.query(`
-    INSERT INTO tags (id, name, color)
-    VALUES ('${esc(id)}', '${esc(name)}', '${esc(color)}')
-  `);
-  persistTags().catch((e) => console.error('CSV persist failed:', e));
-  return id;
-}
-
-export async function updateTag(
-  id: string,
-  patch: Partial<{ name: string; color: string }>,
-): Promise<void> {
-  const conn = await getConnection();
-  const clauses: string[] = [];
-  if ('name' in patch && patch.name != null) clauses.push(`name = '${esc(patch.name)}'`);
-  if ('color' in patch && patch.color != null) clauses.push(`color = '${esc(patch.color)}'`);
-  if (clauses.length === 0) return;
-  await conn.query(`UPDATE tags SET ${clauses.join(', ')} WHERE id = '${esc(id)}'`);
-  persistTags().catch((e) => console.error('CSV persist failed:', e));
-}
-
-export async function deleteTag(id: string): Promise<void> {
-  const conn = await getConnection();
-  await conn.query(`DELETE FROM transaction_tags WHERE tag_id = '${esc(id)}'`);
-  await conn.query(`DELETE FROM tags WHERE id = '${esc(id)}'`);
-  await Promise.all([persistTags(), persistTransactionTags()]);
-}
-
 export async function recategorizeTransactions(txnIds: string[], categoryId: string): Promise<void> {
   const conn = await getConnection();
   const idList = txnIds.map((id) => `'${esc(id)}'`).join(',');
@@ -196,21 +150,3 @@ export async function recategorizeTransactions(txnIds: string[], categoryId: str
   persistTransactions().catch((e) => console.error('CSV persist failed:', e));
 }
 
-export async function assignTagToTransaction(txnId: string, tagId: string): Promise<void> {
-  const conn = await getConnection();
-  await conn.query(`
-    INSERT INTO transaction_tags (transaction_id, tag_id)
-    VALUES ('${esc(txnId)}', '${esc(tagId)}')
-    ON CONFLICT DO NOTHING
-  `);
-  persistTransactionTags().catch((e) => console.error('CSV persist failed:', e));
-}
-
-export async function removeTagFromTransaction(txnId: string, tagId: string): Promise<void> {
-  const conn = await getConnection();
-  await conn.query(`
-    DELETE FROM transaction_tags
-    WHERE transaction_id = '${esc(txnId)}' AND tag_id = '${esc(tagId)}'
-  `);
-  persistTransactionTags().catch((e) => console.error('CSV persist failed:', e));
-}

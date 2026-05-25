@@ -1,0 +1,24 @@
+id,name,parent_id,icon,color,system,created_at
+cat_food,Food & Dining,,,#f97316,true,2024-01-01T00:00:00Z
+cat_groceries,Groceries,cat_food,,#fb923c,true,2024-01-01T00:00:00Z
+cat_restaurants,Restaurants,cat_food,,#f59e0b,true,2024-01-01T00:00:00Z
+cat_coffee,Coffee Shops,cat_food,,#d97706,true,2024-01-01T00:00:00Z
+cat_transport,Transportation,,,#3b82f6,true,2024-01-01T00:00:00Z
+cat_gas,Gas & Fuel,cat_transport,,#60a5fa,true,2024-01-01T00:00:00Z
+cat_transit,Public Transit,cat_transport,,#93c5fd,true,2024-01-01T00:00:00Z
+cat_parking,Parking,cat_transport,,#bfdbfe,true,2024-01-01T00:00:00Z
+cat_shopping,Shopping,,,#8b5cf6,true,2024-01-01T00:00:00Z
+cat_electronics,Electronics,cat_shopping,,#a78bfa,true,2024-01-01T00:00:00Z
+cat_clothing,Clothing,cat_shopping,,#c4b5fd,true,2024-01-01T00:00:00Z
+cat_income,Income,,,#10b981,true,2024-01-01T00:00:00Z
+cat_paycheck,Paycheck,cat_income,,#34d399,true,2024-01-01T00:00:00Z
+cat_freelance,Freelance,cat_income,,#6ee7b7,true,2024-01-01T00:00:00Z
+cat_housing,Housing,,,#ef4444,true,2024-01-01T00:00:00Z
+cat_rent,Rent,cat_housing,,#f87171,true,2024-01-01T00:00:00Z
+cat_utilities,Utilities,cat_housing,,#fca5a5,true,2024-01-01T00:00:00Z
+cat_entertainment,Entertainment,,,#6366f1,true,2024-01-01T00:00:00Z
+cat_streaming,Streaming,cat_entertainment,,#818cf8,true,2024-01-01T00:00:00Z
+cat_health,Health,,,#ec4899,true,2024-01-01T00:00:00Z
+cat_pharmacy,Pharmacy,cat_health,,#f472b6,true,2024-01-01T00:00:00Z
+cat_subscriptions,Subscriptions,,,#14b8a6,true,2024-01-01T00:00:00Z
+cat_transfers,Transfers,,,#94a3b8,true,2024-01-01T00:00:00Z

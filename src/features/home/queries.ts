@@ -19,27 +19,33 @@ export async function queryDashboardSummary(): Promise<DashboardSummary> {
 
   const result = await conn.query(`
     SELECT
-      SUM(CASE WHEN CAST(a.balance AS DOUBLE) > 0 THEN CAST(a.balance AS DOUBLE) ELSE 0 END) AS total_assets,
-      SUM(CASE WHEN CAST(a.balance AS DOUBLE) < 0 THEN ABS(CAST(a.balance AS DOUBLE)) ELSE 0 END) AS total_liabilities
-    FROM accounts a
-    WHERE a.is_hidden = false AND a.is_closed = false
+      acct.total_assets,
+      acct.total_liabilities,
+      COALESCE(cash.income, 0) AS month_income,
+      COALESCE(cash.expenses, 0) AS month_expenses
+    FROM (
+      SELECT
+        SUM(CASE WHEN CAST(a.balance AS DOUBLE) > 0 THEN CAST(a.balance AS DOUBLE) ELSE 0 END) AS total_assets,
+        SUM(CASE WHEN CAST(a.balance AS DOUBLE) < 0 THEN ABS(CAST(a.balance AS DOUBLE)) ELSE 0 END) AS total_liabilities
+      FROM accounts a
+      WHERE a.is_hidden = false AND a.is_closed = false
+    ) acct,
+    (
+      SELECT
+        SUM(CASE WHEN CAST(t.amount AS DOUBLE) > 0 THEN CAST(t.amount AS DOUBLE) ELSE 0 END) AS income,
+        SUM(CASE WHEN CAST(t.amount AS DOUBLE) < 0 THEN ABS(CAST(t.amount AS DOUBLE)) ELSE 0 END) AS expenses
+      FROM transactions t
+      WHERE ${ANALYTICS_FILTER}
+        AND CAST(t.date AS DATE) >= DATE_TRUNC('month', CURRENT_DATE)
+        AND CAST(t.date AS DATE) <= CURRENT_DATE
+    ) cash
   `);
+
   const row = result.toArray()[0]?.toJSON() as Record<string, unknown>;
   const totalAssets = Number(row?.total_assets ?? 0);
   const totalLiabilities = Number(row?.total_liabilities ?? 0);
-
-  const cashResult = await conn.query(`
-    SELECT
-      SUM(CASE WHEN CAST(t.amount AS DOUBLE) > 0 THEN CAST(t.amount AS DOUBLE) ELSE 0 END) AS income,
-      SUM(CASE WHEN CAST(t.amount AS DOUBLE) < 0 THEN ABS(CAST(t.amount AS DOUBLE)) ELSE 0 END) AS expenses
-    FROM transactions t
-    WHERE ${ANALYTICS_FILTER}
-      AND CAST(t.date AS DATE) >= DATE_TRUNC('month', CURRENT_DATE)
-      AND CAST(t.date AS DATE) <= CURRENT_DATE
-  `);
-  const cashRow = cashResult.toArray()[0]?.toJSON() as Record<string, unknown>;
-  const monthIncome = Number(cashRow?.income ?? 0);
-  const monthExpenses = Number(cashRow?.expenses ?? 0);
+  const monthIncome = Number(row?.month_income ?? 0);
+  const monthExpenses = Number(row?.month_expenses ?? 0);
 
   return {
     netWorth: totalAssets - totalLiabilities,
@@ -135,30 +141,33 @@ export async function queryDashboardBudgets(): Promise<DashboardBudgetRow[]> {
   const conn = await getConnection();
 
   const result = await conn.query(`
-    SELECT
-      b.id,
-      COALESCE(c.name, 'Uncategorized') AS category_name,
-      COALESCE(c.color, '#9E9B96') AS category_color,
-      CAST(b.amount AS DOUBLE) AS amount,
-      COALESCE((
-        SELECT SUM(ABS(CAST(t.amount AS DOUBLE)))
-        FROM transactions t
-        WHERE t.category_id = b.category_id
-          AND t.is_transfer = false
-          AND (t.exclude_from_analytics = false OR t.exclude_from_analytics IS NULL)
-          AND t.pending = false
-          AND CAST(t.amount AS DOUBLE) < 0
-          AND CAST(t.date AS DATE) >= CASE b.period
-            WHEN 'monthly' THEN DATE_TRUNC('month', CURRENT_DATE)
-            WHEN 'weekly'  THEN CURRENT_DATE - CAST((DAYOFWEEK(CURRENT_DATE) - 1) AS INTEGER)
-            WHEN 'annual'  THEN DATE_TRUNC('year', CURRENT_DATE)
-          END
-          AND CAST(t.date AS DATE) <= CURRENT_DATE
-      ), 0) AS spent
-    FROM budgets b
-    LEFT JOIN categories c ON c.id = b.category_id
-    WHERE (b.end_date IS NULL OR TRIM(CAST(b.end_date AS VARCHAR)) = '' OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
-    ORDER BY spent / NULLIF(CAST(b.amount AS DOUBLE), 0) DESC NULLS LAST
+    WITH budget_stats AS (
+      SELECT
+        b.id,
+        COALESCE(c.name, 'Uncategorized') AS category_name,
+        COALESCE(c.color, '#9E9B96') AS category_color,
+        CAST(b.amount AS DOUBLE) AS amount,
+        COALESCE((
+          SELECT SUM(ABS(CAST(t.amount AS DOUBLE)))
+          FROM transactions t
+          WHERE t.category_id = b.category_id
+            AND t.is_transfer = false
+            AND (t.exclude_from_analytics = false OR t.exclude_from_analytics IS NULL)
+            AND t.pending = false
+            AND CAST(t.amount AS DOUBLE) < 0
+            AND CAST(t.date AS DATE) >= CASE b.period
+              WHEN 'monthly' THEN DATE_TRUNC('month', CURRENT_DATE)
+              WHEN 'weekly'  THEN CURRENT_DATE - CAST((DAYOFWEEK(CURRENT_DATE) - 1) AS INTEGER)
+              WHEN 'annual'  THEN DATE_TRUNC('year', CURRENT_DATE)
+            END
+            AND CAST(t.date AS DATE) <= CURRENT_DATE
+        ), 0) AS spent
+      FROM budgets b
+      LEFT JOIN categories c ON c.id = b.category_id
+      WHERE (b.end_date IS NULL OR TRIM(CAST(b.end_date AS VARCHAR)) = '' OR CAST(b.end_date AS DATE) >= CURRENT_DATE)
+    )
+    SELECT * FROM budget_stats
+    ORDER BY CASE WHEN amount > 0 THEN spent / amount ELSE 0 END DESC
     LIMIT 5
   `);
 

@@ -8,13 +8,6 @@ export type Category = {
   created_at: string;
 };
 
-export type Tag = {
-  id: string;
-  name: string;
-  color: string;
-  usage_count: number;
-};
-
 export type CategorySpending = {
   category_id: string;
   category_name: string;
@@ -45,8 +38,6 @@ export type SpendingPeriod = 'month' | 'quarter' | 'year';
 export type PanelState =
   | { mode: 'category'; category: Category }
   | { mode: 'subcategory'; category: Category; parent: Category }
-  | { mode: 'tag'; tag: Tag }
   | { mode: 'newCategory' }
   | { mode: 'newSubcategory'; parent: Category }
-  | { mode: 'newTag' }
   | null;

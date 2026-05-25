@@ -58,7 +58,7 @@ export function SubscriptionsPage() {
       <SubscriptionSummaryBar />
 
       {/* Filter bar */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-3">
         <SegmentedControl<RecurringType>
           segments={TYPE_SEGMENTS}
           value={filters.type}

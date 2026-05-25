@@ -11,6 +11,7 @@ export type Transaction = {
   date: string;
   merchant: string;
   category: string;
+  category_id: string | null;
   account: string;
   amount: number;
   currency: string;
@@ -22,10 +23,12 @@ export type Transaction = {
   is_transfer: boolean;
   transfer_group: string | null;
   notes: string | null;
-  tags: string | null;
   location: string | null;
   external_id: string | null;
   created_at: string | null;
+  // User-editable flags
+  is_recurring: boolean;
+  exclude_from_analytics: boolean;
 };
 
 export type TransactionFilters = {
